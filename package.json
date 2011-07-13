@@ -1,0 +1,9 @@
+{
+	"name"          : "app_name",
+	"version"       : "0.0.0",
+	"dependencies"  : {
+		"stylus"    : "x.x.x",
+		"uglify-js" : "x.x.x"
+	}
+}
+
