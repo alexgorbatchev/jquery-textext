@@ -6,31 +6,61 @@
   position: absolute;
 }
 .autosuggest .wrap .tags {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   position: absolute;
   width: 100%;
   height: 100%;
-  z-index: 1;
-  padding: 3px 35px 3px 5px;
-  box-sizing: border-box;
+  z-index: 2;
+  padding: 3px 35px 3px 3px;
+  cursor: text;
 }
 .autosuggest .wrap .tags .tag {
   float: left;
 }
 .autosuggest .wrap .tags .tag button {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
   float: left;
-  border: 1px solid #00f;
-  background: #00f;
-  color: #fff;
-  padding: 0;
-  margin: 0 3px 3px 0;
+  border: 1px solid #9daccc;
+  background: #e2e6f0;
+  color: #000;
+  padding: 0px 17px 0px 3px;
+  margin: 0 2px 2px 0;
+  cursor: pointer;
+  height: 16px;
+}
+.autosuggest .wrap .tags .tag button a {
+  position: absolute;
+  right: 3px;
+  top: 2px;
+  display: block;
+  width: 11px;
+  height: 11px;
+  background: url("close.png") 0 0 no-repeat;
+}
+.autosuggest .wrap .tags .tag button a:hover {
+  background-position: 0 -22px;
+}
+.autosuggest .wrap .tags .tag button a:active {
+  background-position: 0 -33px;
 }
 .autosuggest .wrap textarea {
-  position: absolute;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
-  z-index: 2;
+  border: 1px solid #6d84b4;
+  position: absolute;
+  z-index: 1;
   background: none;
   overflow: hidden;
   margin: 0;
-  padding: 3px 5px;
+  padding: 3px 5px 4px 5px;
   resize: none;
 }

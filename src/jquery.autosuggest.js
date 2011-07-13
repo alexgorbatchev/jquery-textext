@@ -10,7 +10,7 @@
 			html : {
 				wrap : '<div class="autosuggest"><div class="wrap"/></div>',
 				tags : '<div class="tags"/>',
-				tag : '<div class="tag"><button><span class="label"/></button></div>'
+				tag : '<div class="tag"><button><span class="label"/><a/></button></div>'
 			},
 			keys : {
 				8   : 'Backspace',
@@ -41,6 +41,8 @@
 			.keydown(function(e) { return self.onKeyDown(e); })
 			;
 
+		self.getTagsContainer().click(function() { input[0].focus(); });
+
 		self.inputPaddingLeft = parseInt(input.css('paddingLeft') || 0);
 		self.inputPaddingTop = parseInt(input.css('paddingTop') || 0);
 		self.inputWidth = input.outerWidth();
@@ -65,23 +67,22 @@
 			wrap      = input.parent(),
 			container = wrap.parent(),
 			width     = self.inputWidth,
-			height    = input.outerHeight()
+			lastTag   = self.getTagElements().last(),
+			pos       = lastTag.position(),
+			height
 			;
+		
+		if(lastTag.length > 0)
+			input.css({
+				paddingLeft : pos.left + lastTag.innerWidth(),
+				paddingTop  : pos.top
+			});
+
+		height = input.outerHeight()
 
 		input.width(width);
 		wrap.width(width).height(height);
 		container.height(height);
-
-		var lastTag = self.getTagElements().last(),
-			pos     = lastTag.position()
-			;
-		
-		if(lastTag.length == 0) return;
-
-		input.css({
-			paddingLeft : pos.left + lastTag.innerWidth(),
-			paddingTop  : pos.top
-		});
 	};
 
 	p.onKeyDown = function(e)
