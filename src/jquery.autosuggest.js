@@ -7,6 +7,7 @@
 	var p = AutoSuggest.prototype,
 		DEFAULT_OPTS = {
 			tagsEnabled : true,
+			ex : {},
 			html : {
 				wrap : '<div class="autosuggest"><div class="wrap"/></div>',
 				tags : '<div class="tags"/>',
@@ -33,9 +34,9 @@
 		var self = this;
 
 		self.opts = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
+		$.extend(true, self, opts.ex);
 
-		input = self.$input = $(input);
-		input
+		self.$input = input = $(input)
 			.wrap(opts.html.wrap)
 			.after(opts.html.tags)
 			.keydown(function(e) { return self.onKeyDown(e); })
