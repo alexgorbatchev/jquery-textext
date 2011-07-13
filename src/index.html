@@ -14,7 +14,27 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="jquery.autosuggest.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			$('textarea').autosuggest();
+			$('textarea').autosuggest({
+				getSuggestions : function(val, callback)
+				{
+					callback([
+						'Roslyn Mankey',
+						'Hugh Masiello',
+						'Christian Allis',
+						'Julio Pals',
+						'Lance Lippard',
+						'Max Quintal',
+						'Benita Kehrer',
+						'Mathew Sizer',
+						'Lilia Wotring',
+						'Cody Borror'
+					]);
+				},
+
+				ex : {
+					tagToString: function(tag) { return '-' + tag + '-'; }
+				}
+			});
 		</script>
 	</body>
 </html>
