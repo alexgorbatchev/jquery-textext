@@ -1,4 +1,8 @@
-$CLOSE = 'close.png'
+$close    = 'close.png'
+$border   = 1px solid #9DACCC
+$selected = #6D84B4
+$prefix   = ''
+$font     = 11px "lucida grande",tahoma,verdana,arial,sans-serif
 
 vendor(prop, args)
 	-webkit-{prop} : args
@@ -14,14 +18,38 @@ shadow(args...)
 round_corners(args...)
 	vendor('border-radius', args)
 
-.autosuggest 
+.{$prefix}autosuggest
 	position   : relative
 	background : #fff
 
-	.wrap
+	.{$prefix}wrap
 		position : absolute
 
-		.tags
+		.{$prefix}dropdown
+			border_box()
+			padding    : 0
+			position   : absolute
+			z-index    : 3
+			background : #fff
+			border     : $border
+			width      : 100%
+			top        : 100%
+			max-height : 100px
+			padding    : 1px
+			font       : $font
+			display    : none
+			overflow-x : hidden
+			overflow-y : auto
+
+			.{$prefix}list
+				.{$prefix}suggestion
+					padding : 3px 5px
+					cursor  : pointer
+
+					&.{$prefix}selected, &:hover
+						background : $selected
+
+		.{$prefix}tags
 			border_box()
 			position : absolute
 			width    : 100%
@@ -30,7 +58,7 @@ round_corners(args...)
 			padding  : 3px 35px 3px 3px
 			cursor   : text
 
-			.tag
+			.{$prefix}tag
 				float : left
 
 				button
@@ -45,6 +73,7 @@ round_corners(args...)
 					margin     : 0 2px 2px 0
 					cursor     : pointer
 					height     : 16px
+					font       : $font
 
 					a
 						position   : absolute
@@ -53,7 +82,7 @@ round_corners(args...)
 						display    : block
 						width      : 11px
 						height     : 11px
-						background : url($CLOSE) 0 0 no-repeat
+						background : url($close) 0 0 no-repeat
 
 						&:hover
 							background-position: 0 -22px
@@ -63,7 +92,7 @@ round_corners(args...)
 
 		textarea
 			border_box()
-			border      : 1px solid #6D84B4
+			border      : $border
 			position    : absolute
 			z-index     : 1
 			background  : none
@@ -72,4 +101,5 @@ round_corners(args...)
 			padding     : 3px 5px 4px 5px
 			resize      : none
 			white-space : nowrap
+			font        : $font
 

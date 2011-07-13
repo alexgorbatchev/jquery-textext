@@ -6,8 +6,9 @@
 
 	var p = AutoSuggest.prototype,
 		DEFAULT_OPTS = {
-			tagsEnabled    : true,
-			getSuggestions : null,
+			tagsEnabled     : true,
+			dropdownEnabled : true,
+			getSuggestions  : null,
 
 			ex : {},
 
@@ -44,11 +45,12 @@
 
 		self.input = input = $(input)
 			.wrap(opts.html.wrap)
-			.after(opts.html.tags)
-			.after(opts.html.dropdown)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
 			;
+
+		if(opts.tagsEnabled) input.after(opts.html.tags);
+		if(opts.dropdownEnabled) input.after(opts.html.dropdown);
 
 		self.getWrapContainer().click(function(e) { return self.onClick(e) });
 
@@ -58,7 +60,7 @@
 			top  : parseInt(input.css('paddingTop') || 0)
 		};
 
-		self.updateBox();
+		self.invalidateInputBox();
 	};
 
 	p.getInput = function()
@@ -81,7 +83,7 @@
 		return this.getInput().parent();
 	};
 
-	p.updateBox = function()
+	p.invalidateInputBox = function()
 	{
 		var self      = this,
 			input     = self.getInput(),
@@ -115,6 +117,9 @@
 		this.getInput()[0].focus();
 	};
 
+	//--------------------------------------------------------------------------------
+	// User mouse/keyboard input
+	
 	p.onClick = function(e)
 	{
 		var self   = this,
@@ -131,36 +136,53 @@
 		return true;
 	};
 
-	p.onKeyDown = function(e)
+	$(['Down', 'Up']).each(function()
 	{
-		var self    = this,
-			handler = self['onKey' + self.opts.keys[e.keyCode]],
-			result
-			;
+		var type = this.toString();
 
-		if(handler)
+		p['onKey' + type] = function(e)
 		{
-			result = handler.call(self, e);
-			return typeof(result) == 'undefined' ? true : result;
-		}
-		else
-		{
-			return self.onKeyInput(e);
-		}
-	};
+			var self    = this,
+				handler = self['on' + self.opts.keys[e.keyCode] + 'Key' + type],
+				result
+				;
 
-	p.onKeyUp = function(e)
+			if($.isFunction(handler))
+			{
+				result = handler.call(self, e);
+				return typeof(result) == 'undefined' ? true : result;
+			}
+			else
+			{
+				return self['onOtherKey' + type](e);
+			}
+		};
+	});
+
+	p.onOtherKeyUp = function(e)
 	{
 		this.doDropdown();
 		return true;
 	};
 
-	p.onKeyInput = function(e)
+	p.onOtherKeyDown = function(e)
 	{
 		return true;
 	};
 
-	p.onKeyEnter = function(e)
+	p.onDownKeyDown = function(e)
+	{
+		this.toggleNextSuggestion();
+		return false;
+	};
+
+	p.onUpKeyDown = function(e)
+	{
+		this.togglePreviousSuggestion();
+		return false;
+	};
+
+	p.onEnterKeyDown = function(e)
 	{
 		var self = this;
 
@@ -168,6 +190,34 @@
 			self.grabTagFromInput(self.getInput());
 
 		return false;
+	};
+
+	p.onEscapeKeyUp = function(e)
+	{
+		var self = this;
+
+		if(self.isDropdownVisible())
+			self.hideDropdown();
+
+		return false;
+	};
+
+	//--------------------------------------------------------------------------------
+	// Dropdown
+	
+	p.getAllSuggestions = function()
+	{
+		return this.getDropdownContainer().find('.suggestion');
+	};
+
+	p.getSelectedSuggestionOr = function(selector)
+	{
+		return this.getAllSuggestions().filter('.selected,' + selector).first();
+	};
+
+	p.isDropdownVisible = function()
+	{
+		return this.getDropdownContainer().is(':visible');
 	};
 
 	p.doDropdown = function()
@@ -179,15 +229,16 @@
 			;
 
 		if(!getSuggestions || val.length == 0)
-			return dropdown.hide();
+			return self.hideDropdown(dropdown);
 
 		getSuggestions(val, function(suggestions)
 		{
-			self.showDropdown(suggestions);
+			self.renderDropdown(suggestions);
+			self.showDropdown(dropdown);
 		});
 	};
 
-	p.showDropdown = function(suggestions)
+	p.renderDropdown = function(suggestions)
 	{
 		var self = this;
 
@@ -197,6 +248,18 @@
 		{
 			self.addSuggestion(item);
 		});
+	};
+
+	p.showDropdown = function(dropdown)
+	{
+		dropdown = dropdown || this.getDropdownContainer();
+		dropdown.show();
+	};
+
+	p.hideDropdown = function(dropdown)
+	{
+		dropdown = dropdown || this.getDropdownContainer();
+		dropdown.hide();
 	};
 
 	p.addSuggestion = function(suggestion)
@@ -216,9 +279,32 @@
 
 		node.find('.label').text(self.tagToString(suggestion));
 		node.data('suggestion', suggestion);
-		console.log(node);
 		return node;
 	};
+
+	p.toggleNextSuggestion = function()
+	{
+		var self = this,
+			selected = self.getSelectedSuggestionOr(':first')
+			;
+		// console.log(this.getAllSuggestions().filter('.selected);
+
+		selected.next().addClass('selected');
+		selected.removeClass('selected');
+	};
+
+	p.togglePreviousSuggestion = function()
+	{
+		var self = this,
+			selected = self.getSelectedSuggestionOr(':last')
+			;
+
+		selected.prev().addClass('selected');
+		selected.removeClass('selected');
+	};
+
+	//--------------------------------------------------------------------------------
+	// Tags
 
 	p.stringToTag = function(str)
 	{
@@ -260,7 +346,7 @@
 			;
 
 		tagsContainer.append(self.renderTag(tag));
-		self.updateBox();
+		self.invalidateInputBox();
 	};
 
 	p.getTagElement = function(tag)
@@ -296,7 +382,7 @@
 		}
 
 		element.remove();
-		self.updateBox();
+		self.invalidateInputBox();
 	};
 
 	p.renderTag = function(tag)
@@ -310,6 +396,9 @@
 		return node;
 	};
 
+	//--------------------------------------------------------------------------------
+	// jQuery Integration
+	
 	$.fn.autosuggest = function(opts)
 	{
 		return this.each(function()

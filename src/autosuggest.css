@@ -5,6 +5,32 @@
 .autosuggest .wrap {
   position: absolute;
 }
+.autosuggest .wrap .dropdown {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  position: absolute;
+  z-index: 3;
+  background: #fff;
+  border: 1px solid #9daccc;
+  width: 100%;
+  top: 100%;
+  max-height: 100px;
+  padding: 1px;
+  font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
+  display: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.autosuggest .wrap .dropdown .list .suggestion {
+  padding: 3px 5px;
+  cursor: pointer;
+}
+.autosuggest .wrap .dropdown .list .suggestion.selected,
+.autosuggest .wrap .dropdown .list .suggestion:hover {
+  background: #6d84b4;
+}
 .autosuggest .wrap .tags {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -35,6 +61,7 @@
   margin: 0 2px 2px 0;
   cursor: pointer;
   height: 16px;
+  font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
 .autosuggest .wrap .tags .tag button a {
   position: absolute;
@@ -55,7 +82,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  border: 1px solid #6d84b4;
+  border: 1px solid #9daccc;
   position: absolute;
   z-index: 1;
   background: none;
@@ -64,4 +91,5 @@
   padding: 3px 5px 4px 5px;
   resize: none;
   white-space: nowrap;
+  font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
