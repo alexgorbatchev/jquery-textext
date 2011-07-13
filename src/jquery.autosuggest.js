@@ -10,7 +10,7 @@
 			html : {
 				wrap : '<div class="autosuggest"><div class="wrap"/></div>',
 				tags : '<div class="tags"/>',
-				tag : '<div class="tag"><button><span class="label"/><a/></button></div>'
+				tag : '<div class="tag"><button><span class="label"/><a class="remove"/></button></div>'
 			},
 			keys : {
 				8   : 'Backspace',
@@ -41,7 +41,7 @@
 			.keydown(function(e) { return self.onKeyDown(e); })
 			;
 
-		self.getTagsContainer().click(function() { input[0].focus(); });
+		self.getWrapContainer().click(function(e) { return self.onClick(e); });
 
 		self.inputPaddingLeft = parseInt(input.css('paddingLeft') || 0);
 		self.inputPaddingTop = parseInt(input.css('paddingTop') || 0);
@@ -60,29 +60,62 @@
 		return this.getInput().next();
 	};
 
+	p.getWrapContainer = function()
+	{
+		return this.getInput().parent();
+	};
+
 	p.updateBox = function()
 	{
 		var self      = this,
 			input     = self.getInput(),
-			wrap      = input.parent(),
+			wrap      = self.getWrapContainer(),
 			container = wrap.parent(),
 			width     = self.inputWidth,
-			lastTag   = self.getTagElements().last(),
+			lastTag   = self.getAllTagElements().last(),
 			pos       = lastTag.position(),
 			height
 			;
 		
 		if(lastTag.length > 0)
-			input.css({
-				paddingLeft : pos.left + lastTag.innerWidth(),
-				paddingTop  : pos.top
-			});
+			pos.left += lastTag.innerWidth();
+		else
+			pos = { left : self.inputPaddingLeft, top : self.inputPaddingTop };
+
+		input.css({
+			paddingLeft : pos.left,
+			paddingTop  : pos.top
+		});
 
 		height = input.outerHeight()
 
 		input.width(width);
 		wrap.width(width).height(height);
 		container.height(height);
+	};
+
+	p.focusInput = function()
+	{
+		this.getInput()[0].focus();
+	};
+
+	p.onClick = function(e)
+	{
+		var self   = this,
+			source = $(e.srcElement)
+			;
+
+		function tag()
+		{
+			return source.parents('.tag:first');
+		};
+
+		if(source.is('.tags'))
+			self.focusInput();
+		else if(source.is('.remove'))
+			self.removeTag(tag());
+
+		return true;
 	};
 
 	p.onKeyDown = function(e)
@@ -113,7 +146,7 @@
 		var self = this;
 
 		if(self.opts.tagsEnabled)
-			self.grabTagFromInput(self.$input);
+			self.grabTagFromInput(self.getInput());
 
 		return false;
 	};
@@ -126,6 +159,11 @@
 	p.tagToString = function(tag)
 	{
 		return tag;
+	};
+
+	p.areTagsEqual = function(tag1, tag2)
+	{
+		return tag1 == tag2;
 	};
 
 	p.grabTagFromInput = function(input)
@@ -141,7 +179,7 @@
 		input.val('');
 	};
 
-	p.getTagElements = function()
+	p.getAllTagElements = function()
 	{
 		return this.getTagsContainer().find('.tag');
 	};
@@ -151,7 +189,39 @@
 		var self          = this,
 			tagsContainer = self.getTagsContainer()
 			;
+
 		tagsContainer.append(self.renderTag(tag));
+		self.updateBox();
+	};
+
+	p.getTagElement = function(tag)
+	{
+		var self = this,
+			list = self.getAllTagElements(),
+			i, item
+			;
+
+		for(i = 0; i < list.length; i++)
+		{
+			item = $(list[i]);
+			
+			if(self.areTagsEqual(item.data('tag'), tag))
+				return item;
+		}
+	};
+
+	p.removeTag = function(tag)
+	{
+		var self = this,
+			element
+			;
+
+		if(tag instanceof $)
+			tag = tag.data('tag');
+		else
+			element = self.getTagElement(tag);
+
+		element.remove();
 		self.updateBox();
 	};
 
@@ -161,6 +231,7 @@
 			node = $(self.opts.html.tag)
 			;
 		node.find('.label').text(self.tagToString(tag));
+		node.data('tag', tag);
 		return node;
 	};
 

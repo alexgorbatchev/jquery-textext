@@ -63,4 +63,5 @@
   margin: 0;
   padding: 3px 5px 4px 5px;
   resize: none;
+  white-space: nowrap;
 }
