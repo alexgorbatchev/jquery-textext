@@ -17,22 +17,43 @@
 			$('textarea').autosuggest({
 				getSuggestions : function(val, callback)
 				{
-					callback([
-						'Roslyn Mankey',
-						'Hugh Masiello',
-						'Christian Allis',
-						'Julio Pals',
-						'Lance Lippard',
-						'Max Quintal',
-						'Benita Kehrer',
-						'Mathew Sizer',
-						'Lilia Wotring',
-						'Cody Borror'
-					]);
+					var list = [
+							'JavaScript',
+							'Java',
+							'PHP',
+							'Ruby',
+							'Python',
+							'Closure',
+							'Delphi',
+							'Perl',
+							'OCAML',
+							'Erlang',
+							'Scala',
+							'Haskel',
+							'Groovy',
+							'Fortran',
+							'Basic',
+							'Cobol',
+							'Go'
+						],
+						result = []
+					;
+
+					list.sort();
+					val = val.toLowerCase();
+
+					if(val == '')
+						return callback(list);
+
+					for(var i = 0; i < list.length; i++)
+						if(list[i].toLowerCase().indexOf(val) == 0)
+							result.push(list[i]);
+
+					callback(result.length == 0 ? null : result);
 				},
 
 				ex : {
-					tagToString: function(tag) { return '-' + tag + '-'; }
+					//tagToString: function(tag) { return '-' + tag + '-'; }
 				}
 			});
 		</script>

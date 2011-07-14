@@ -15,7 +15,7 @@
 			html : {
 				wrap       : '<div class="autosuggest"><div class="wrap"/></div>',
 				tags       : '<div class="tags"/>',
-				tag        : '<div class="tag"><button><span class="label"/><a class="remove"/></button></div>',
+				tag        : '<div class="tag"><div class="button"><span class="label"/><a class="remove"/></div></div>',
 				dropdown   : '<div class="dropdown"><div class="list"/></div>',
 				suggestion : '<div class="suggestion"><span class="label"/></div>'
 			},
@@ -132,7 +132,7 @@
 	p.onClick = function(e)
 	{
 		var self   = this,
-			source = $(e.srcElement)
+			source = $(e.target)
 			;
 
 		function tag() { return source.parents('.tag:first') };
