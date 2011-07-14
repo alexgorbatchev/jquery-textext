@@ -195,14 +195,17 @@
 	{
 		var self = this;
 
-		if(self.opts.tagsEnabled)
-		{
-			self.isDropdownVisible()
-				? self.addTagFromDropdown()
-				: self.addTagFromInput()
-				;
-		}
+		if(self.isDropdownVisible())
+			self.selectFromDropdown();
 
+		if(self.opts.tagsEnabled)
+			self.addTagFromInput()
+
+		return false;
+	};
+
+	p.onEnterKeyUp = function(e)
+	{
 		return false;
 	};
 
@@ -243,6 +246,8 @@
 			if(self.compareTags(item.data('suggestion'), suggestion))
 				return item.addClass('selected');
 		}
+
+		all.first().addClass('selected');
 	};
 
 	p.getSelectedSuggestion = function()
@@ -269,6 +274,11 @@
 
 		if(getSuggestions == null)
 			return self.hideDropdown(dropdown);
+
+		// if user clears input, then we want to select first suggestion
+		// instead of the last one
+		if(val == '')
+			current = null;
 
 		self.previousInputValue = val;
 
@@ -313,7 +323,7 @@
 
 	p.addSuggestion = function(suggestion)
 	{
-		var self = this,
+		var self      = this,
 			container = self.getDropdownContainer().find('.list')
 			;
 
@@ -391,6 +401,17 @@
 			dropdown.scrollTop(scrollTo);
 	};
 
+	p.selectFromDropdown = function()
+	{
+		var self       = this,
+			suggestion = self.getSelectedSuggestion().first().data('suggestion')
+			;
+
+		if(suggestion)
+			self.getInput().val(self.tagToString(suggestion));
+
+		self.hideDropdown();
+	};
 	//--------------------------------------------------------------------------------
 	// Tags
 
@@ -407,19 +428,6 @@
 	p.compareTags = function(tag1, tag2)
 	{
 		return tag1 == tag2;
-	};
-
-	p.addTagFromDropdown = function()
-	{
-		var self       = this,
-			suggestion = self.getSelectedSuggestion().first().data('suggestion')
-			;
-
-		if(suggestion)
-			self.addTag(suggestion);
-
-		self.getInput().val('');
-		self.hideDropdown();
 	};
 
 	p.addTagFromInput = function(input)
