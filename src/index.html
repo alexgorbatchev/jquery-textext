@@ -3,18 +3,20 @@
 	<head>		
 		<title>Demo - Elastic</title>
 		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-		<link rel="stylesheet" href="autosuggest.css" type="text/css" />
 	</head>
 	<body>
-	
 		<p>hello</p>
 		<textarea rows="1" style="width: 300px"></textarea>
 		<p>hello</p>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="jquery.autosuggest.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery-1.6.1.js" type="text/javascript" charset="utf-8"></script>
+
+		<link rel="stylesheet" href="css/textex.core.css" type="text/css" />
+		<script src="jquery.textex.core.js" type="text/javascript" charset="utf-8"></script>
+		
 		<script type="text/javascript">
-			$('textarea').autosuggest({
+			$('textarea').textex({
 				getSuggestions : function(val, callback)
 				{
 					var list = [

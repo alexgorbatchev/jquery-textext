@@ -1,10 +1,10 @@
 (function($)
 {
-	function AutoSuggest()
+	function TextEx()
 	{
 	};
 
-	var p = AutoSuggest.prototype,
+	var p = TextEx.prototype,
 		DEFAULT_OPTS = {
 			tagsEnabled     : true,
 			dropdownEnabled : true,
@@ -13,7 +13,7 @@
 			ex : {},
 
 			html : {
-				wrap       : '<div class="autosuggest"><div class="wrap"/></div>',
+				wrap       : '<div class="textex"><div class="wrap"/></div>',
 				tags       : '<div class="tags"/>',
 				tag        : '<div class="tag"><div class="button"><span class="label"/><a class="remove"/></div></div>',
 				dropdown   : '<div class="dropdown"><div class="list"/></div>',
@@ -509,13 +509,13 @@
 	//--------------------------------------------------------------------------------
 	// jQuery Integration
 	
-	$.fn.autosuggest = function(opts)
+	$.fn.textex = function(opts)
 	{
 		return this.each(function()
 		{
-			 new AutoSuggest().init(this, opts);
+			 new TextEx().init(this, opts);
 		});
 	};
 
-	$.fn.autosuggest.prototype = p;
+	$.fn.textex.prototype = p;
 })(jQuery);

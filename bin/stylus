@@ -1,3 +1,3 @@
 #!/bin/bash
-../node_modules/.bin/stylus --watch --include ../src ../src/autosuggest.styl
+../node_modules/.bin/stylus --watch --include ../src ../src/css/*.styl
 
