@@ -187,7 +187,12 @@
 		var self = this;
 
 		if(self.opts.tagsEnabled)
-			self.grabTagFromInput(self.getInput());
+		{
+			self.isDropdownVisible()
+				? self.addTagFromDropdown()
+				: self.addTagFromInput()
+				;
+		}
 
 		return false;
 	};
@@ -210,9 +215,9 @@
 		return this.getDropdownContainer().find('.suggestion');
 	};
 
-	p.getSelectedSuggestionOr = function(selector)
+	p.getSelectedSuggestions = function()
 	{
-		return this.getAllSuggestions().filter('.selected,' + selector).first();
+		return this.getAllSuggestions().filter('.selected');
 	};
 
 	p.isDropdownVisible = function()
@@ -227,6 +232,11 @@
 			dropdown       = self.getDropdownContainer(),
 			getSuggestions = self.opts.getSuggestions
 			;
+
+		if(self.lastVal == val)
+			return;
+
+		self.lastVal = val;
 
 		if(!getSuggestions || val.length == 0)
 			return self.hideDropdown(dropdown);
@@ -248,6 +258,8 @@
 		{
 			self.addSuggestion(item);
 		});
+
+		self.toggleNextSuggestion();
 	};
 
 	p.showDropdown = function(dropdown)
@@ -284,23 +296,62 @@
 
 	p.toggleNextSuggestion = function()
 	{
-		var self = this,
-			selected = self.getSelectedSuggestionOr(':first')
+		var self     = this,
+			selected = self.getSelectedSuggestions(),
+			next
 			;
-		// console.log(this.getAllSuggestions().filter('.selected);
 
-		selected.next().addClass('selected');
-		selected.removeClass('selected');
+		if(selected.length > 0)
+		{
+			next = selected.next();
+
+			if(next.length > 0)
+				selected.removeClass('selected');
+		}
+		else
+		{
+			next = self.getAllSuggestions().first();
+		}
+
+		next.addClass('selected');
+		self.scrollSuggestionIntoView(next);
 	};
 
 	p.togglePreviousSuggestion = function()
 	{
-		var self = this,
-			selected = self.getSelectedSuggestionOr(':last')
+		var self     = this,
+			selected = self.getSelectedSuggestions(),
+			prev     = selected.prev()
 			;
 
-		selected.prev().addClass('selected');
+		if(prev.length == 0)
+			return;
+
 		selected.removeClass('selected');
+		prev.addClass('selected');
+		self.scrollSuggestionIntoView(prev);
+	};
+
+	p.scrollSuggestionIntoView = function(item)
+	{
+		var y         = (item.position() || {}).top,
+			height    = item.outerHeight(),
+			dropdown  = this.getDropdownContainer(),
+			scrollPos = dropdown.scrollTop(),
+			scrollTo  = null
+			;
+
+		if(y == null)
+			return;
+
+		if(y + height > dropdown.innerHeight())
+			scrollTo = scrollPos + height;
+
+		if(y < 0)
+			scrollTo = scrollPos + y;
+
+		if(scrollTo != null)
+			dropdown.scrollTop(scrollTo);
 	};
 
 	//--------------------------------------------------------------------------------
@@ -321,10 +372,24 @@
 		return tag1 == tag2;
 	};
 
-	p.grabTagFromInput = function(input)
+	p.addTagFromDropdown = function()
 	{
 		var self = this,
-			val  = input.val()
+			suggestion = self.getSelectedSuggestions().first().data('suggestion')
+			;
+
+		if(suggestion)
+			self.addTag(suggestion);
+
+		self.getInput().val('');
+		self.hideDropdown();
+	};
+
+	p.addTagFromInput = function(input)
+	{
+		var self  = this,
+			input = self.getInput(),
+			val   = input.val()
 			;
 
 		if(val.length == 0)
