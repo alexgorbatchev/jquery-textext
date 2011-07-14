@@ -47,6 +47,7 @@
 			.wrap(opts.html.wrap)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
+			.blur(function(e) { return self.onBlur(e) })
 			;
 
 		if(opts.tagsEnabled) input.after(opts.html.tags);
@@ -120,6 +121,14 @@
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
 	
+	p.onBlur = function(e)
+	{
+		var self = this;
+
+		if(self.isDropdownVisible())
+			self.hideDropdown();
+	};
+
 	p.onClick = function(e)
 	{
 		var self   = this,
@@ -215,9 +224,30 @@
 		return this.getDropdownContainer().find('.suggestion');
 	};
 
-	p.getSelectedSuggestions = function()
+	p.setSelectedSuggestion = function(suggestion)
 	{
-		return this.getAllSuggestions().filter('.selected');
+		if(!suggestion)
+			return;
+
+		var self = this,
+			all  = self.getAllSuggestions(),
+			item, i
+			;
+
+		all.removeClass('selected');
+
+		for(i = 0; i < all.length; i++)
+		{
+			item = $(all[i]);
+
+			if(self.compareTags(item.data('suggestion'), suggestion))
+				return item.addClass('selected');
+		}
+	};
+
+	p.getSelectedSuggestion = function()
+	{
+		return this.getAllSuggestions().filter('.selected').first();
 	};
 
 	p.isDropdownVisible = function()
@@ -230,21 +260,26 @@
 		var self           = this,
 			val            = self.getInput().val(),
 			dropdown       = self.getDropdownContainer(),
+			current        = self.getSelectedSuggestion().data('suggestion'),
 			getSuggestions = self.opts.getSuggestions
 			;
 
-		if(self.lastVal == val)
+		if(self.previousInputValue == val)
 			return;
 
-		self.lastVal = val;
-
-		if(!getSuggestions || val.length == 0)
+		if(getSuggestions == null)
 			return self.hideDropdown(dropdown);
+
+		self.previousInputValue = val;
 
 		getSuggestions(val, function(suggestions)
 		{
+			if(suggestions == null)
+				return self.hideDropdown(dropdown);
+
 			self.renderDropdown(suggestions);
 			self.showDropdown(dropdown);
+			self.setSelectedSuggestion(current);
 		});
 	};
 
@@ -270,7 +305,9 @@
 
 	p.hideDropdown = function(dropdown)
 	{
-		dropdown = dropdown || this.getDropdownContainer();
+		var self = this;
+		self.previousInputValue = null;
+		dropdown = dropdown || self.getDropdownContainer();
 		dropdown.hide();
 	};
 
@@ -297,7 +334,7 @@
 	p.toggleNextSuggestion = function()
 	{
 		var self     = this,
-			selected = self.getSelectedSuggestions(),
+			selected = self.getSelectedSuggestion(),
 			next
 			;
 
@@ -320,7 +357,7 @@
 	p.togglePreviousSuggestion = function()
 	{
 		var self     = this,
-			selected = self.getSelectedSuggestions(),
+			selected = self.getSelectedSuggestion(),
 			prev     = selected.prev()
 			;
 
@@ -374,8 +411,8 @@
 
 	p.addTagFromDropdown = function()
 	{
-		var self = this,
-			suggestion = self.getSelectedSuggestions().first().data('suggestion')
+		var self       = this,
+			suggestion = self.getSelectedSuggestion().first().data('suggestion')
 			;
 
 		if(suggestion)

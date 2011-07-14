@@ -29,6 +29,7 @@
 }
 .autosuggest .wrap .dropdown .list .suggestion.selected,
 .autosuggest .wrap .dropdown .list .suggestion:hover {
+  color: #fff;
   background: #6d84b4;
 }
 .autosuggest .wrap .tags {
