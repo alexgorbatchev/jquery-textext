@@ -13,10 +13,14 @@
 		<script src="jquery-1.6.1.js" type="text/javascript" charset="utf-8"></script>
 
 		<link rel="stylesheet" href="css/textex.core.css" type="text/css" />
-		<script src="jquery.textex.core.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/textex.plugin.tags.css" type="text/css" />
+		<script src="textex.core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="textex.plugin.tags.js" type="text/javascript" charset="utf-8"></script>
 		
 		<script type="text/javascript">
 			$('textarea').textex({
+				plugins : ['tags'],
+
 				getSuggestions : function(val, callback)
 				{
 					var list = [
