@@ -50,12 +50,7 @@
 		self.getWrapContainer().click(function(e) { return self.onClick(e) });
 
 		self.originalWidth = input.outerWidth();
-		self.originalPadding = { 
-			left : parseInt(input.css('paddingLeft') || 0),
-			top  : parseInt(input.css('paddingTop') || 0)
-		};
-
-		self.invalidateInputBox();
+		self.invalidateBounds();
 	};
 
 	p.initPlugins = function(plugins)
@@ -97,7 +92,7 @@
 		return this.getInput().parent();
 	};
 
-	p.invalidateInputBox = function()
+	p.invalidateBounds = function()
 	{
 		var self      = this,
 			input     = self.getInput(),

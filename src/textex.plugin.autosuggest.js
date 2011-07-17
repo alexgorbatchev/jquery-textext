@@ -24,8 +24,8 @@
 		this.baseInit(parent, DEFAULT_OPTS);
 
 		var self  = this,
-			input = parent.getInput(),
-			opts  = parent.getOpts(self)
+			input = self.getInput(),
+			opts  = self.getOpts()
 			;
 
 		if(opts.dropdownEnabled)

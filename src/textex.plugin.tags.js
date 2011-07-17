@@ -23,8 +23,8 @@
 		this.baseInit(parent, DEFAULT_OPTS);
 
 		var self  = this,
-			input = parent.getInput(),
-			opts  = parent.getOpts(self)
+			input = self.getInput(),
+			opts  = self.getOpts()
 			;
 
 		if(opts.tagsEnabled)
@@ -37,6 +37,11 @@
 				invalidate   :  self.onInvalidate
 			});
 		}
+
+		self.originalPadding = { 
+			left : parseInt(input.css('paddingLeft') || 0),
+			top  : parseInt(input.css('paddingTop') || 0)
+		};
 
 		$.extend(parent, {
 			compareTags : self.compareTags,
@@ -57,17 +62,15 @@
 	{
 		var self    = this,
 			lastTag = self.getAllTagElements().last(),
-			parent  = self.getParent(),
-			input   = parent.getInput(),
 			pos     = lastTag.position()
 			;
 		
 		if(lastTag.length > 0)
 			pos.left += lastTag.innerWidth();
 		else
-			pos = parent.originalPadding;
+			pos = self.originalPadding;
 
-		input.css({
+		self.getInput().css({
 			paddingLeft : pos.left,
 			paddingTop  : pos.top
 		});
@@ -132,12 +135,12 @@
 
 	p.addTag = function(tag)
 	{
-		var self          = this,
-			tagsContainer = self.getContainer()
+		var self      = this,
+			container = self.getContainer()
 			;
 
-		tagsContainer.append(self.renderTag(tag));
-		self.getParent().invalidateInputBox();
+		container.append(self.renderTag(tag));
+		self.getParent().invalidateBounds();
 	};
 
 	p.getTagElement = function(tag)
