@@ -13,7 +13,7 @@
   position: absolute;
   z-index: 3;
   background: #fff;
-  border: 1px solid #9daccc;
+  border: #9daccc;
   width: 100%;
   top: 102%;
   max-height: 99px;
@@ -87,7 +87,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  border: 1px solid #9daccc;
+  border: #9daccc;
   position: absolute;
   z-index: 1;
   background: none;
@@ -140,6 +140,12 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-transition: 0.2s ease-in-out;
+  -moz-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
   border: 1px solid #9daccc;
   position: absolute;
   z-index: 1;
@@ -150,4 +156,11 @@
   resize: none;
   white-space: nowrap;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
+  outline: none;
+}
+.textex .wrap textarea:focus {
+  border: 1px solid #9daccc;
+  -webkit-box-shadow: 0px 0px 6px #6d84b4;
+  -moz-box-shadow: 0px 0px 6px #6d84b4;
+  box-shadow: 0px 0px 6px #6d84b4;
 }
