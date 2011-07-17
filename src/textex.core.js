@@ -16,12 +16,12 @@
 			keys : {
 				8   : 'Backspace',
 				9   : 'Tab',
-				13  : 'Enter',
-				27  : 'Escape',
+				13  : 'Enter!',
+				27  : 'Escape!',
 				37  : 'Left',
-				38  : 'Up',
+				38  : 'Up!',
 				39  : 'Right',
-				40  : 'Down',
+				40  : 'Down!',
 				46  : 'Delete',
 				108 : 'NumpadEnter',
 				188 : 'Comma'
@@ -126,8 +126,7 @@
 	
 	p.onBlur = function(e)
 	{
-		var self = this;
-		self.trigger('blur');
+		this.trigger('blur');
 	};
 
 	p.onClick = function(e)
@@ -147,71 +146,79 @@
 
 		p['onKey' + type] = function(e)
 		{
-			var self    = this,
-				handler = self['on' + self.getOpts().keys[e.keyCode] + 'Key' + type],
+			var self          = this,
+				keyName       = self.getOpts().keys[e.keyCode] || 'Other',
+				defaultResult = keyName.indexOf('!') != keyName.length - 1,
+				eventName     = keyName.replace('!', '') + 'Key' + type,
+				handler       = self['on' + eventName],
 				result
 				;
+
+			self.trigger(eventName.charAt(0).toLowerCase() + eventName.substring(1));
 
 			if($.isFunction(handler))
 			{
 				result = handler.call(self, e);
-				return typeof(result) == 'undefined' ? true : result;
+				return typeof(result) == 'undefined' ? defaultResult : result;
 			}
-			else
-			{
-				return self['onOtherKey' + type](e);
-			}
+
+			return defaultResult;
 		};
 	});
 
-	p.onOtherKeyUp = function(e)
+	//--------------------------------------------------------------------------------
+	// Plugin Base
+	
+	function TextExPlugin()
 	{
-		this.trigger('otherKeyUp');
-		return true;
 	};
 
-	p.onOtherKeyDown = function(e)
+	p = TextExPlugin.prototype;
+
+	p.on = function(args)
 	{
-		this.trigger('otherKeyDown');
-		return true;
+		var self   = this,
+			parent = $(self.getParent()),
+			event
+			;
+
+		for(event in args)
+			(function(self, event, handler)
+			{
+
+				parent.bind(event, function()
+				{
+					return handler.apply(self, arguments);
+				});
+
+			})(self, event, args[event]);
 	};
 
-	p.onDownKeyDown = function(e)
+	p.baseInit = function(parent, opts)
 	{
-		this.trigger('downKeyDown');
-		return false;
+		parent.opts = $.extend(true, {}, opts, parent.opts);
+		p.parent = parent;
 	};
 
-	p.onUpKeyDown = function(e)
+	p.getParent = function()
 	{
-		this.trigger('upKeyDown');
-		return false;
+		return this.parent;
 	};
 
-	p.onEnterKeyDown = function(e)
+	p.getOpts = function()
 	{
-		var self = this;
-		this.trigger('enterKeyDown');
-		return false;
+		return this.getParent().getOpts();
 	};
 
-	p.onEnterKeyUp = function(e)
+	p.getInput = function()
 	{
-		this.trigger('enterKeyUp');
-		return false;
-	};
-
-	p.onEscapeKeyUp = function(e)
-	{
-		var self = this;
-		this.trigger('escapeKeyUp');
-		return false;
+		return this.getParent().getInput();
 	};
 
 	//--------------------------------------------------------------------------------
 	// jQuery Integration
 	
-	$.fn.textex = function(opts)
+	var textex = $.fn.textex = function(opts)
 	{
 		return this.each(function()
 		{
@@ -219,6 +226,13 @@
 		});
 	};
 
-	$.fn.textex.prototype = p;
-	$.fn.textex.plugins   = {};
+	textex.addPlugin = function(name, constructor)
+	{
+		textex.plugins[name]  = constructor;
+		constructor.prototype = new textex.TextExPlugin();
+	};
+
+	textex.TextEx       = TextEx;
+	textex.TextExPlugin = TextExPlugin;
+	textex.plugins      = {};
 })(jQuery);

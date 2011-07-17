@@ -4,6 +4,9 @@
 	{
 	};
 
+	$.fn.textex.TextExTags = TextExTags;
+	$.fn.textex.addPlugin('tags', TextExTags);
+
 	var p = TextExTags.prototype,
 		DEFAULT_OPTS = {
 			tagsEnabled : true,
@@ -17,24 +20,22 @@
 
 	p.init = function(parent)
 	{
-		parent.opts = $.extend(true, {}, DEFAULT_OPTS, parent.opts);
+		this.baseInit(parent, DEFAULT_OPTS);
 
 		var self  = this,
 			input = parent.getInput(),
 			opts  = parent.getOpts(self)
 			;
-		
-		self.parent = parent;
 
 		if(opts.tagsEnabled)
 		{
 			input.after(opts.html.tags);
 
-			$(parent)
-				.bind('click'        , function(e, source) { self.onClick(e, source) })
-				.bind('enterKeyDown' , function(e) { self.onEnterKeyDown(e) })
-				.bind('invalidate'   , function(e) { self.onInvalidate(e) })
-				;
+			self.on({
+				click        :  self.onClick,
+				enterKeyDown :  self.onEnterKeyDown,
+				invalidate   :  self.onInvalidate
+			});
 		}
 
 		$.extend(parent, {
@@ -44,21 +45,14 @@
 		});
 	};
 
-	p.getParent = function()
-	{
-		return this.parent;
-	};
-
-	p.getOpts = function()
-	{
-		return this.getParent().getOpts();
-	};
-
 	p.getContainer = function()
 	{
 		return this.getParent().getInput().siblings('.tags');
 	};
 
+	//--------------------------------------------------------------------------------
+	// Event handlers
+	
 	p.onInvalidate = function()
 	{
 		var self    = this,
@@ -79,9 +73,6 @@
 		});
 	};
 
-	//--------------------------------------------------------------------------------
-	// Event handlers
-	
 	p.onClick = function(e, source)
 	{
 		var self = this;
@@ -196,5 +187,4 @@
 		return node;
 	};
 
-	$.fn.textex.plugins['tags'] = TextExTags;
 })(jQuery);

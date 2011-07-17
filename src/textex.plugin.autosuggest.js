@@ -4,6 +4,9 @@
 	{
 	};
 
+	$.fn.textex.TextExAutosuggest = TextExAutosuggest;
+	$.fn.textex.addPlugin('autosuggest', TextExAutosuggest);
+
 	var p = TextExAutosuggest.prototype,
 		DEFAULT_OPTS = {
 			dropdownEnabled : true,
@@ -18,43 +21,26 @@
 
 	p.init = function(parent)
 	{
-		parent.opts = $.extend(true, {}, DEFAULT_OPTS, parent.opts);
+		this.baseInit(parent, DEFAULT_OPTS);
 
 		var self  = this,
 			input = parent.getInput(),
 			opts  = parent.getOpts(self)
 			;
-		
-		self.parent = parent;
 
 		if(opts.dropdownEnabled)
 		{
 			input.after(opts.html.dropdown);
 
-			$(parent)
-				.bind('blur'         , function(e) { self.onBlur(e) })
-				.bind('otherKeyUp'   , function(e) { self.onOtherKeyUp(e) })
-				.bind('downKeyDown'  , function(e) { self.onDownKeyDown(e) })
-				.bind('upKeyDown'    , function(e) { self.onUpKeyDown(e) })
-				.bind('enterKeyDown' , function(e) { self.onEnterKeyDown(e) })
-				.bind('escapeKeyUp'  , function(e) { self.onEscapeKeyUp(e) })
-				;
+			self.on({
+				blur         : self.onBlur,
+				otherKeyUp   : self.onOtherKeyUp,
+				downKeyDown  : self.onDownKeyDown,
+				upKeyDown    : self.onUpKeyDown,
+				enterKeyDown : self.onEnterKeyDown,
+				escapeKeyUp  : self.onEscapeKeyUp
+			});
 		}
-	};
-
-	p.getParent = function()
-	{
-		return this.parent;
-	};
-
-	p.getInput = function()
-	{
-		return this.getParent().getInput();
-	};
-
-	p.getOpts = function()
-	{
-		return this.getParent().getOpts();
 	};
 
 	p.getDropdownContainer = function()
@@ -297,6 +283,4 @@
 
 		self.hideDropdown();
 	};
-
-	$.fn.textex.plugins['autosuggest'] = TextExAutosuggest;
 })(jQuery);
