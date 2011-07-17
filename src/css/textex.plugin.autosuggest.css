@@ -1,0 +1,31 @@
+.textex .wrap .dropdown {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  position: absolute;
+  z-index: 3;
+  background: #fff;
+  border: 1px solid #9daccc;
+  width: 100%;
+  top: 102%;
+  max-height: 99px;
+  padding: 1px;
+  font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
+  display: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.textex .wrap .dropdown .list .suggestion {
+  padding: 3px 5px;
+  cursor: pointer;
+}
+.textex .wrap .dropdown .list .suggestion em {
+  font-style: normal;
+  text-decoration: underline;
+}
+.textex .wrap .dropdown .list .suggestion.selected,
+.textex .wrap .dropdown .list .suggestion:hover {
+  color: #fff;
+  background: #6d84b4;
+}

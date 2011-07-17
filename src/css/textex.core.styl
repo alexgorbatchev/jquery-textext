@@ -7,52 +7,22 @@
 	.{$prefix}wrap
 		position : absolute
 
-		.{$prefix}dropdown
-			border_box()
-			padding    : 0
-			position   : absolute
-			z-index    : 3
-			background : #fff
-			border     : 1px solid $border
-			width      : 100%
-			top        : 102%
-			max-height : 99px
-			padding    : 1px
-			font       : $font
-			display    : none
-			overflow-x : hidden
-			overflow-y : auto
-
-			.{$prefix}list
-				.{$prefix}suggestion
-					padding : 3px 5px
-					cursor  : pointer
-
-					em
-						font-style      : normal
-						text-decoration : underline
-
-					&.{$prefix}selected, &:hover
-						color      : #fff
-						background : $selected
-
 		textarea
 			border_box()
 			vendor('transition', 0.2s ease-in-out)
 			round_corners(0px)
 			border      : 1px solid $border
+			outline     : none
+			resize      : none
 			position    : absolute
 			z-index     : 1
 			background  : none
 			overflow    : hidden
 			margin      : 0
 			padding     : 3px 5px 4px 5px
-			resize      : none
 			white-space : nowrap
 			font        : $font
-			outline     : none
 
 			&:focus
-				border: 1px solid $border
 				vendor('box-shadow', 0px 0px 6px $selected)
 
