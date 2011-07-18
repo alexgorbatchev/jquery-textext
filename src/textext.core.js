@@ -7,7 +7,7 @@
 	var p = TextExt.prototype,
 		DEFAULT_OPTS = {
 			plugins : [],
-			ex : {},
+			ext : {},
 
 			html : {
 				wrap : '<div class="text-core"><div class="text-wrap"/></div>'
@@ -42,22 +42,25 @@
 			.blur(function(e) { return self.onBlur(e) })
 			;
 
-		self.initPlugins(opts.plugins);
-
-		// after the plugins, grab extensions from the user which will override everything
-		$.extend(true, self, opts.ex);
-
+		$.extend(true, self, opts.ext['*'], opts.ext['core']);
+		
 		self.getWrapContainer().click(function(e) { return self.onClick(e) });
 
 		self.originalWidth = input.outerWidth();
+
 		self.invalidateBounds();
+		self.initPlugins(opts.plugins);
 	};
 
 	p.initPlugins = function(plugins)
 	{
 		var self = this,
+			ext = self.getOpts().ext,
 			plugin
 			;
+
+		if(typeof(plugins) == 'string')
+			plugins = plugins.split(/\s*,\s*/g);
 
 		for(var i = 0; i < plugins.length; i++)
 		{
@@ -66,6 +69,7 @@
 			if(plugin)
 			{
 				plugin = new plugin();
+				$.extend(true, plugin, ext['*'], ext[plugins[i]]);
 				plugin.init(self);
 			}
 		}
@@ -215,9 +219,11 @@
 	
 	var textext = $.fn.textext = function(opts)
 	{
-		return this.each(function()
+		return this.map(function()
 		{
-			 new TextExt().init(this, opts);
+			 var instance = new TextExt();
+			 instance.init(this, opts);
+			 return instance;
 		});
 	};
 
