@@ -3,6 +3,7 @@
 	"version"       : "0.0.0",
 	"dependencies"  : {
 		"stylus"    : "x.x.x",
+		"soda"      : ">= 0.2.x",
 		"uglify-js" : "x.x.x"
 	}
 }

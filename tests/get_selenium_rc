@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curl -O "http://selenium.googlecode.com/files/selenium-server-standalone-2.0rc2.jar"
+
