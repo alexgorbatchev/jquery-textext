@@ -91,7 +91,22 @@
 	};
 
 	//--------------------------------------------------------------------------------
-	// Dropdown
+	// Core functionality
+
+	p.stringToItem = function(str)
+	{
+		return str;
+	};
+
+	p.itemToString = function(tag)
+	{
+		return tag;
+	};
+
+	p.compareItems = function(tag1, tag2)
+	{
+		return tag1 == tag2;
+	};
 	
 	p.getAllSuggestions = function()
 	{
@@ -114,7 +129,7 @@
 		{
 			item = $(all[i]);
 
-			if(self.getParent().compareTags(item.data('text-suggestion'), suggestion))
+			if(self.compareItems(item.data('text-suggestion'), suggestion))
 				return item.addClass('text-selected');
 		}
 
@@ -207,7 +222,7 @@
 			node = $(self.getOpts().html.suggestion)
 			;
 
-		node.find('.text-label').text(self.getParent().tagToString(suggestion));
+		node.find('.text-label').text(self.itemToString(suggestion));
 		node.data('text-suggestion', suggestion);
 		return node;
 	};
@@ -279,8 +294,9 @@
 			;
 
 		if(suggestion)
-			self.getInput().val(self.getParent().tagToString(suggestion));
+			self.getInput().val(self.itemToString(suggestion));
 
 		self.hideDropdown();
 	};
+
 })(jQuery);

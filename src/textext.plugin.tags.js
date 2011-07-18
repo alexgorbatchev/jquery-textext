@@ -42,12 +42,6 @@
 			left : parseInt(input.css('paddingLeft') || 0),
 			top  : parseInt(input.css('paddingTop') || 0)
 		};
-
-		$.extend(parent, {
-			compareTags : self.compareTags,
-			tagToString : self.tagToString,
-			stringToTag : self.stringToTag
-		});
 	};
 
 	p.getContainer = function()
@@ -99,17 +93,17 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.stringToTag = function(str)
+	p.stringToItem = function(str)
 	{
 		return str;
 	};
 
-	p.tagToString = function(tag)
+	p.itemToString = function(tag)
 	{
 		return tag;
 	};
 
-	p.compareTags = function(tag1, tag2)
+	p.compareItems = function(tag1, tag2)
 	{
 		return tag1 == tag2;
 	};
@@ -124,7 +118,7 @@
 		if(val.length == 0)
 			return;
 
-		self.addTag(self.stringToTag(val));
+		self.addTag(self.stringToItem(val));
 		input.val('');
 	};
 
@@ -154,7 +148,7 @@
 		{
 			item = $(list[i]);
 			
-			if(self.compareTags(item.data('text-tag'), tag))
+			if(self.compareItems(item.data('text-tag'), tag))
 				return item;
 		}
 	};
@@ -185,7 +179,7 @@
 			node = $(self.getOpts().html.tag)
 			;
 
-		node.find('.text-label').text(self.tagToString(tag));
+		node.find('.text-label').text(self.itemToString(tag));
 		node.data('text-tag', tag);
 		return node;
 	};
