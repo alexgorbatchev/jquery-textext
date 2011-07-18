@@ -1,4 +1,4 @@
-.textex .wrap .dropdown {
+.text-core .text-wrap .text-dropdown {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -16,16 +16,16 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-.textex .wrap .dropdown .list .suggestion {
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion {
   padding: 3px 5px;
   cursor: pointer;
 }
-.textex .wrap .dropdown .list .suggestion em {
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion em {
   font-style: normal;
   text-decoration: underline;
 }
-.textex .wrap .dropdown .list .suggestion.selected,
-.textex .wrap .dropdown .list .suggestion:hover {
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion.text-selected,
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion:hover {
   color: #fff;
   background: #6d84b4;
 }

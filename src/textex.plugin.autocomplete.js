@@ -13,8 +13,8 @@
 			getSuggestions  : null,
 
 			html : {
-				dropdown   : '<div class="dropdown"><div class="list"/></div>',
-				suggestion : '<div class="suggestion"><span class="label"/></div>'
+				dropdown   : '<div class="text-dropdown"><div class="text-list"/></div>',
+				suggestion : '<div class="text-suggestion"><span class="text-label"/></div>'
 			}
 		}
 		;
@@ -45,7 +45,7 @@
 
 	p.getDropdownContainer = function()
 	{
-		return this.getInput().siblings('.dropdown');
+		return this.getInput().siblings('.text-dropdown');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -95,7 +95,7 @@
 	
 	p.getAllSuggestions = function()
 	{
-		return this.getDropdownContainer().find('.suggestion');
+		return this.getDropdownContainer().find('.text-suggestion');
 	};
 
 	p.setSelectedSuggestion = function(suggestion)
@@ -114,16 +114,16 @@
 		{
 			item = $(all[i]);
 
-			if(self.getParent().compareTags(item.data('suggestion'), suggestion))
-				return item.addClass('selected');
+			if(self.getParent().compareTags(item.data('text-suggestion'), suggestion))
+				return item.addClass('text-selected');
 		}
 
-		all.first().addClass('selected');
+		all.first().addClass('text-selected');
 	};
 
 	p.getSelectedSuggestion = function()
 	{
-		return this.getAllSuggestions().filter('.selected').first();
+		return this.getAllSuggestions().filter('.text-selected').first();
 	};
 
 	p.isDropdownVisible = function()
@@ -136,7 +136,7 @@
 		var self           = this,
 			val            = self.getInput().val(),
 			dropdown       = self.getDropdownContainer(),
-			current        = self.getSelectedSuggestion().data('suggestion'),
+			current        = self.getSelectedSuggestion().data('text-suggestion'),
 			getSuggestions = self.getOpts().getSuggestions
 			;
 
@@ -168,7 +168,7 @@
 	{
 		var self = this;
 
-		self.getDropdownContainer().find('.list').children().remove();
+		self.getDropdownContainer().find('.text-list').children().remove();
 
 		$.each(suggestions, function(index, item)
 		{
@@ -195,7 +195,7 @@
 	p.addSuggestion = function(suggestion)
 	{
 		var self      = this,
-			container = self.getDropdownContainer().find('.list')
+			container = self.getDropdownContainer().find('.text-list')
 			;
 
 		container.append(self.renderSuggestion(suggestion));
@@ -207,8 +207,8 @@
 			node = $(self.getOpts().html.suggestion)
 			;
 
-		node.find('.label').text(self.getParent().tagToString(suggestion));
-		node.data('suggestion', suggestion);
+		node.find('.text-label').text(self.getParent().tagToString(suggestion));
+		node.data('text-suggestion', suggestion);
 		return node;
 	};
 
@@ -224,14 +224,14 @@
 			next = selected.next();
 
 			if(next.length > 0)
-				selected.removeClass('selected');
+				selected.removeClass('text-selected');
 		}
 		else
 		{
 			next = self.getAllSuggestions().first();
 		}
 
-		next.addClass('selected');
+		next.addClass('text-selected');
 		self.scrollSuggestionIntoView(next);
 	};
 
@@ -245,8 +245,8 @@
 		if(prev.length == 0)
 			return;
 
-		selected.removeClass('selected');
-		prev.addClass('selected');
+		selected.removeClass('text-selected');
+		prev.addClass('text-selected');
 		self.scrollSuggestionIntoView(prev);
 	};
 
@@ -275,7 +275,7 @@
 	p.selectFromDropdown = function()
 	{
 		var self       = this,
-			suggestion = self.getSelectedSuggestion().first().data('suggestion')
+			suggestion = self.getSelectedSuggestion().first().data('text-suggestion')
 			;
 
 		if(suggestion)

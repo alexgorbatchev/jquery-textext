@@ -1,11 +1,11 @@
-.textex {
+.text-core {
   position: relative;
   background: #fff;
 }
-.textex .wrap {
+.text-core .text-wrap {
   position: absolute;
 }
-.textex .wrap textarea {
+.text-core .text-wrap textarea {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -27,7 +27,7 @@
   white-space: nowrap;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
-.textex .wrap textarea:focus {
+.text-core .text-wrap textarea:focus {
   -webkit-box-shadow: 0px 0px 6px #6d84b4;
   -moz-box-shadow: 0px 0px 6px #6d84b4;
   box-shadow: 0px 0px 6px #6d84b4;

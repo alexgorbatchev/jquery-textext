@@ -1,33 +1,31 @@
 @import '_common'
 
-.{$prefix}textex
-	.{$prefix}wrap
-		.{$prefix}dropdown
-			border_box()
-			padding    : 0
-			position   : absolute
-			z-index    : 3
-			background : #fff
-			border     : 1px solid $border
-			width      : 100%
-			top        : 102%
-			max-height : 99px
-			padding    : 1px
-			font       : $font
-			display    : none
-			overflow-x : hidden
-			overflow-y : auto
+.{$prefix}core .{$prefix}wrap .{$prefix}dropdown
+	border_box()
+	padding    : 0
+	position   : absolute
+	z-index    : 3
+	background : #fff
+	border     : 1px solid $border
+	width      : 100%
+	top        : 102%
+	max-height : 99px
+	padding    : 1px
+	font       : $font
+	display    : none
+	overflow-x : hidden
+	overflow-y : auto
 
-			.{$prefix}list
-				.{$prefix}suggestion
-					padding : 3px 5px
-					cursor  : pointer
+	.{$prefix}list
+		.{$prefix}suggestion
+			padding : 3px 5px
+			cursor  : pointer
 
-					em
-						font-style      : normal
-						text-decoration : underline
+			em
+				font-style      : normal
+				text-decoration : underline
 
-					&.{$prefix}selected, &:hover
-						color      : #fff
-						background : $selected
+			&.{$prefix}selected, &:hover
+				color      : #fff
+				background : $selected
 

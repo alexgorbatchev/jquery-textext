@@ -12,8 +12,8 @@
 			tagsEnabled : true,
 
 			html : {
-				tags : '<div class="tags"/>',
-				tag  : '<div class="tag"><div class="button"><span class="label"/><a class="remove"/></div></div>'
+				tags : '<div class="text-tags"/>',
+				tag  : '<div class="text-tag"><div class="text-button"><span class="text-label"/><a class="text-remove"/></div></div>'
 			}
 		}
 		;
@@ -52,7 +52,7 @@
 
 	p.getContainer = function()
 	{
-		return this.getParent().getInput().siblings('.tags');
+		return this.getParent().getInput().siblings('.text-tags');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -80,11 +80,11 @@
 	{
 		var self = this;
 
-		function tag() { return source.parents('.tag:first') };
+		function tag() { return source.parents('.text-tag:first') };
 
-		if(source.is('.tags'))
+		if(source.is('.text-tags'))
 			self.getParent().focusInput();
-		else if(source.is('.remove'))
+		else if(source.is('.text-remove'))
 			self.removeTag(tag());
 	};
 
@@ -130,7 +130,7 @@
 
 	p.getAllTagElements = function()
 	{
-		return this.getContainer().find('.tag');
+		return this.getContainer().find('.text-tag');
 	};
 
 	p.addTag = function(tag)
@@ -154,7 +154,7 @@
 		{
 			item = $(list[i]);
 			
-			if(self.compareTags(item.data('tag'), tag))
+			if(self.compareTags(item.data('text-tag'), tag))
 				return item;
 		}
 	};
@@ -168,7 +168,7 @@
 		if(tag instanceof $)
 		{
 			element = tag;
-			tag = tag.data('tag');
+			tag = tag.data('text-tag');
 		}
 		else
 		{
@@ -176,7 +176,7 @@
 		}
 
 		element.remove();
-		self.getParent().invalidateInputBox();
+		self.getParent().invalidateBounds();
 	};
 
 	p.renderTag = function(tag)
@@ -185,8 +185,8 @@
 			node = $(self.getOpts().html.tag)
 			;
 
-		node.find('.label').text(self.tagToString(tag));
-		node.data('tag', tag);
+		node.find('.text-label').text(self.tagToString(tag));
+		node.data('text-tag', tag);
 		return node;
 	};
 

@@ -10,7 +10,7 @@
 			ex : {},
 
 			html : {
-				wrap : '<div class="textex"><div class="wrap"/></div>'
+				wrap : '<div class="text-core"><div class="text-wrap"/></div>'
 			},
 
 			keys : {
