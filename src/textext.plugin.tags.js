@@ -1,13 +1,13 @@
 (function($)
 {
-	function TextExTags()
+	function TextExtTags()
 	{
 	};
 
-	$.fn.textex.TextExTags = TextExTags;
-	$.fn.textex.addPlugin('tags', TextExTags);
+	$.fn.textext.TextExtTags = TextExtTags;
+	$.fn.textext.addPlugin('tags', TextExtTags);
 
-	var p = TextExTags.prototype,
+	var p = TextExtTags.prototype,
 		DEFAULT_OPTS = {
 			tagsEnabled : true,
 

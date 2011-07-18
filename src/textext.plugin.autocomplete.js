@@ -1,13 +1,13 @@
 (function($)
 {
-	function TextExAutocomplete()
+	function TextExtAutocomplete()
 	{
 	};
 
-	$.fn.textex.TextExAutocomplete = TextExAutocomplete;
-	$.fn.textex.addPlugin('autocomplete', TextExAutocomplete);
+	$.fn.textext.TextExtAutocomplete = TextExtAutocomplete;
+	$.fn.textext.addPlugin('autocomplete', TextExtAutocomplete);
 
-	var p = TextExAutocomplete.prototype,
+	var p = TextExtAutocomplete.prototype,
 		DEFAULT_OPTS = {
 			dropdownEnabled : true,
 			getSuggestions  : null,

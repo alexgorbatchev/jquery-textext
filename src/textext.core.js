@@ -1,10 +1,10 @@
 (function($)
 {
-	function TextEx()
+	function TextExt()
 	{
 	};
 
-	var p = TextEx.prototype,
+	var p = TextExt.prototype,
 		DEFAULT_OPTS = {
 			plugins : [],
 			ex : {},
@@ -61,7 +61,7 @@
 
 		for(var i = 0; i < plugins.length; i++)
 		{
-			plugin = $.fn.textex.plugins[plugins[i]];
+			plugin = $.fn.textext.plugins[plugins[i]];
 
 			if(plugin)
 			{
@@ -164,11 +164,11 @@
 	//--------------------------------------------------------------------------------
 	// Plugin Base
 	
-	function TextExPlugin()
+	function TextExtPlugin()
 	{
 	};
 
-	p = TextExPlugin.prototype;
+	p = TextExtPlugin.prototype;
 
 	p.on = function(args)
 	{
@@ -213,21 +213,21 @@
 	//--------------------------------------------------------------------------------
 	// jQuery Integration
 	
-	var textex = $.fn.textex = function(opts)
+	var textext = $.fn.textext = function(opts)
 	{
 		return this.each(function()
 		{
-			 new TextEx().init(this, opts);
+			 new TextExt().init(this, opts);
 		});
 	};
 
-	textex.addPlugin = function(name, constructor)
+	textext.addPlugin = function(name, constructor)
 	{
-		textex.plugins[name]  = constructor;
-		constructor.prototype = new textex.TextExPlugin();
+		textext.plugins[name]  = constructor;
+		constructor.prototype = new textext.TextExtPlugin();
 	};
 
-	textex.TextEx       = TextEx;
-	textex.TextExPlugin = TextExPlugin;
-	textex.plugins      = {};
+	textext.TextExt       = TextExt;
+	textext.TextExtPlugin = TextExtPlugin;
+	textext.plugins      = {};
 })(jQuery);
