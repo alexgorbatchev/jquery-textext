@@ -30,7 +30,7 @@
   height: 16px;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
-.text-core .text-wrap .text-tags .text-tag .text-button a {
+.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove {
   position: absolute;
   right: 3px;
   top: 2px;
@@ -39,9 +39,9 @@
   height: 11px;
   background: url("close.png") 0 0 no-repeat;
 }
-.text-core .text-wrap .text-tags .text-tag .text-button a:hover {
+.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:hover {
   background-position: 0 -22px;
 }
-.text-core .text-wrap .text-tags .text-tag .text-button a:active {
+.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:active {
   background-position: 0 -33px;
 }

@@ -42,6 +42,8 @@
 			left : parseInt(input.css('paddingLeft') || 0),
 			top  : parseInt(input.css('paddingTop') || 0)
 		};
+
+		self.addTags(opts.items);
 	};
 
 	p.getContainer = function()
@@ -98,14 +100,14 @@
 		return str;
 	};
 
-	p.itemToString = function(tag)
+	p.itemToString = function(item)
 	{
-		return tag;
+		return item;
 	};
 
-	p.compareItems = function(tag1, tag2)
+	p.compareItems = function(item1, item2)
 	{
-		return tag1 == tag2;
+		return item1 == item2;
 	};
 
 	p.addTagFromInput = function(input)
@@ -127,14 +129,25 @@
 		return this.getContainer().find('.text-tag');
 	};
 
-	p.addTag = function(tag)
+	p.addTags = function(tags)
 	{
+		if(!tags || tags.length == 0)
+			return;
+
 		var self      = this,
-			container = self.getContainer()
+			container = self.getContainer(),
+			i
 			;
 
-		container.append(self.renderTag(tag));
+		for(i = 0; i < tags.length; i++)
+			container.append(self.renderTag(tags[i]));
+
 		self.getParent().invalidateBounds();
+	};
+
+	p.addTag = function(tag)
+	{
+		this.addTags([tag]);
 	};
 
 	p.getTagElement = function(tag)
