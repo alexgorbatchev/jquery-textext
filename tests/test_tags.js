@@ -43,48 +43,53 @@ function assertTagNotPresent(value)
 	return function(browser) { browser.assertElementNotPresent(tagXPath(value)) };
 };
 
-function typeTag(value)
+function typeTag(value, wrap)
 {
 	return function(browser)
 	{
 		browser
 			.type('css=#textarea', value)
 			.keyDown('css=#textarea', '\\13')
-			.and(assertTagPresent(value))
+			.and(assertTagPresent(wrap(value)))
 			;
 	};
 };
 
-function closeTag(value)
+function closeTag(value, wrap)
 {
 	return function(browser)
 	{
 		browser
-			.click(tagXPath(value) + '//a[@class="text-remove"]')
-			.and(assertTagNotPresent(value))
+			.click(tagXPath(wrap(value)) + '//a[@class="text-remove"]')
+			.and(assertTagNotPresent(wrap(value)))
 			;
 	};
 };
 
-function testBasicTagFunctionality(browser)
+function testBasicTagFunctionality(wrap)
 {
-	browser
-		.click('css=.text-wrap')
+	return function(browser)
+	{
+		browser
+			.click('css=.text-wrap')
 
-		.and(typeTag('hello'))
-		.and(typeTag('world'))
-		.and(typeTag('word1'))
-		.and(typeTag('word2'))
-		.and(typeTag('word3'))
+			.and(typeTag('hello', wrap))
+			.and(typeTag('world', wrap))
+			.and(typeTag('word1', wrap))
+			.and(typeTag('word2', wrap))
+			.and(typeTag('word3', wrap))
 
-		.and(closeTag('word2'))
-		.and(closeTag('word1'))
-		.and(closeTag('word3'))
-		;
+			.and(closeTag('word2', wrap))
+			.and(closeTag('word1', wrap))
+			.and(closeTag('word3', wrap))
+			;
+	};
 };
 
-function testTags(exampleId)
+function testTags(exampleId, wrap)
 {
+	wrap = wrap || function(v) { return v };
+
 	return function(browser)
 	{
 		browser
@@ -92,7 +97,7 @@ function testTags(exampleId)
 			.clickAndWait('css=#example-doc-plugins-tags-examples-' + exampleId)
 
 			.and(verifyTextExt)
-			.and(testBasicTagFunctionality)
+			.and(testBasicTagFunctionality(wrap))
 			.captureEntirePageScreenshot(__dirname + '/' + exampleId + ' (' + (new Date().toUTCString().replace(/:/g, '.')) + ').png')
 			;
 	};
@@ -105,7 +110,7 @@ browser.chain.session()
 
 	.and(testTags('01-plain'))
 	.and(testTags('02-pre-populating-tags'))
-	.and(testTags('03-custom-object'))
+	.and(testTags('03-custom-object', function(v) { return '[ ' + v + ' ]' }))
 	.and(testTags('04-basic-rendering'))
 
 	.testComplete()
