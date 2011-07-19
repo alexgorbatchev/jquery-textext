@@ -66,7 +66,12 @@
 
 	p.onDownKeyDown = function(e)
 	{
-		this.toggleNextSuggestion();
+		var self = this;
+
+		self.isDropdownVisible()
+			? self.toggleNextSuggestion() 
+			: self.doDropdown()
+			;
 	};
 
 	p.onUpKeyDown = function(e)
