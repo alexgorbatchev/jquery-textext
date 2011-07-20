@@ -3,12 +3,15 @@ var soda   = require('soda'),
 	common = require('./common')
 	;
 
-var DOWN = '\\40',
-	UP   = '\\38',
-	ESC  = '\\27'
+var DOWN  = '\\40',
+	UP    = '\\38',
+	ESC   = '\\27',
+	ENTER = '\\13'
 	;
 
-var dropdown = 'css=.text-core > .text-wrap > .text-dropdown';
+var dropdown = 'css=.text-core > .text-wrap > .text-dropdown',
+	textarea = 'css=#textarea'
+	;
 
 function testDropdownFunctionality(wrap)
 {
@@ -18,39 +21,35 @@ function testDropdownFunctionality(wrap)
 			.click('css=.text-wrap')
 			
 			// activate the dropdown
-			.keyDown('css=#textarea', DOWN)
+			.keyDown(textarea, DOWN)
 			.assertVisible(dropdown)
 			.assertVisible(common.suggestionsXPath(true, 0))
 
 			// go to the second item
-			.keyDown('css=#textarea', DOWN)
+			.keyDown(textarea, DOWN)
 			.assertElementNotPresent(common.suggestionsXPath(true, 0))
 			.assertVisible(common.suggestionsXPath(true, 1))
 
 			// go to the third item
-			.keyDown('css=#textarea', DOWN)
+			.keyDown(textarea, DOWN)
 			.assertElementNotPresent(common.suggestionsXPath(true, 1))
 			.assertVisible(common.suggestionsXPath(true, 2))
 
 			// go back up to the second item
-			.keyDown('css=#textarea', UP)
+			.keyDown(textarea, UP)
 			.assertElementNotPresent(common.suggestionsXPath(true, 2))
 			.assertVisible(common.suggestionsXPath(true, 1))
 
 			// go back up to the first item
-			.keyDown('css=#textarea', UP)
+			.keyDown(textarea, UP)
 			.assertElementNotPresent(common.suggestionsXPath(true, 1))
 			.assertVisible(common.suggestionsXPath(true, 0))
 
-			// go back to the input
-			.keyDown('css=#textarea', UP)
+			.typeKeys(textarea, 'ph')
+			.assertVisible(common.suggestionsXPath(true, 0))
+			.keyDown(textarea, ENTER)
+			.assertValue(textarea, 'PHP')
 			.assertNotVisible(dropdown)
-
-			// test the ESC key
-			// .keyDown('css=#textarea', DOWN)
-			// .assertVisible(dropdown)
-			// .keyDown('css=#textarea', ESC)
-			// .assertNotVisible(dropdown)
 			;
 	};
 };

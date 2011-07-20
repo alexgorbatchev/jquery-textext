@@ -33,12 +33,14 @@
 			input.after(opts.html.dropdown);
 
 			self.on({
-				blur         : self.onBlur,
-				otherKeyUp   : self.onOtherKeyUp,
-				downKeyDown  : self.onDownKeyDown,
-				upKeyDown    : self.onUpKeyDown,
-				enterKeyDown : self.onEnterKeyDown,
-				escapeKeyUp  : self.onEscapeKeyUp
+				blur           : self.onBlur,
+				otherKeyUp     : self.onOtherKeyUp,
+				deleteKeyUp    : self.onOtherKeyUp,
+				backspaceKeyUp : self.onOtherKeyUp,
+				downKeyDown    : self.onDownKeyDown,
+				upKeyDown      : self.onUpKeyDown,
+				enterKeyDown   : self.onEnterKeyDown,
+				escapeKeyUp    : self.onEscapeKeyUp
 			});
 		}
 	};
