@@ -149,17 +149,10 @@
 				keyName       = self.getOpts().keys[e.keyCode] || 'Other',
 				defaultResult = keyName.indexOf('!') != keyName.length - 1,
 				eventName     = keyName.replace('!', '') + 'Key' + type,
-				handler       = self['on' + eventName],
 				result
 				;
 
 			self.trigger(eventName.charAt(0).toLowerCase() + eventName.substring(1));
-
-			if($.isFunction(handler))
-			{
-				result = handler.call(self, e);
-				return typeof(result) == 'undefined' ? defaultResult : result;
-			}
 
 			return defaultResult;
 		};
