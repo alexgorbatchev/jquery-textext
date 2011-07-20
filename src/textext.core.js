@@ -1,10 +1,11 @@
-(function($)
+(function($, undefined)
 {
 	function TextExt()
 	{
 	};
 
 	var p = TextExt.prototype,
+		slice = Array.prototype.slice,
 		DEFAULT_OPTS = {
 			plugins : [],
 			ext : {},
@@ -28,6 +29,42 @@
 			}
 		}
 		;
+
+	function combine()
+	{
+		var args   = slice.apply(arguments),
+			target = args.shift(),
+			source = args.shift(),
+			key, item, isObject, isArray
+			;
+
+		if(source == null)
+			return target;
+
+		if($.isArray(source) && $.isArray(target))
+			target = target.concat(source);
+
+		else for(key in source)
+		{
+			item     = source[key];
+			isObject = $.isPlainObject(item);
+			isArray  = $.isArray(item);
+
+			if(isObject || isArray)
+				target[key] = combine(target[key] || (isArray ? [] : {}), item);
+			else
+				if(typeof(target[key]) == 'undefined' && item != null)
+					target[key] = item;
+		}
+
+		if(args.length > 0)
+		{
+			args.unshift(target);
+			target = combine.apply(null, args);
+		}
+
+		return target;
+	};
 
 	p.init = function(input, opts)
 	{
@@ -55,7 +92,7 @@
 	p.initPlugins = function(plugins)
 	{
 		var self = this,
-			ext = self.getOpts().ext,
+			ext  = self.getOpts().ext,
 			plugin
 			;
 
@@ -188,8 +225,8 @@
 
 	p.baseInit = function(parent, opts)
 	{
-		parent.opts = $.extend(true, {}, opts, parent.opts);
-		p.parent = parent;
+		parent.opts = combine({}, parent.opts, opts);
+		p.parent    = parent;
 	};
 
 	p.getParent = function()
