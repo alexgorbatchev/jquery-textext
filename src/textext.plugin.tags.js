@@ -95,21 +95,6 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.stringToItem = function(str)
-	{
-		return str;
-	};
-
-	p.itemToString = function(item)
-	{
-		return item;
-	};
-
-	p.compareItems = function(item1, item2)
-	{
-		return item1 == item2;
-	};
-
 	p.addTagFromInput = function(input)
 	{
 		var self  = this,

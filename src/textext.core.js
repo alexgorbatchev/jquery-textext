@@ -207,6 +207,21 @@
 		return this.getParent().getInput();
 	};
 
+	p.stringToItem = function(str)
+	{
+		return str;
+	};
+
+	p.itemToString = function(item)
+	{
+		return item;
+	};
+
+	p.compareItems = function(item1, item2)
+	{
+		return item1 == item2;
+	};
+
 	//--------------------------------------------------------------------------------
 	// jQuery Integration
 	
@@ -228,5 +243,5 @@
 
 	textext.TextExt       = TextExt;
 	textext.TextExtPlugin = TextExtPlugin;
-	textext.plugins      = {};
+	textext.plugins       = {};
 })(jQuery);

@@ -98,21 +98,6 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.stringToItem = function(str)
-	{
-		return str;
-	};
-
-	p.itemToString = function(tag)
-	{
-		return tag;
-	};
-
-	p.compareItems = function(tag1, tag2)
-	{
-		return tag1 == tag2;
-	};
-	
 	p.getAllSuggestions = function()
 	{
 		return this.getDropdownContainer().find('.text-suggestion');
