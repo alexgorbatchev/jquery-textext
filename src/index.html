@@ -18,51 +18,31 @@
 		<script src="textext.core.js" type="text/javascript" charset="utf-8"></script>
 		<script src="textext.plugin.tags.js" type="text/javascript" charset="utf-8"></script>
 		<script src="textext.plugin.autocomplete.js" type="text/javascript" charset="utf-8"></script>
+		<script src="textext.plugin.suggestions.js" type="text/javascript" charset="utf-8"></script>
 		
 		<script type="text/javascript">
 			$('textarea').textext({
-				plugins : [ 'autocomplete', 'tags' ],
+				plugins : [ 'autocomplete', 'suggestions' ],
 
-				getSuggestions : function(val, callback)
-				{
-					var list = [
-							'JavaScript',
-							'Java',
-							'PHP',
-							'Ruby',
-							'Python',
-							'Closure',
-							'Delphi',
-							'Perl',
-							'OCAML',
-							'Erlang',
-							'Scala',
-							'Haskel',
-							'Groovy',
-							'Fortran',
-							'Basic',
-							'Cobol',
-							'Go'
-						],
-						result = []
-					;
-
-					list.sort();
-					val = val.toLowerCase();
-
-					if(val == '')
-						return callback(list);
-
-					for(var i = 0; i < list.length; i++)
-						if(list[i].toLowerCase().indexOf(val) == 0)
-							result.push(list[i]);
-
-					callback(result.length == 0 ? null : result);
-				},
-
-				ex : {
-					//tagToString: function(tag) { return '-' + tag + '-'; }
-				}
+				suggestions: [
+					'JavaScript',
+					'Java',
+					'PHP',
+					'Ruby',
+					'Python',
+					'Closure',
+					'Delphi',
+					'Perl',
+					'OCAML',
+					'Erlang',
+					'Scala',
+					'Haskel',
+					'Groovy',
+					'Fortran',
+					'Basic',
+					'Cobol',
+					'Go'
+				]
 			});
 		</script>
 	</body>
