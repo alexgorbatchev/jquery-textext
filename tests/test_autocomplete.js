@@ -3,25 +3,54 @@ var soda   = require('soda'),
 	common = require('./common')
 	;
 
-var browser = soda.createClient({
-	host    : 'localhost',
-	port    : 4444,
-	url     : 'http://localhost:9778',
-	browser : 'firefox'
-});
+var DOWN = '\\40',
+	UP   = '\\38',
+	ESC  = '\\27'
+	;
 
-var DOWN = '\\40';
+var dropdown = 'css=.text-core > .text-wrap > .text-dropdown';
 
-function testBasicAutocompleteFunctionality(wrap)
+function testDropdownFunctionality(wrap)
 {
 	return function(browser)
 	{
-		var dropdown = 'css=.text-core > .text-wrap > .text-dropdown';
-
 		browser
 			.click('css=.text-wrap')
+			
+			// activate the dropdown
 			.keyDown('css=#textarea', DOWN)
 			.assertVisible(dropdown)
+			.assertVisible(common.suggestionsXPath(true, 0))
+
+			// go to the second item
+			.keyDown('css=#textarea', DOWN)
+			.assertElementNotPresent(common.suggestionsXPath(true, 0))
+			.assertVisible(common.suggestionsXPath(true, 1))
+
+			// go to the third item
+			.keyDown('css=#textarea', DOWN)
+			.assertElementNotPresent(common.suggestionsXPath(true, 1))
+			.assertVisible(common.suggestionsXPath(true, 2))
+
+			// go back up to the second item
+			.keyDown('css=#textarea', UP)
+			.assertElementNotPresent(common.suggestionsXPath(true, 2))
+			.assertVisible(common.suggestionsXPath(true, 1))
+
+			// go back up to the first item
+			.keyDown('css=#textarea', UP)
+			.assertElementNotPresent(common.suggestionsXPath(true, 1))
+			.assertVisible(common.suggestionsXPath(true, 0))
+
+			// go back to the input
+			.keyDown('css=#textarea', UP)
+			.assertNotVisible(dropdown)
+
+			// test the ESC key
+			// .keyDown('css=#textarea', DOWN)
+			// .assertVisible(dropdown)
+			// .keyDown('css=#textarea', ESC)
+			// .assertNotVisible(dropdown)
 			;
 	};
 };
@@ -37,25 +66,21 @@ function testAutocomplete(exampleId, wrap)
 			.clickAndWait('css=#example-doc-plugins-autocomplete-examples-' + exampleId)
 
 			.and(common.verifyTextExt)
-			.and(testBasicAutocompleteFunctionality(wrap))
+			.and(testDropdownFunctionality(wrap))
 			.and(common.screenshot('autocomplete-' + exampleId))
 			;
 	};
 };
 
-browser.on('command', common.log);
-browser.chain.session()
+function run(browser)
+{
+	browser
+		.and(testAutocomplete('01-dropdown'))
+	;
+};
 
-	.windowMaximize()
+module.exports = run;
 
-	.and(testAutocomplete('01-dropdown'))
-
-	.testComplete()
-	
-	.end(function(err)
-	{
-		if (err) throw err;
-		common.echo('ALL DONE');
-	})
-;
+if(require.main == module)
+	common.runModule(run);
 

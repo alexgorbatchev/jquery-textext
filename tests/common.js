@@ -1,3 +1,5 @@
+var soda = require('soda');
+
 function log(cmd, args)
 {
 	args = Array.prototype.slice.apply(arguments);
@@ -19,6 +21,14 @@ function tagXPath(value)
 {
 	return '//div[@class="text-core"]//div[@class="text-tags"]//span[text()="' + value + '"]/../..';
 };
+
+function suggestionsXPath(selected, index)
+{
+	index    = index != null ? '[' + (index + 1) + ']' : ''
+	selected = selected == true ? '[contains(@class, "text-selected")]' : '';
+
+	return '//div[@class="text-core"]//div[@class="text-dropdown"]//div[contains(@class, "text-suggestion")]' + index + selected;
+}
 
 function assertTagPresent(value)
 {
@@ -61,15 +71,46 @@ function screenshot(name)
 	};
 };
 
+function createBrowser()
+{
+	return soda.createClient({
+		host    : 'localhost',
+		port    : 4444,
+		url     : 'http://localhost:9778',
+		browser : 'firefox'
+	});
+};
+
+function runModule(run)
+{
+	var browser = createBrowser();
+
+	browser.on('command', log);
+
+	browser.chain.session()
+		.windowMaximize()
+		.and(run)
+		.testComplete()
+		.end(function(err)
+		{
+			if (err) throw err;
+			echo('ALL DONE');
+		})
+	;
+};
+
 module.exports = {
 	log                 : log,
 	echo                : echo,
 	verifyTextExt       : verifyTextExt,
 	tagXPath            : tagXPath,
+	suggestionsXPath    : suggestionsXPath,
 	assertTagPresent    : assertTagPresent,
 	assertTagNotPresent : assertTagNotPresent,
 	typeTag             : typeTag,
 	closeTag            : closeTag,
-	screenshot          : screenshot
+	screenshot          : screenshot,
+	createBrowser       : createBrowser,
+	runModule           : runModule
 };
 

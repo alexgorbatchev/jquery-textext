@@ -3,13 +3,6 @@ var soda   = require('soda'),
 	common = require('./common')
 	;
 
-var browser = soda.createClient({
-	host    : 'localhost',
-	port    : 4444,
-	url     : 'http://localhost:9778',
-	browser : 'firefox'
-});
-
 function testBasicTagFunctionality(wrap)
 {
 	return function(browser)
@@ -47,22 +40,18 @@ function testTags(exampleId, wrap)
 	};
 };
 
-browser.on('command', common.log);
-browser.chain.session()
+function run(browser)
+{
+	browser
+		.and(testTags('01-plain'))
+		.and(testTags('02-pre-populating-tags'))
+		.and(testTags('03-custom-object', function(v) { return '[ ' + v + ' ]' }))
+		.and(testTags('04-basic-rendering'))
+	;
+};
 
-	.windowMaximize()
+module.exports = run;
 
-	.and(testTags('01-plain'))
-	.and(testTags('02-pre-populating-tags'))
-	.and(testTags('03-custom-object', function(v) { return '[ ' + v + ' ]' }))
-	.and(testTags('04-basic-rendering'))
-
-	.testComplete()
-	
-	.end(function(err)
-	{
-		if (err) throw err;
-		common.echo('ALL DONE');
-	})
-;
+if(require.main == module)
+	common.runModule(run);
 
