@@ -114,6 +114,11 @@
 		return this.getContainer().find('.text-tag');
 	};
 
+	p.isTagAllowed = function(tag)
+	{
+		return true;
+	};
+
 	p.addTags = function(tags)
 	{
 		if(!tags || tags.length == 0)
@@ -121,11 +126,12 @@
 
 		var self      = this,
 			container = self.getContainer(),
-			i
+			i, tag
 			;
 
-		for(i = 0; i < tags.length; i++)
-			container.append(self.renderTag(tags[i]));
+		for(i = 0; i < tags.length, tag = tags[i]; i++)
+			if(self.isTagAllowed(tag))
+				container.append(self.renderTag(tag));
 
 		self.getParent().invalidateBounds();
 	};
