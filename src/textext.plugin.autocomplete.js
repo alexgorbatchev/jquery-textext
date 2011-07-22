@@ -117,13 +117,9 @@
 
 		all.removeClass('selected');
 
-		for(i = 0; i < all.length; i++)
-		{
-			item = $(all[i]);
-
+		for(i = 0; i < all.length, item = $(all[i]); i++)
 			if(self.compareItems(item.data('text-suggestion'), suggestion))
 				return item.addClass('text-selected');
-		}
 
 		all.first().addClass('text-selected');
 	};

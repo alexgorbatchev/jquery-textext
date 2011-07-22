@@ -142,13 +142,9 @@
 			i, item
 			;
 
-		for(i = 0; i < list.length; i++)
-		{
-			item = $(list[i]);
-			
+		for(i = 0; i < list.length, item = $(list[i]); i++)
 			if(self.compareItems(item.data('text-tag'), tag))
 				return item;
-		}
 	};
 
 	p.removeTag = function(tag)
@@ -181,5 +177,4 @@
 		node.data('text-tag', tag);
 		return node;
 	};
-
 })(jQuery);

@@ -71,6 +71,7 @@
 		var self = this;
 
 		self.opts = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
+		self.plugins = {};
 
 		self.input = input = $(input)
 			.wrap(opts.html.wrap)
@@ -92,21 +93,23 @@
 	p.initPlugins = function(plugins)
 	{
 		var self = this,
-			ext  = self.getOpts().ext,
-			plugin
+			ext, name, plugin
 			;
 
 		if(typeof(plugins) == 'string')
 			plugins = plugins.split(/\s*,\s*/g);
 
-		for(var i = 0; i < plugins.length; i++)
+		for(var i = 0; i < plugins.length, name = plugins[i]; i++)
 		{
-			plugin = $.fn.textext.plugins[plugins[i]];
+			plugin = $.fn.textext.plugins[name];
 
 			if(plugin)
 			{
-				plugin = new plugin();
-				$.extend(true, plugin, ext['*'], ext[plugins[i]]);
+				plugin             = new plugin();
+				ext                = self.getOpts().ext;
+				self.plugins[name] = plugin;
+
+				$.extend(true, plugin, ext['*'], ext[name]);
 				plugin.init(self);
 			}
 		}
