@@ -10,7 +10,6 @@
 	var p = TextExtAutocomplete.prototype,
 		DEFAULT_OPTS = {
 			dropdownEnabled : true,
-			getSuggestions  : null,
 
 			html : {
 				dropdown   : '<div class="text-dropdown"><div class="text-list"/></div>',
@@ -21,10 +20,11 @@
 
 	p.init = function(parent)
 	{
-		this.baseInit(parent, DEFAULT_OPTS);
+		var self = this;
 
-		var self  = this,
-			input = self.getInput(),
+		self.baseInit(parent, DEFAULT_OPTS);
+
+		var input = self.getInput(),
 			opts  = self.getOpts()
 			;
 
@@ -40,7 +40,8 @@
 				downKeyDown    : self.onDownKeyDown,
 				upKeyDown      : self.onUpKeyDown,
 				enterKeyDown   : self.onEnterKeyDown,
-				escapeKeyUp    : self.onEscapeKeyUp
+				escapeKeyUp    : self.onEscapeKeyUp,
+				setSuggestions : self.onSetSuggestions
 			});
 		}
 	};
@@ -63,7 +64,7 @@
 
 	p.onOtherKeyUp = function(e)
 	{
-		this.doDropdown();
+		this.getSuggestions();
 	};
 
 	p.onDownKeyDown = function(e)
@@ -72,7 +73,7 @@
 
 		self.isDropdownVisible()
 			? self.toggleNextSuggestion() 
-			: self.doDropdown()
+			: self.getSuggestions()
 			;
 	};
 
@@ -100,7 +101,7 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.getAllSuggestions = function()
+	p.getSuggestionElements = function()
 	{
 		return this.getDropdownContainer().find('.text-suggestion');
 	};
@@ -111,22 +112,26 @@
 			return;
 
 		var self = this,
-			all  = self.getAllSuggestions(),
+			all  = self.getSuggestionElements(),
 			item, i
 			;
 
 		all.removeClass('selected');
 
-		for(i = 0; i < all.length, item = $(all[i]); i++)
+		for(i = 0; i < all.length; i++)
+		{
+			item = $(all[i]);
+
 			if(self.compareItems(item.data('text-suggestion'), suggestion))
 				return item.addClass('text-selected');
+		}
 
 		all.first().addClass('text-selected');
 	};
 
 	p.getSelectedSuggestion = function()
 	{
-		return this.getAllSuggestions().filter('.text-selected').first();
+		return this.getSuggestionElements().filter('.text-selected').first();
 	};
 
 	p.isDropdownVisible = function()
@@ -134,20 +139,32 @@
 		return this.getDropdownContainer().is(':visible');
 	};
 
-	p.doDropdown = function()
+	p.onSetSuggestions = function(e, data)
 	{
-		var self           = this,
-			val            = self.getInput().val(),
-			dropdown       = self.getDropdownContainer(),
-			current        = self.getSelectedSuggestion().data('text-suggestion'),
-			getSuggestions = self.getOpts().getSuggestions
+		var self        = this,
+			suggestions = data.result
+			;
+
+		if(suggestions == null || suggestions.length == 0)
+			return self.hideDropdown(dropdown);
+
+		var current  = self.getSelectedSuggestion().data('text-suggestion'),
+			dropdown = self.getDropdownContainer()
+			;
+
+		self.renderDropdown(suggestions);
+		self.showDropdown(dropdown);
+		self.setSelectedSuggestion(current);
+	};
+
+	p.getSuggestions = function()
+	{
+		var self = this,
+			val  = self.getInput().val()
 			;
 
 		if(self.previousInputValue == val)
 			return;
-
-		if(getSuggestions == null)
-			return self.hideDropdown(dropdown);
 
 		// if user clears input, then we want to select first suggestion
 		// instead of the last one
@@ -155,16 +172,7 @@
 			current = null;
 
 		self.previousInputValue = val;
-
-		getSuggestions(val, function(suggestions)
-		{
-			if(suggestions == null)
-				return self.hideDropdown(dropdown);
-
-			self.renderDropdown(suggestions);
-			self.showDropdown(dropdown);
-			self.setSelectedSuggestion(current);
-		});
+		self.trigger('getSuggestions', { query : val });
 	};
 
 	p.renderDropdown = function(suggestions)
@@ -231,7 +239,7 @@
 		}
 		else
 		{
-			next = self.getAllSuggestions().first();
+			next = self.getSuggestionElements().first();
 		}
 
 		next.addClass('text-selected');

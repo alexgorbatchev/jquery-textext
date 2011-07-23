@@ -15,17 +15,17 @@
 
 	p.init = function(parent)
 	{
-		var self = this,
-			opts = {
-				getSuggestions : function(val, callback) { self.getSuggestions(val, callback) }
-			}
-			;
+		var self = this;
 
-		self.baseInit(parent, $.extend(true, opts, DEFAULT_OPTS));
+		self.baseInit(parent, DEFAULT_OPTS);
 
 		var input = self.getInput(),
 			opts  = self.getOpts()
 			;
+
+		self.on({
+			getSuggestions : self.onGetSuggestions
+		});
 	};
 
 	//--------------------------------------------------------------------------------
@@ -35,23 +35,25 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.getSuggestions = function(val, callback)
+	p.onGetSuggestions = function(e, data)
 	{
 		var self        = this,
 			suggestions = self.getOpts().suggestions,
-			result      = []
+			result      = [],
+			query       = data.query,
+			item
 			;
 
 		suggestions.sort();
-		val = val.toLowerCase();
+		query = query.toLowerCase();
 
-		if(val == '')
-			return callback(suggestions);
+		if(query == '')
+			result = suggestions.slice();
+		else
+			for(var i = 0; i < suggestions.length, item = suggestions[i]; i++)
+				if(item.toLowerCase().indexOf(query) == 0)
+					result.push(item);
 
-		for(var i = 0; i < suggestions.length; i++)
-			if(suggestions[i].toLowerCase().indexOf(val) == 0)
-				result.push(suggestions[i]);
-
-		callback(result.length == 0 ? null : result);
+		self.trigger('setSuggestions', { result : result.length == 0 ? null : result });
 	};
 })(jQuery);

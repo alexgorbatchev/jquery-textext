@@ -122,7 +122,9 @@
 
 	p.isTagAllowed = function(tag)
 	{
-		return true;
+		var opts = { tag : tag, result : true };
+		this.trigger('isTagAllowed', opts);
+		return opts.result;
 	};
 
 	p.addTags = function(tags)

@@ -117,8 +117,10 @@
 
 	p.trigger = function()
 	{
-		var self = $(this);
-		self.trigger.apply(self, arguments);
+		$(this).trigger(
+			arguments[0],
+			slice.call(arguments, 1)
+		);
 	};
 
 	p.getInput = function()
@@ -174,7 +176,7 @@
 			source = $(e.target)
 			;
 
-		self.trigger('click', [ source ]);
+		self.trigger('click', source);
 
 		return true;
 	};
