@@ -48,7 +48,7 @@
 
 	p.getContainer = function()
 	{
-		return this.getParent().getInput().siblings('.text-tags');
+		return this.core().getInput().siblings('.text-tags');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -79,7 +79,7 @@
 		function tag() { return source.parents('.text-tag:first') };
 
 		if(source.is('.text-tags'))
-			self.getParent().focusInput();
+			self.core().focusInput();
 		else if(source.is('.text-remove'))
 			self.removeTag(tag());
 	};
@@ -98,14 +98,20 @@
 	p.addTagFromInput = function(input)
 	{
 		var self  = this,
-			input = self.getParent().getInput(),
-			val   = input.val()
+			input = self.core().getInput(),
+			val   = input.val(),
+			tag
 			;
 
 		if(val.length == 0)
 			return;
 
-		self.addTag(self.stringToItem(val));
+		tag = self.stringToItem(val);
+
+		if(self.isTagAllowed(tag) == false)
+			return;
+
+		self.addTag(tag);
 		input.val('');
 	};
 
@@ -133,7 +139,7 @@
 			if(self.isTagAllowed(tag))
 				container.append(self.renderTag(tag));
 
-		self.getParent().invalidateBounds();
+		self.core().invalidateBounds();
 	};
 
 	p.addTag = function(tag)
@@ -170,7 +176,7 @@
 		}
 
 		element.remove();
-		self.getParent().invalidateBounds();
+		self.core().invalidateBounds();
 	};
 
 	p.renderTag = function(tag)

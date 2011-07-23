@@ -210,7 +210,7 @@
 	p.on = function(args)
 	{
 		var self   = this,
-			parent = $(self.getParent()),
+			parent = $(self.core()),
 			event
 			;
 
@@ -232,19 +232,25 @@
 		p.parent    = parent;
 	};
 
-	p.getParent = function()
+	p.core = function()
 	{
 		return this.parent;
 	};
 
 	p.getOpts = function()
 	{
-		return this.getParent().getOpts();
+		return this.core().getOpts();
 	};
 
 	p.getInput = function()
 	{
-		return this.getParent().getInput();
+		return this.core().getInput();
+	};
+
+	p.trigger = function()
+	{
+		var core = this.core();
+		core.trigger.apply(core, arguments);
 	};
 
 	p.stringToItem = function(str)
