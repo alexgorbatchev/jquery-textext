@@ -19,33 +19,21 @@
 
 		self.baseInit(parent, DEFAULT_OPTS);
 
-		var input = self.getInput(),
-			opts  = self.getOpts()
-			;
-
 		self.on({
 			getSuggestions : self.onGetSuggestions
 		});
 	};
-
-	//--------------------------------------------------------------------------------
-	// Event handlers
-	
-
-	//--------------------------------------------------------------------------------
-	// Core functionality
 
 	p.onGetSuggestions = function(e, data)
 	{
 		var self        = this,
 			suggestions = self.getOpts().suggestions,
 			result      = [],
-			query       = data.query,
+			query       = data.query.toLowerCase(),
 			item
 			;
 
 		suggestions.sort();
-		query = query.toLowerCase();
 
 		if(query == '')
 			result = suggestions.slice();
@@ -54,6 +42,6 @@
 				if(item.toLowerCase().indexOf(query) == 0)
 					result.push(item);
 
-		self.trigger('setSuggestions', { result : result.length == 0 ? null : result });
+		self.trigger('setSuggestions', { result : result });
 	};
 })(jQuery);

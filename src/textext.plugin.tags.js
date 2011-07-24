@@ -32,10 +32,11 @@
 			input.after(opts.html.tags);
 
 			self.on({
-				click        :  self.onClick,
-				enterKeyDown :  self.onEnterKeyDown,
-				invalidate   :  self.onInvalidate
+				enterKeyDown : self.onEnterKeyDown,
+				invalidate   : self.onInvalidate
 			});
+
+			self.getContainer().click(function(e) { self.onClick(e) });
 		}
 
 		self.originalPadding = { 
@@ -72,9 +73,11 @@
 		});
 	};
 
-	p.onClick = function(e, source)
+	p.onClick = function(e)
 	{
-		var self = this;
+		var self   = this,
+			source = $(e.target)
+			;
 
 		function tag() { return source.parents('.text-tag:first') };
 

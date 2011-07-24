@@ -72,18 +72,14 @@
 
 		self.opts = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
 		self.plugins = {};
-
 		self.input = input = $(input)
 			.wrap(opts.html.wrap)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
-			.blur(function(e) { return self.onBlur(e) })
 			;
 
 		$.extend(true, self, opts.ext['*'], opts.ext['core']);
 		
-		self.getWrapContainer().click(function(e) { return self.onClick(e) });
-
 		self.originalWidth = input.outerWidth();
 
 		self.invalidateBounds();
@@ -97,7 +93,7 @@
 			;
 
 		if(typeof(plugins) == 'string')
-			plugins = plugins.split(/\s*,\s*/g);
+			plugins = plugins.split(/\s*,\s*|\s+/g);
 
 		for(var i = 0; i < plugins.length, name = plugins[i]; i++)
 		{
@@ -117,7 +113,7 @@
 
 	p.trigger = function()
 	{
-		$(this).trigger(
+		$(this.getInput()).trigger(
 			arguments[0],
 			slice.call(arguments, 1)
 		);
@@ -165,22 +161,6 @@
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
 	
-	p.onBlur = function(e)
-	{
-		this.trigger('blur');
-	};
-
-	p.onClick = function(e)
-	{
-		var self   = this,
-			source = $(e.target)
-			;
-
-		self.trigger('click', source);
-
-		return true;
-	};
-
 	$(['Down', 'Up']).each(function()
 	{
 		var type = this.toString();
@@ -212,7 +192,7 @@
 	p.on = function(args)
 	{
 		var self   = this,
-			parent = $(self.core()),
+			target = self.getInput(),
 			event
 			;
 
@@ -220,7 +200,7 @@
 			(function(self, event, handler)
 			{
 
-				parent.bind(event, function()
+				target.bind(event, function()
 				{
 					return handler.apply(self, arguments);
 				});
@@ -279,7 +259,7 @@
 		{
 			 var instance = new TextExt();
 			 instance.init(this, opts);
-			 return instance;
+			 return this;
 		});
 	};
 
