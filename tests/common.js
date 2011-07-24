@@ -76,7 +76,7 @@ function createBrowser()
 	return soda.createClient({
 		host    : 'localhost',
 		port    : 4444,
-		url     : 'http://localhost:9778',
+		url     : 'http://localhost:4000',
 		browser : 'firefox'
 	});
 };

@@ -61,8 +61,8 @@ function testAutocomplete(exampleId, wrap)
 	return function(browser)
 	{
 		browser
-			.open('/')
-			.clickAndWait('css=#example-doc-plugins-autocomplete-examples-' + exampleId)
+			.open('/manual/plugins/autocomplete/index.html')
+			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
 			.and(testDropdownFunctionality(wrap))
@@ -74,7 +74,7 @@ function testAutocomplete(exampleId, wrap)
 function run(browser)
 {
 	browser
-		.and(testAutocomplete('01-dropdown'))
+		.and(testAutocomplete('dropdown'))
 	;
 };
 

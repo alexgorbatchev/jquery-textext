@@ -30,8 +30,8 @@ function testTags(exampleId, wrap)
 	return function(browser)
 	{
 		browser
-			.open('/')
-			.clickAndWait('css=#example-doc-plugins-tags-examples-' + exampleId)
+			.open('/manual/plugins/tags/index.html')
+			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
 			.and(testBasicTagFunctionality(wrap))
@@ -43,10 +43,10 @@ function testTags(exampleId, wrap)
 function run(browser)
 {
 	browser
-		.and(testTags('01-plain'))
-		.and(testTags('02-pre-populating-tags'))
-		.and(testTags('03-custom-object', function(v) { return '[ ' + v + ' ]' }))
-		.and(testTags('04-basic-rendering'))
+		.and(testTags('plain'))
+		.and(testTags('pre-populating-tags'))
+		.and(testTags('custom-object', function(v) { return '[ ' + v + ' ]' }))
+		.and(testTags('basic-rendering'))
 	;
 };
 
