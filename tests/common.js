@@ -40,14 +40,24 @@ function assertTagNotPresent(value)
 	return function(browser) { browser.assertElementNotPresent(tagXPath(value)) };
 };
 
-function typeTag(value, wrap)
+function typeTag(value)
 {
 	return function(browser)
 	{
 		browser
 			.type('css=#textarea', value)
 			.keyDown('css=#textarea', '\\13')
-			.and(assertTagPresent(wrap(value)))
+			;
+	};
+};
+
+function typeAndValidateTag(value, wrap)
+{
+	return function(browser)
+	{
+		browser
+			.and(typeTag(value))
+			.and(assertTagPresent(wrap ? wrap(value) : value))
 			;
 	};
 };
@@ -108,6 +118,7 @@ module.exports = {
 	assertTagPresent    : assertTagPresent,
 	assertTagNotPresent : assertTagNotPresent,
 	typeTag             : typeTag,
+	typeAndValidateTag  : typeAndValidateTag,
 	closeTag            : closeTag,
 	screenshot          : screenshot,
 	createBrowser       : createBrowser,

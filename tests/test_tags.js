@@ -10,11 +10,11 @@ function testBasicTagFunctionality(wrap)
 		browser
 			.click('css=.text-wrap')
 
-			.and(common.typeTag('hello', wrap))
-			.and(common.typeTag('world', wrap))
-			.and(common.typeTag('word1', wrap))
-			.and(common.typeTag('word2', wrap))
-			.and(common.typeTag('word3', wrap))
+			.and(common.typeAndValidateTag('hello', wrap))
+			.and(common.typeAndValidateTag('world', wrap))
+			.and(common.typeAndValidateTag('word1', wrap))
+			.and(common.typeAndValidateTag('word2', wrap))
+			.and(common.typeAndValidateTag('word3', wrap))
 
 			.and(common.closeTag('word2', wrap))
 			.and(common.closeTag('word1', wrap))

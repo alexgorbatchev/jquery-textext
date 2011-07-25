@@ -8,6 +8,7 @@ common.runModule(function(browser)
 	browser
 		.and(require('./test_autocomplete.js'))
 		.and(require('./test_tags.js'))
+		.and(require('./test_filter.js'))
 	;
 });
 
