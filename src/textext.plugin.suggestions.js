@@ -20,8 +20,20 @@
 		self.baseInit(parent, DEFAULT_OPTS);
 
 		self.on({
-			getSuggestions : self.onGetSuggestions
+			getSuggestions : self.onGetSuggestions,
+			postInit       : self.onPostInit
 		});
+	};
+
+	p.setSuggestions = function(suggestions, showHideDropdown)
+	{
+		this.trigger('setSuggestions', { result : suggestions, showHideDropdown : showHideDropdown != false });
+	};
+
+	p.onPostInit = function(e)
+	{
+		var self = this;
+		self.setSuggestions(self.getOpts().suggestions, false);
 	};
 
 	p.onGetSuggestions = function(e, data)
@@ -42,6 +54,6 @@
 				if(item.toLowerCase().indexOf(query) == 0)
 					result.push(item);
 
-		self.trigger('setSuggestions', { result : result });
+		self.setSuggestions(result);
 	};
 })(jQuery);

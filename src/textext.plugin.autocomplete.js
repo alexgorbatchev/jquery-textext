@@ -41,7 +41,9 @@
 				upKeyDown      : self.onUpKeyDown,
 				enterKeyDown   : self.onEnterKeyDown,
 				escapeKeyUp    : self.onEscapeKeyUp,
-				setSuggestions : self.onSetSuggestions
+				setSuggestions : self.onSetSuggestions,
+				showDropdown   : self.onShowDropdown,
+				hideDropdown   : self.onHideDropdown
 			});
 		}
 	};
@@ -59,7 +61,7 @@
 		var self = this;
 
 		if(self.isDropdownVisible())
-			self.hideDropdown();
+			self.trigger('hideDropdown');
 	};
 
 	p.onOtherKeyUp = function(e)
@@ -95,7 +97,7 @@
 		var self = this;
 
 		if(self.isDropdownVisible())
-			self.hideDropdown();
+			self.trigger('hideDropdown');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -139,22 +141,29 @@
 		return this.getDropdownContainer().is(':visible');
 	};
 
+	p.onHideDropdown = function(e)
+	{
+		this.hideDropdown();
+	};
+
+	p.onShowDropdown = function(e)
+	{
+		var self    = this,
+			current = self.getSelectedSuggestion().data('text-suggestion')
+			;
+		self.renderDropdown(self.suggestions);
+		self.showDropdown(self.getDropdownContainer());
+		self.setSelectedSuggestion(current);
+	};
+
 	p.onSetSuggestions = function(e, data)
 	{
 		var self        = this,
-			suggestions = data.result
+			suggestions = self.suggestions = data.result
 			;
 
-		if(suggestions == null || suggestions.length == 0)
-			return self.hideDropdown(dropdown);
-
-		var current  = self.getSelectedSuggestion().data('text-suggestion'),
-			dropdown = self.getDropdownContainer()
-			;
-
-		self.renderDropdown(suggestions);
-		self.showDropdown(dropdown);
-		self.setSelectedSuggestion(current);
+		if(data.showHideDropdown != false)
+			self.trigger(suggestions == null || suggestions.length == 0 ? 'hideDropdown' : 'showDropdown');
 	};
 
 	p.getSuggestions = function()
@@ -189,17 +198,17 @@
 		self.toggleNextSuggestion();
 	};
 
-	p.showDropdown = function(dropdown)
+	p.showDropdown = function()
 	{
-		dropdown = dropdown || this.getDropdownContainer();
-		dropdown.show();
+		this.getDropdownContainer().show();
 	};
 
-	p.hideDropdown = function(dropdown)
+	p.hideDropdown = function()
 	{
-		var self = this;
+		var self     = this,
+			dropdown = self.getDropdownContainer()
+			;
 		self.previousInputValue = null;
-		dropdown = dropdown || self.getDropdownContainer();
 		dropdown.hide();
 	};
 
@@ -292,7 +301,6 @@
 		if(suggestion)
 			self.getInput().val(self.itemToString(suggestion));
 
-		self.hideDropdown();
+		self.trigger('hideDropdown');
 	};
-
 })(jQuery);

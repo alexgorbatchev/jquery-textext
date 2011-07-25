@@ -70,9 +70,9 @@
 	{
 		var self = this;
 
-		self.opts = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
+		self.opts    = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
 		self.plugins = {};
-		self.input = input = $(input)
+		self.input   = input = $(input)
 			.wrap(opts.html.wrap)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
@@ -84,6 +84,16 @@
 
 		self.invalidateBounds();
 		self.initPlugins(opts.plugins);
+
+		// `postInit` is fired to let plugins and users to run code after all plugins
+		// have been created and initialized. This is a good place to set some kind
+		// of global values before somebody gets to use them.
+		self.trigger('postInit');
+
+		// `ready` is fired after all global configuration and prepearation has been
+		// done and the TextExt component is ready to use. Event handlers should
+		// expect all values to be set and the plugins to be in the final state.
+		self.trigger('ready');
 	};
 
 	p.initPlugins = function(plugins)
