@@ -51,19 +51,26 @@ function typeTag(value)
 	};
 };
 
+function defaultWrap(value)
+{
+	return value;
+};
+
 function typeAndValidateTag(value, wrap)
 {
+	wrap = wrap || defaultWrap;
 	return function(browser)
 	{
 		browser
 			.and(typeTag(value))
-			.and(assertTagPresent(wrap ? wrap(value) : value))
+			.and(assertTagPresent(wrap(value)))
 			;
 	};
 };
 
 function closeTag(value, wrap)
 {
+	wrap = wrap || defaultWrap;
 	return function(browser)
 	{
 		browser
@@ -91,6 +98,45 @@ function createBrowser()
 	});
 };
 
+function testFilterFunctionality()
+{
+	return function(browser)
+	{
+		browser
+			.click('css=.text-wrap')
+
+			.and(typeTag('hello'))
+			.and(assertTagNotPresent('hello'))
+			.and(typeTag('world'))
+			.and(assertTagNotPresent('world'))
+
+			.and(typeAndValidateTag('PHP'))
+			.and(typeAndValidateTag('Ruby'))
+			.and(typeAndValidateTag('Go'))
+			;
+	};
+};
+
+function testTagFunctionality(wrap)
+{
+	return function(browser)
+	{
+		browser
+			.click('css=.text-wrap')
+
+			.and(typeAndValidateTag('hello', wrap))
+			.and(typeAndValidateTag('world', wrap))
+			.and(typeAndValidateTag('word1', wrap))
+			.and(typeAndValidateTag('word2', wrap))
+			.and(typeAndValidateTag('word3', wrap))
+
+			.and(closeTag('word2', wrap))
+			.and(closeTag('word1', wrap))
+			.and(closeTag('word3', wrap))
+			;
+	};
+};
+
 function runModule(run)
 {
 	var browser = createBrowser();
@@ -110,18 +156,20 @@ function runModule(run)
 };
 
 module.exports = {
-	log                 : log,
-	echo                : echo,
-	verifyTextExt       : verifyTextExt,
-	tagXPath            : tagXPath,
-	suggestionsXPath    : suggestionsXPath,
-	assertTagPresent    : assertTagPresent,
-	assertTagNotPresent : assertTagNotPresent,
-	typeTag             : typeTag,
-	typeAndValidateTag  : typeAndValidateTag,
-	closeTag            : closeTag,
-	screenshot          : screenshot,
-	createBrowser       : createBrowser,
-	runModule           : runModule
+	log                     : log,
+	echo                    : echo,
+	verifyTextExt           : verifyTextExt,
+	tagXPath                : tagXPath,
+	suggestionsXPath        : suggestionsXPath,
+	assertTagPresent        : assertTagPresent,
+	assertTagNotPresent     : assertTagNotPresent,
+	typeTag                 : typeTag,
+	typeAndValidateTag      : typeAndValidateTag,
+	closeTag                : closeTag,
+	screenshot              : screenshot,
+	createBrowser           : createBrowser,
+	runModule               : runModule,
+	testFilterFunctionality : testFilterFunctionality,
+	testTagFunctionality    : testTagFunctionality
 };
 

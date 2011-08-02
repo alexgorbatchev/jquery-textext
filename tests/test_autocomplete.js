@@ -13,8 +13,15 @@ var dropdown = 'css=.text-core > .text-wrap > .text-dropdown',
 	textarea = 'css=#textarea'
 	;
 
-function testDropdownFunctionality(wrap)
+function assertTextareaValue(browser)
 {
+	browser.assertValue(textarea, 'PHP');
+};
+
+function testDropdownFunctionality(finalAssert)
+{
+	finalAssert = finalAssert || assertTextareaValue;
+
 	return function(browser)
 	{
 		browser
@@ -48,16 +55,15 @@ function testDropdownFunctionality(wrap)
 			.typeKeys(textarea, 'ph')
 			.assertVisible(common.suggestionsXPath(true, 0))
 			.keyDown(textarea, ENTER)
-			.assertValue(textarea, 'PHP')
 			.assertNotVisible(dropdown)
+
+			.and(finalAssert)
 			;
 	};
 };
 
-function testAutocomplete(exampleId, wrap)
+function testAutocomplete(exampleId, finalAssert)
 {
-	wrap = wrap || function(v) { return v };
-
 	return function(browser)
 	{
 		browser
@@ -65,7 +71,7 @@ function testAutocomplete(exampleId, wrap)
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
-			.and(testDropdownFunctionality(wrap))
+			.and(testDropdownFunctionality(finalAssert))
 			.and(common.screenshot('autocomplete-' + exampleId))
 			;
 	};
@@ -74,7 +80,10 @@ function testAutocomplete(exampleId, wrap)
 function run(browser)
 {
 	browser
-		.and(testAutocomplete('dropdown'))
+		.and(testAutocomplete('basics'))
+		.and(testAutocomplete('with-filter'))
+		.and(testAutocomplete('with-tags', common.testTagFunctionality()))
+		.and(testAutocomplete('with-tags-and-filter', common.testFilterFunctionality()))
 	;
 };
 
