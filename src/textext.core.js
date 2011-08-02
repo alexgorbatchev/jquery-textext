@@ -201,8 +201,9 @@
 
 	p.on = function(args)
 	{
-		var self   = this,
-			target = self.input(),
+		var self  = this,
+			input = self.input(),
+			wrap  = self.core().getWrapContainer(),
 			event
 			;
 
@@ -210,7 +211,7 @@
 			(function(self, event, handler)
 			{
 
-				target.bind(event, function()
+				(event == 'click' ? wrap : input).bind(event, function()
 				{
 					return handler.apply(self, arguments);
 				});
