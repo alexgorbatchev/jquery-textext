@@ -24,7 +24,7 @@
 
 		var self  = this,
 			input = self.getInput(),
-			opts  = self.getOpts()
+			opts  = self.opts()
 			;
 
 		if(opts.tagsEnabled)
@@ -91,7 +91,7 @@
 	{
 		var self = this;
 
-		if(self.getOpts().tagsEnabled)
+		if(self.opts().tagsEnabled)
 			self.addTagFromInput();
 	};
 
@@ -187,7 +187,7 @@
 	p.renderTag = function(tag)
 	{
 		var self = this,
-			node = $(self.getOpts().html.tag)
+			node = $(self.opts().html.tag)
 			;
 
 		node.find('.text-label').text(self.itemToString(tag));

@@ -70,9 +70,9 @@
 	{
 		var self = this;
 
-		self.opts    = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
-		self.plugins = {};
-		self.input   = input = $(input)
+		self._opts    = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
+		self._plugins = {};
+		self._input   = input = $(input)
 			.wrap(opts.html.wrap)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
@@ -111,9 +111,9 @@
 
 			if(plugin)
 			{
-				plugin             = new plugin();
-				ext                = self.getOpts().ext;
-				self.plugins[name] = plugin;
+				plugin              = new plugin();
+				ext                 = self.opts().ext;
+				self._plugins[name] = plugin;
 
 				$.extend(true, plugin, ext['*'], ext[name]);
 				plugin.init(self);
@@ -131,12 +131,12 @@
 
 	p.getInput = function()
 	{
-		return this.input;
+		return this._input;
 	};
 
-	p.getOpts = function()
+	p.opts = function(value)
 	{
-		return this.opts;
+		return this._opts = value || this._opts;
 	};
 
 	p.getWrapContainer = function()
@@ -178,7 +178,7 @@
 		p['onKey' + type] = function(e)
 		{
 			var self          = this,
-				keyName       = self.getOpts().keys[e.keyCode] || 'Other',
+				keyName       = self.opts().keys[e.keyCode] || 'Other',
 				defaultResult = keyName.indexOf('!') != keyName.length - 1,
 				eventName     = keyName.replace('!', '') + 'Key' + type,
 				result
@@ -220,8 +220,8 @@
 
 	p.baseInit = function(parent, opts)
 	{
-		parent.opts = combine({}, parent.opts, opts);
-		p.parent    = parent;
+		parent.opts(combine({}, parent.opts(), opts));
+		p.parent = parent;
 	};
 
 	p.core = function()
@@ -229,9 +229,9 @@
 		return this.parent;
 	};
 
-	p.getOpts = function()
+	p.opts = function(value)
 	{
-		return this.core().getOpts();
+		return this.core().opts(value);
 	};
 
 	p.getInput = function()

@@ -32,7 +32,7 @@
 	p.onIsTagAllowed = function(e, data)
 	{
 		var self = this,
-			opts = self.getOpts(),
+			opts = self.opts(),
 			list = opts.filterItems || [],
 			i
 			;
@@ -49,7 +49,7 @@
 
 	p.onSetSuggestions = function(e, data)
 	{
-		var opts = this.getOpts();
+		var opts = this.opts();
 
 		if(opts.useSuggestionsToFilter)
 			opts.filterItems = data.result;

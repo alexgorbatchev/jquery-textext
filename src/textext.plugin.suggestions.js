@@ -33,13 +33,13 @@
 	p.onPostInit = function(e)
 	{
 		var self = this;
-		self.setSuggestions(self.getOpts().suggestions, false);
+		self.setSuggestions(self.opts().suggestions, false);
 	};
 
 	p.onGetSuggestions = function(e, data)
 	{
 		var self        = this,
-			suggestions = self.getOpts().suggestions,
+			suggestions = self.opts().suggestions,
 			result      = [],
 			query       = data.query.toLowerCase(),
 			item

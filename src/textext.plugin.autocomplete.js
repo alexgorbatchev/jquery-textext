@@ -25,7 +25,7 @@
 		self.baseInit(parent, DEFAULT_OPTS);
 
 		var input = self.getInput(),
-			opts  = self.getOpts()
+			opts  = self.opts()
 			;
 
 		if(opts.dropdownEnabled)
@@ -224,7 +224,7 @@
 	p.renderSuggestion = function(suggestion)
 	{
 		var self = this,
-			node = $(self.getOpts().html.suggestion)
+			node = $(self.opts().html.suggestion)
 			;
 
 		node.find('.text-label').text(self.itemToString(suggestion));
