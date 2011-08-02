@@ -8,6 +8,13 @@
 	$.fn.textext.addPlugin('autocomplete', TextExtAutocomplete);
 
 	var p = TextExtAutocomplete.prototype,
+		
+		CSS_DOT            = '.',
+		CSS_SELECTED       = 'text-selected',
+		CSS_DOT_SELECTED   = CSS_DOT + CSS_SELECTED,
+		CSS_SUGGESTION     = 'text-suggestion',
+		CSS_DOT_SUGGESTION = CSS_DOT + CSS_SUGGESTION,
+
 		DEFAULT_OPTS = {
 			dropdownEnabled : true,
 
@@ -33,6 +40,7 @@
 			input.after(opts.html.dropdown);
 
 			self.on({
+				click          : self.onClick,
 				blur           : self.onBlur,
 				otherKeyUp     : self.onOtherKeyUp,
 				deleteKeyUp    : self.onOtherKeyUp,
@@ -56,12 +64,28 @@
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
 	
+	p.onClick = function(e)
+	{
+		var self   = this,
+			target = $(e.target)
+			;
+
+		if(target.is(CSS_DOT_SUGGESTION))
+		{
+			self.getSuggestionElements().removeClass(CSS_SELECTED);
+			target.addClass(CSS_SELECTED);
+			self.selectFromDropdown();
+		}
+	};
+
 	p.onBlur = function(e)
 	{
 		var self = this;
 
+		// use timeout here so that onClick has a chance to fire because if
+		// dropdown is hidden when clicked, onClick doesn't fire
 		if(self.isDropdownVisible())
-			self.trigger('hideDropdown');
+			setTimeout(function() { self.trigger('hideDropdown') }, 100);
 	};
 
 	p.onOtherKeyUp = function(e)
@@ -105,7 +129,7 @@
 
 	p.getSuggestionElements = function()
 	{
-		return this.getDropdownContainer().find('.text-suggestion');
+		return this.getDropdownContainer().find(CSS_DOT_SUGGESTION);
 	};
 
 	p.setSelectedSuggestion = function(suggestion)
@@ -118,22 +142,22 @@
 			item, i
 			;
 
-		all.removeClass('selected');
+		all.removeClass(CSS_SELECTED);
 
 		for(i = 0; i < all.length; i++)
 		{
 			item = $(all[i]);
 
-			if(self.compareItems(item.data('text-suggestion'), suggestion))
-				return item.addClass('text-selected');
+			if(self.compareItems(item.data(CSS_SUGGESTION), suggestion))
+				return item.addClass(CSS_SELECTED);
 		}
 
-		all.first().addClass('text-selected');
+		all.first().addClass(CSS_SELECTED);
 	};
 
 	p.getSelectedSuggestion = function()
 	{
-		return this.getSuggestionElements().filter('.text-selected').first();
+		return this.getSuggestionElements().filter(CSS_DOT_SELECTED).first();
 	};
 
 	p.isDropdownVisible = function()
@@ -149,7 +173,7 @@
 	p.onShowDropdown = function(e)
 	{
 		var self    = this,
-			current = self.getSelectedSuggestion().data('text-suggestion')
+			current = self.getSelectedSuggestion().data(CSS_SUGGESTION)
 			;
 		self.renderDropdown(self.suggestions);
 		self.showDropdown(self.getDropdownContainer());
@@ -208,6 +232,7 @@
 		var self     = this,
 			dropdown = self.getDropdownContainer()
 			;
+
 		self.previousInputValue = null;
 		dropdown.hide();
 	};
@@ -228,7 +253,7 @@
 			;
 
 		node.find('.text-label').text(self.itemToString(suggestion));
-		node.data('text-suggestion', suggestion);
+		node.data(CSS_SUGGESTION, suggestion);
 		return node;
 	};
 
@@ -244,14 +269,14 @@
 			next = selected.next();
 
 			if(next.length > 0)
-				selected.removeClass('text-selected');
+				selected.removeClass(CSS_SELECTED);
 		}
 		else
 		{
 			next = self.getSuggestionElements().first();
 		}
 
-		next.addClass('text-selected');
+		next.addClass(CSS_SELECTED);
 		self.scrollSuggestionIntoView(next);
 	};
 
@@ -265,8 +290,8 @@
 		if(prev.length == 0)
 			return;
 
-		selected.removeClass('text-selected');
-		prev.addClass('text-selected');
+		selected.removeClass(CSS_SELECTED);
+		prev.addClass(CSS_SELECTED);
 		self.scrollSuggestionIntoView(prev);
 	};
 
@@ -295,11 +320,13 @@
 	p.selectFromDropdown = function()
 	{
 		var self       = this,
-			suggestion = self.getSelectedSuggestion().first().data('text-suggestion')
+			suggestion = self.getSelectedSuggestion().first().data(CSS_SUGGESTION)
 			;
 
 		if(suggestion)
+		{
 			self.input().val(self.itemToString(suggestion));
+		}
 
 		self.trigger('hideDropdown');
 	};
