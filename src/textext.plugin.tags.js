@@ -23,7 +23,7 @@
 		this.baseInit(parent, DEFAULT_OPTS);
 
 		var self  = this,
-			input = self.getInput(),
+			input = self.input(),
 			opts  = self.opts()
 			;
 
@@ -49,7 +49,7 @@
 
 	p.getContainer = function()
 	{
-		return this.core().getInput().siblings('.text-tags');
+		return this.core().input().siblings('.text-tags');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -67,7 +67,7 @@
 		else
 			pos = self.originalPadding;
 
-		self.getInput().css({
+		self.input().css({
 			paddingLeft : pos.left,
 			paddingTop  : pos.top
 		});
@@ -101,7 +101,7 @@
 	p.addTagFromInput = function(input)
 	{
 		var self  = this,
-			input = self.core().getInput(),
+			input = self.core().input(),
 			val   = input.val(),
 			tag
 			;

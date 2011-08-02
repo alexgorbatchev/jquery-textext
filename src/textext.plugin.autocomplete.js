@@ -24,7 +24,7 @@
 
 		self.baseInit(parent, DEFAULT_OPTS);
 
-		var input = self.getInput(),
+		var input = self.input(),
 			opts  = self.opts()
 			;
 
@@ -50,7 +50,7 @@
 
 	p.getDropdownContainer = function()
 	{
-		return this.getInput().siblings('.text-dropdown');
+		return this.input().siblings('.text-dropdown');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -169,7 +169,7 @@
 	p.getSuggestions = function()
 	{
 		var self = this,
-			val  = self.getInput().val()
+			val  = self.input().val()
 			;
 
 		if(self.previousInputValue == val)
@@ -299,7 +299,7 @@
 			;
 
 		if(suggestion)
-			self.getInput().val(self.itemToString(suggestion));
+			self.input().val(self.itemToString(suggestion));
 
 		self.trigger('hideDropdown');
 	};

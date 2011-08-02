@@ -123,13 +123,13 @@
 
 	p.trigger = function()
 	{
-		$(this.getInput()).trigger(
+		$(this.input()).trigger(
 			arguments[0],
 			slice.call(arguments, 1)
 		);
 	};
 
-	p.getInput = function()
+	p.input = function()
 	{
 		return this._input;
 	};
@@ -141,13 +141,13 @@
 
 	p.getWrapContainer = function()
 	{
-		return this.getInput().parent();
+		return this.input().parent();
 	};
 
 	p.invalidateBounds = function()
 	{
 		var self      = this,
-			input     = self.getInput(),
+			input     = self.input(),
 			wrap      = self.getWrapContainer(),
 			container = wrap.parent(),
 			width     = self.originalWidth,
@@ -165,7 +165,7 @@
 
 	p.focusInput = function()
 	{
-		this.getInput()[0].focus();
+		this.input()[0].focus();
 	};
 
 	//--------------------------------------------------------------------------------
@@ -179,8 +179,8 @@
 		{
 			var self          = this,
 				keyName       = self.opts().keys[e.keyCode] || 'Other',
-				defaultResult = keyName.indexOf('!') != keyName.length - 1,
 				eventName     = keyName.replace('!', '') + 'Key' + type,
+				defaultResult = keyName.substr(-1) != '!',
 				result
 				;
 
@@ -202,7 +202,7 @@
 	p.on = function(args)
 	{
 		var self   = this,
-			target = self.getInput(),
+			target = self.input(),
 			event
 			;
 
@@ -234,9 +234,9 @@
 		return this.core().opts(value);
 	};
 
-	p.getInput = function()
+	p.input = function()
 	{
-		return this.core().getInput();
+		return this.core().input();
 	};
 
 	p.trigger = function()
