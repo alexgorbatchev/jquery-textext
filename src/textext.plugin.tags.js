@@ -33,7 +33,8 @@
 
 			self.on({
 				enterKeyDown : self.onEnterKeyDown,
-				invalidate   : self.onInvalidate
+				invalidate   : self.onInvalidate,
+				selectItem   : self.onSelectItem
 			});
 
 			self.getContainer().click(function(e) { self.onClick(e) });
@@ -55,6 +56,16 @@
 	//--------------------------------------------------------------------------------
 	// Event handlers
 	
+	/**
+	 * Reacts to `selectItem` event triggered by the Autocomplete plugin.
+	 * @author agorbatchev
+	 * @date 2011/08/02
+	 */
+	p.onSelectItem = function(e, suggestion)
+	{
+		this.addTagFromInput();
+	};
+
 	p.onInvalidate = function()
 	{
 		var self    = this,

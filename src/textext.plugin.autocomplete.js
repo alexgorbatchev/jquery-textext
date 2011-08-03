@@ -326,6 +326,7 @@
 		if(suggestion)
 		{
 			self.input().val(self.itemToString(suggestion));
+			self.trigger('selectItem', suggestion);
 		}
 
 		self.trigger('hideDropdown');
