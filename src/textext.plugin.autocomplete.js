@@ -47,7 +47,7 @@
 				blur           : self.onBlur,
 				otherKeyUp     : self.onOtherKeyUp,
 				deleteKeyUp    : self.onOtherKeyUp,
-				backspaceKeyUp : self.onOtherKeyUp,
+				backspaceKeyUp : self.onBackspaceKeyUp,
 				downKeyDown    : self.onDownKeyDown,
 				upKeyDown      : self.onUpKeyDown,
 				enterKeyDown   : self.onEnterKeyDown,
@@ -100,6 +100,14 @@
 		// dropdown is hidden when clicked, onClick doesn't fire
 		if(self.isDropdownVisible())
 			setTimeout(function() { self.trigger(HIDE_DROPDOWN) }, 100);
+	};
+
+	p.onBackspaceKeyUp = function(e)
+	{
+		var self = this;
+
+		if(self.input().val().length > 0)
+			self.getSuggestions();
 	};
 
 	p.onOtherKeyUp = function(e)
