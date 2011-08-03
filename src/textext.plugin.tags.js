@@ -109,7 +109,7 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.addTagFromInput = function(input)
+	p.addTagFromInput = function()
 	{
 		var self  = this,
 			input = self.core().input(),

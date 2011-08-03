@@ -15,6 +15,9 @@
 		CSS_SUGGESTION     = 'text-suggestion',
 		CSS_DOT_SUGGESTION = CSS_DOT + CSS_SUGGESTION,
 
+		HIDE_DROPDOWN = 'hideDropdown',
+		SHOW_DROPDOWN = 'showDropdown',
+
 		DEFAULT_OPTS = {
 			dropdownEnabled : true,
 
@@ -85,7 +88,7 @@
 		// use timeout here so that onClick has a chance to fire because if
 		// dropdown is hidden when clicked, onClick doesn't fire
 		if(self.isDropdownVisible())
-			setTimeout(function() { self.trigger('hideDropdown') }, 100);
+			setTimeout(function() { self.trigger(HIDE_DROPDOWN) }, 100);
 	};
 
 	p.onOtherKeyUp = function(e)
@@ -121,7 +124,7 @@
 		var self = this;
 
 		if(self.isDropdownVisible())
-			self.trigger('hideDropdown');
+			self.trigger(HIDE_DROPDOWN);
 	};
 
 	//--------------------------------------------------------------------------------
@@ -187,7 +190,7 @@
 			;
 
 		if(data.showHideDropdown != false)
-			self.trigger(suggestions == null || suggestions.length == 0 ? 'hideDropdown' : 'showDropdown');
+			self.trigger(suggestions == null || suggestions.length == 0 ? HIDE_DROPDOWN : SHOW_DROPDOWN);
 	};
 
 	p.getSuggestions = function()
@@ -329,6 +332,6 @@
 			self.trigger('selectItem', suggestion);
 		}
 
-		self.trigger('hideDropdown');
+		self.trigger(HIDE_DROPDOWN);
 	};
 })(jQuery);
