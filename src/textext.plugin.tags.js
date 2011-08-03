@@ -32,9 +32,10 @@
 			input.after(opts.html.tags);
 
 			self.on({
-				enterKeyDown : self.onEnterKeyDown,
-				invalidate   : self.onInvalidate,
-				selectItem   : self.onSelectItem
+				enterKeyDown     : self.onEnterKeyDown,
+				invalidate       : self.onInvalidate,
+				selectItem       : self.onSelectItem,
+				backspaceKeyDown : self.onBackspaceKeyDown
 			});
 
 			self.getContainer().click(function(e) { self.onClick(e) });
@@ -64,6 +65,25 @@
 	p.onSelectItem = function(e, suggestion)
 	{
 		this.addTagFromInput();
+	};
+
+	/**
+	 * When backspace key is pressed in an empty text field, deletes last tag in the list.
+	 * @author agorbatchev
+	 * @date 2011/08/02
+	 */
+	p.onBackspaceKeyDown = function(e)
+	{
+		var self    = this,
+			input   = self.input(),
+			lastTag = self.getAllTagElements().last()
+			;
+
+		if(input.val().length == 0)
+		{
+			lastTag.remove();
+			self.core().invalidateBounds();
+		}
 	};
 
 	p.onInvalidate = function()
