@@ -56,6 +56,8 @@
 				showDropdown   : self.onShowDropdown,
 				hideDropdown   : self.onHideDropdown
 			});
+
+			self.getDropdownContainer().mouseover(function(e) { self.onMouseOver(e) });
 		}
 	};
 
@@ -67,7 +69,7 @@
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
 	
-	p.onClick = function(e)
+	p.onMouseOver = function(e)
 	{
 		var self   = this,
 			target = $(e.target)
@@ -75,10 +77,19 @@
 
 		if(target.is(CSS_DOT_SUGGESTION))
 		{
-			self.getSuggestionElements().removeClass(CSS_SELECTED);
+			self.clearSelected();
 			target.addClass(CSS_SELECTED);
-			self.selectFromDropdown();
 		}
+	};
+
+	p.onClick = function(e)
+	{
+		var self   = this,
+			target = $(e.target)
+			;
+
+		if(target.is(CSS_DOT_SUGGESTION))
+			self.selectFromDropdown();
 	};
 
 	p.onBlur = function(e)
@@ -145,7 +156,7 @@
 			item, i
 			;
 
-		all.removeClass(CSS_SELECTED);
+		self.clearSelected();
 
 		for(i = 0; i < all.length; i++)
 		{
@@ -260,6 +271,22 @@
 		return node;
 	};
 
+	/**
+	 * Removed `text-selected` class from all suggestion elements.
+	 * @author agorbatchev
+	 * @date 2011/08/02
+	 */
+	p.clearSelected = function()
+	{
+		this.getSuggestionElements().removeClass(CSS_SELECTED);
+	};
+
+	/**
+	 * Selects next suggestion relative to the current one. If there's no
+	 * currently selected suggestion, it will select the first one.
+	 * @author agorbatchev
+	 * @date 2011/08/02
+	 */
 	p.toggleNextSuggestion = function()
 	{
 		var self     = this,
@@ -293,7 +320,7 @@
 		if(prev.length == 0)
 			return;
 
-		selected.removeClass(CSS_SELECTED);
+		self.clearSelected();
 		prev.addClass(CSS_SELECTED);
 		self.scrollSuggestionIntoView(prev);
 	};
