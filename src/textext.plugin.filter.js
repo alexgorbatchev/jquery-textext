@@ -9,9 +9,8 @@
 
 	var p = TextExtFilter.prototype,
 		DEFAULT_OPTS = {
-			filterEnabled          : true,
-			useSuggestionsToFilter : false,
-			filterItems            : []
+			filterEnabled : true,
+			filterItems   : null
 		}
 		;
 
@@ -24,16 +23,23 @@
 			isTagAllowed   : self.onIsTagAllowed,
 			setSuggestions : self.onSetSuggestions
 		});
+
+		self._suggestions = null;
 	};
 
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
+	/**
+	 * Handles `isTagAllowed` event dispatched by the Tags plugin.
+	 * @author agorbatchev
+	 * @date 2011/08/04
+	 */
 	p.onIsTagAllowed = function(e, data)
 	{
 		var self = this,
 			opts = self.opts(),
-			list = opts.filterItems || [],
+			list = opts.filterItems || self.suggestions() || [],
 			i
 			;
 
@@ -49,9 +55,12 @@
 
 	p.onSetSuggestions = function(e, data)
 	{
-		var opts = this.opts();
+		this.suggestions(data.result);
+	};
 
-		if(opts.useSuggestionsToFilter)
-			opts.filterItems = data.result;
+	p.suggestions = function(value)
+	{
+		var self = this;
+		return self._suggestion = value || self._suggestion;
 	};
 })(jQuery);
