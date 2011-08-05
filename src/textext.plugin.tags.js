@@ -145,8 +145,12 @@
 		if(self.isTagAllowed(tag) == false)
 			return;
 
+		// add the tag
 		self.addTag(tag);
+		// clear the textarea after it was grabbed as a tag
 		input.val('');
+		// refocus the textarea just in case it lost the focus
+		input.focus();
 	};
 
 	p.getAllTagElements = function()
