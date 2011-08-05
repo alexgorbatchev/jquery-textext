@@ -133,6 +133,10 @@ function testTagFunctionality(wrap)
 			.and(closeTag('word2', wrap))
 			.and(closeTag('word1', wrap))
 			.and(closeTag('word3', wrap))
+
+			// backspace
+			.keyDown('css=#textarea', '\\8')
+			.and(assertTagNotPresent('world'))
 			;
 	};
 };
