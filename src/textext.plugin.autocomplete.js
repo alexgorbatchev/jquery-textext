@@ -159,8 +159,9 @@
 		if(!suggestion)
 			return;
 
-		var self = this,
-			all  = self.getSuggestionElements(),
+		var self   = this,
+			all    = self.getSuggestionElements(),
+			target = all.first(),
 			item, i
 			;
 
@@ -171,10 +172,14 @@
 			item = $(all[i]);
 
 			if(self.compareItems(item.data(CSS_SUGGESTION), suggestion))
-				return item.addClass(CSS_SELECTED);
+			{
+				target = item.addClass(CSS_SELECTED);
+				break;
+			}
 		}
 
-		all.first().addClass(CSS_SELECTED);
+		target.addClass(CSS_SELECTED);
+		self.scrollSuggestionIntoView(target);
 	};
 
 	p.getSelectedSuggestion = function()
@@ -335,21 +340,25 @@
 
 	p.scrollSuggestionIntoView = function(item)
 	{
-		var y         = (item.position() || {}).top,
-			height    = item.outerHeight(),
-			dropdown  = this.getDropdownContainer(),
-			scrollPos = dropdown.scrollTop(),
-			scrollTo  = null
+		var itemHeight     = item.outerHeight(),
+			dropdown       = this.getDropdownContainer(),
+			dropdownHeight = dropdown.innerHeight(),
+			scrollPos      = dropdown.scrollTop(),
+			itemTop        = (item.position() || {}).top,
+			scrollTo       = null,
+			paddingTop     = parseInt(dropdown.css('paddingTop'))
 			;
 
-		if(y == null)
+		if(itemTop == null)
 			return;
 
-		if(y + height > dropdown.innerHeight())
-			scrollTo = scrollPos + height;
+		// if scrolling down and item is below the bottom fold
+		if(itemTop + itemHeight > dropdownHeight)
+			scrollTo = itemTop + scrollPos + itemHeight - dropdownHeight + paddingTop;
 
-		if(y < 0)
-			scrollTo = scrollPos + y;
+		// if scrolling up and item is above the top fold
+		if(itemTop < 0)
+			scrollTo = itemTop + scrollPos - paddingTop;
 
 		if(scrollTo != null)
 			dropdown.scrollTop(scrollTo);
