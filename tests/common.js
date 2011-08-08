@@ -42,11 +42,14 @@ function assertTagNotPresent(value)
 
 function typeTag(value)
 {
+	var textarea = 'css=#textarea';
+
 	return function(browser)
 	{
 		browser
-			.type('css=#textarea', value)
-			.keyDown('css=#textarea', '\\13')
+			.type(textarea, '')
+			.typeKeys(textarea, value)
+			.keyDown(textarea, '\\13')
 			;
 	};
 };
@@ -84,7 +87,7 @@ function screenshot(name)
 {
 	return function(browser)
 	{
-		browser.captureEntirePageScreenshot(__dirname + '/' + name + ' (' + (new Date().toUTCString().replace(/:/g, '.')) + ').png');
+		// browser.captureEntirePageScreenshot(__dirname + '/' + name + ' (' + (new Date().toUTCString().replace(/:/g, '.')) + ').png');
 	};
 };
 
