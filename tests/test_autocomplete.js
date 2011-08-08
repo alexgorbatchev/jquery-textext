@@ -15,7 +15,7 @@ var dropdown = 'css=.text-core > .text-wrap > .text-dropdown',
 
 function assertTextareaValue(browser)
 {
-	browser.assertValue(textarea, 'PHP');
+	browser.assertValue(textarea, 'OCAML');
 };
 
 function testDropdownFunctionality(finalAssert)
@@ -52,7 +52,7 @@ function testDropdownFunctionality(finalAssert)
 			.assertElementNotPresent(common.suggestionsXPath(true, 1))
 			.assertVisible(common.suggestionsXPath(true, 0))
 
-			.typeKeys(textarea, 'ph')
+			.typeKeys(textarea, 'oca')
 			.assertVisible(common.suggestionsXPath(true, 0))
 			.keyDown(textarea, ENTER)
 			.assertNotVisible(dropdown)
