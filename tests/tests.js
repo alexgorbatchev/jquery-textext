@@ -9,6 +9,7 @@ common.runModule(function(browser)
 		.and(require('./test_autocomplete.js'))
 		.and(require('./test_tags.js'))
 		.and(require('./test_filter.js'))
+		.and(require('./test_focus.js'))
 	;
 });
 

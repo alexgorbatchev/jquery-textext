@@ -11,7 +11,7 @@
 		DEFAULT_OPTS = {
 			html : {
 				focus : '<div class="text-focus"/>'
-			},
+			}
 		}
 		;
 
