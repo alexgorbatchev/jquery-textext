@@ -104,9 +104,11 @@
 
 	p.onBackspaceKeyUp = function(e)
 	{
-		var self = this;
+		var self = this,
+			isEmpty = self.input().val().length > 0
+			;
 
-		if(self.input().val().length > 0)
+		if(isEmpty || self.isDropdownVisible())
 			self.getSuggestions();
 	};
 
@@ -223,7 +225,7 @@
 			val  = self.input().val()
 			;
 
-		if(self.previousInputValue == val)
+		if(self._previousInputValue == val)
 			return;
 
 		// if user clears input, then we want to select first suggestion
@@ -231,7 +233,7 @@
 		if(val == '')
 			current = null;
 
-		self.previousInputValue = val;
+		self._previousInputValue = val;
 		self.trigger('getSuggestions', { query : val });
 	};
 
@@ -260,7 +262,7 @@
 			dropdown = self.getDropdownContainer()
 			;
 
-		self.previousInputValue = null;
+		self._previousInputValue = null;
 		dropdown.hide();
 	};
 
