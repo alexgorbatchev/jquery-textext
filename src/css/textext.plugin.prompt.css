@@ -1,0 +1,14 @@
+.text-core .text-wrap .text-prompt {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 4px 0 0 7px;
+  font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
+  color: #c0c0c0;
+}
+.text-core .text-wrap .text-prompt.text-hide-prompt {
+  display: none;
+}
