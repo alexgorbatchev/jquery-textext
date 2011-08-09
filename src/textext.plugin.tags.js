@@ -76,14 +76,30 @@
 	//--------------------------------------------------------------------------------
 	// Event handlers
 	
+	/**
+	 * Reacts to user moving mouse over the text area when cursor is over the text
+	 * and not over the tags. Whenever mouse cursor is over the area covered by
+	 * tags, the tags container is flipped to be on top of the text area which
+	 * makes all tags functional with the mouse.
+	 * @author agorbatchev
+	 * @date 2011/08/08
+	 */
 	p.onInputMouseMove = function(e)
 	{
-		this.toggleZIndex(e, true);
+		this.toggleZIndex(e);
 	};
 
+	/**
+	 * Reacts to user moving mouse over the tags. Whenever the cursor moves out
+	 * of the tags and back into where the text input is happening visually,
+	 * the tags container is sent back under the text area which allows user
+	 * to interact with the text using mouse cursor as expected.
+	 * @author agorbatchev
+	 * @date 2011/08/08
+	 */
 	p.onContainerMouseMove = function(e)
 	{
-		this.toggleZIndex(e, false);
+		this.toggleZIndex(e);
 	};
 
 	/**
@@ -167,7 +183,17 @@
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
-	p.toggleZIndex = function(e, onTop)
+	/**
+	 * Toggles tag container to be on top of the text area or under based on where
+	 * the mouse cursor is located. When cursor is above the text input and out of
+	 * any of the tags, the tags container is sent under the text area. If cursor
+	 * is over any of the tags, the tag container is brought to be over the text
+	 * area.
+	 * @param e event Original mouse event.
+	 * @author agorbatchev
+	 * @date 2011/08/08
+	 */
+	p.toggleZIndex = function(e)
 	{
 		var self            = this,
 			offset          = self.input().offset(),
@@ -180,7 +206,7 @@
 			;
 
 		if(!isOnTop && !isMouseOverText || isOnTop && isMouseOverText)
-			container[(onTop ? 'add' : 'remove') + 'Class'](CSS_TAGS_ON_TOP);
+			container[(!isOnTop ? 'add' : 'remove') + 'Class'](CSS_TAGS_ON_TOP);
 	};
 
 	p.addTagFromInput = function()
