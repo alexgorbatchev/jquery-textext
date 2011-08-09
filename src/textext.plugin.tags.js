@@ -8,6 +8,13 @@
 	$.fn.textext.addPlugin('tags', TextExtTags);
 
 	var p = TextExtTags.prototype,
+
+		CSS_DOT             = '.',
+		CSS_TAGS_ON_TOP     = 'text-tags-on-top',
+		CSS_DOT_TAGS_ON_TOP = CSS_DOT + CSS_TAGS_ON_TOP,
+		CSS_TAG             = 'text-tag',
+		CSS_DOT_TAG         = CSS_DOT + CSS_TAG,
+
 		DEFAULT_OPTS = {
 			tagsEnabled : true,
 
@@ -38,12 +45,24 @@
 				backspaceKeyDown : self.onBackspaceKeyDown
 			});
 
-			self.getContainer().click(function(e) { self.onClick(e) });
+			self.getContainer()
+				.click(function(e) { self.onClick(e) })
+				.mousemove(function(e) { self.onContainerMouseMove(e) })
+				;
+
+			self.input()
+				.mousemove(function(e) { self.onInputMouseMove(e) })
+				;
 		}
 
-		self.originalPadding = { 
+		self._originalPadding = { 
 			left : parseInt(input.css('paddingLeft') || 0),
 			top  : parseInt(input.css('paddingTop') || 0)
+		};
+
+		self._paddingBox = {
+			left : 0,
+			top  : 0
 		};
 
 		self.addTags(opts.items);
@@ -57,6 +76,16 @@
 	//--------------------------------------------------------------------------------
 	// Event handlers
 	
+	p.onInputMouseMove = function(e)
+	{
+		this.toggleZIndex(e, true);
+	};
+
+	p.onContainerMouseMove = function(e)
+	{
+		this.toggleZIndex(e, false);
+	};
+
 	/**
 	 * Reacts to `selectItem` event triggered by the Autocomplete plugin.
 	 * @author agorbatchev
@@ -96,7 +125,9 @@
 		if(lastTag.length > 0)
 			pos.left += lastTag.innerWidth();
 		else
-			pos = self.originalPadding;
+			pos = self._originalPadding;
+
+		self._paddingBox = pos;
 
 		self.input().css({
 			paddingLeft : pos.left,
@@ -107,15 +138,22 @@
 	p.onClick = function(e)
 	{
 		var self   = this,
-			source = $(e.target)
+			source = $(e.target),
+			focus  = 0
 			;
 
-		function tag() { return source.parents('.text-tag:first') };
-
 		if(source.is('.text-tags'))
-			self.core().focusInput();
+		{
+			focus = 1;
+		}
 		else if(source.is('.text-remove'))
-			self.removeTag(tag());
+		{
+			self.removeTag(source.parents(CSS_DOT_TAG + ':first'));
+			focus = 1;
+		}
+
+		if(focus)
+			self.core().focusInput();
 	};
 
 	p.onEnterKeyDown = function(e)
@@ -128,6 +166,22 @@
 
 	//--------------------------------------------------------------------------------
 	// Core functionality
+
+	p.toggleZIndex = function(e, onTop)
+	{
+		var self            = this,
+			offset          = self.input().offset(),
+			mouseX          = e.clientX - offset.left,
+			mouseY          = e.clientY - offset.top,
+			box             = self._paddingBox,
+			container       = self.getContainer(),
+			isOnTop         = container.is(CSS_DOT_TAGS_ON_TOP),
+			isMouseOverText = mouseX > box.left && mouseY > box.top
+			;
+
+		if(!isOnTop && !isMouseOverText || isOnTop && isMouseOverText)
+			container[(onTop ? 'add' : 'remove') + 'Class'](CSS_TAGS_ON_TOP);
+	};
 
 	p.addTagFromInput = function()
 	{
@@ -155,7 +209,7 @@
 
 	p.getAllTagElements = function()
 	{
-		return this.getContainer().find('.text-tag');
+		return this.getContainer().find(CSS_DOT_TAG);
 	};
 
 	p.isTagAllowed = function(tag)
@@ -195,7 +249,7 @@
 			;
 
 		for(i = 0; i < list.length, item = $(list[i]); i++)
-			if(self.compareItems(item.data('text-tag'), tag))
+			if(self.compareItems(item.data(CSS_TAG), tag))
 				return item;
 	};
 
@@ -208,7 +262,7 @@
 		if(tag instanceof $)
 		{
 			element = tag;
-			tag = tag.data('text-tag');
+			tag = tag.data(CSS_TAG);
 		}
 		else
 		{
@@ -226,7 +280,7 @@
 			;
 
 		node.find('.text-label').text(self.itemToString(tag));
-		node.data('text-tag', tag);
+		node.data(CSS_TAG, tag);
 		return node;
 	};
 })(jQuery);
