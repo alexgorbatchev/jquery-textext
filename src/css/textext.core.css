@@ -24,8 +24,3 @@
   white-space: nowrap;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
 }
-.text-core .text-wrap textarea:focus {
-  -webkit-box-shadow: 0px 0px 6px #6d84b4;
-  -moz-box-shadow: 0px 0px 6px #6d84b4;
-  box-shadow: 0px 0px 6px #6d84b4;
-}
