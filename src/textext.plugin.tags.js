@@ -39,10 +39,11 @@
 			input.after(opts.html.tags);
 
 			self.on({
-				enterKeyDown     : self.onEnterKeyDown,
-				invalidate       : self.onInvalidate,
-				selectItem       : self.onSelectItem,
-				backspaceKeyDown : self.onBackspaceKeyDown
+				enterKeyUp     : self.onEnterKeyUp,
+				invalidate     : self.onInvalidate,
+				selectItem     : self.onSelectItem,
+				backspaceKeyUp : self.onBackspaceKeyUp,
+				postInit       : self.onPostInit
 			});
 
 			self.getContainer()
@@ -64,8 +65,6 @@
 			left : 0,
 			top  : 0
 		};
-
-		self.addTags(opts.items);
 	};
 
 	p.getContainer = function()
@@ -76,6 +75,18 @@
 	//--------------------------------------------------------------------------------
 	// Event handlers
 	
+	/**
+	 * Reacts to the `postInit` event triggered by the core and sets default tags
+	 * if any were specified.
+	 * @author agorbatchev
+	 * @date 2011/08/09
+	 */
+	p.onPostInit = function(e)
+	{
+		var self = this;
+		self.addTags(self.opts().items);
+	};
+
 	/**
 	 * Reacts to user moving mouse over the text area when cursor is over the text
 	 * and not over the tags. Whenever mouse cursor is over the area covered by
@@ -117,7 +128,7 @@
 	 * @author agorbatchev
 	 * @date 2011/08/02
 	 */
-	p.onBackspaceKeyDown = function(e)
+	p.onBackspaceKeyUp = function(e)
 	{
 		var self    = this,
 			input   = self.input(),
@@ -126,7 +137,7 @@
 
 		if(input.val().length == 0)
 		{
-			lastTag.remove();
+			self.removeTag(lastTag);
 			self.core().invalidateBounds();
 		}
 	};
@@ -172,16 +183,36 @@
 			self.core().focusInput();
 	};
 
-	p.onEnterKeyDown = function(e)
+	p.onEnterKeyUp = function(e)
 	{
 		var self = this;
 
 		if(self.opts().tagsEnabled)
-			self.addTagFromInput();
+			self.trigger('selectItem', self.input().val());//addTagFromInput();
 	};
 
 	//--------------------------------------------------------------------------------
 	// Core functionality
+
+	/**
+	 * Triggeres `setData` event with array of tag values. The `setData` event is
+	 * processed by the core which in turn sets original text input's value.
+	 * @author agorbatchev
+	 * @date 2011/08/09
+	 */
+	p.setData = function()
+	{
+		var self   = this,
+			result = []
+			;
+
+		self.getAllTagElements().each(function()
+		{
+			result.push($(this).data(CSS_TAG));
+		});
+
+		self.trigger('setData', result);
+	};
 
 	/**
 	 * Toggles tag container to be on top of the text area or under based on where
@@ -259,6 +290,7 @@
 			if(self.isTagAllowed(tag))
 				container.append(self.renderTag(tag));
 
+		self.setData();
 		self.core().invalidateBounds();
 	};
 
@@ -296,6 +328,7 @@
 		}
 
 		element.remove();
+		self.setData();
 		self.core().invalidateBounds();
 	};
 
