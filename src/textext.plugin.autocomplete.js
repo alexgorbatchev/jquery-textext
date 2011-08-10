@@ -375,6 +375,7 @@
 		if(suggestion)
 		{
 			self.input().val(self.itemToString(suggestion));
+			self.trigger('setData', suggestion);
 			self.trigger('selectItem', suggestion);
 		}
 
