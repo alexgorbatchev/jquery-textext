@@ -9,8 +9,8 @@ var DOWN  = '\\40',
 	ENTER = '\\13'
 	;
 
-var dropdown = 'css=.text-core > .text-wrap > .text-dropdown',
-	textarea = 'css=#textarea'
+var textarea = common.css.textarea,
+	dropdown = common.css.dropdown
 	;
 
 function assertTextareaValue(browser)
@@ -25,7 +25,7 @@ function testDropdownFunctionality(finalAssert)
 	return function(browser)
 	{
 		browser
-			.click('css=.text-wrap')
+			.click(textarea)
 			
 			// activate the dropdown
 			.keyDown(textarea, DOWN)

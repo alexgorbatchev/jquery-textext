@@ -1,5 +1,9 @@
 var soda = require('soda');
 
+var textarea = 'css=.text-core > .text-wrap > textarea',
+	dropdown = 'css=.text-core > .text-wrap > .text-dropdown'
+	;
+
 function log(cmd, args)
 {
 	args = Array.prototype.slice.apply(arguments);
@@ -14,7 +18,7 @@ function echo(msg)
 
 function verifyTextExt(browser)
 {
-	browser.assertElementPresent('css=.text-core > .text-wrap > #textarea');
+	browser.assertElementPresent(textarea);
 };
 
 function tagXPath(value)
@@ -42,7 +46,6 @@ function assertTagNotPresent(value)
 
 function typeTag(value)
 {
-	var textarea = 'css=#textarea';
 
 	return function(browser)
 	{
@@ -138,7 +141,7 @@ function testTagFunctionality(wrap)
 			.and(closeTag('word3', wrap))
 
 			// backspace
-			.keyDown('css=#textarea', '\\8')
+			.keyDown(textarea, '\\8')
 			.and(assertTagNotPresent('world'))
 			;
 	};
@@ -177,6 +180,11 @@ module.exports = {
 	createBrowser           : createBrowser,
 	runModule               : runModule,
 	testFilterFunctionality : testFilterFunctionality,
-	testTagFunctionality    : testTagFunctionality
+	testTagFunctionality    : testTagFunctionality,
+
+	css : {
+		textarea : textarea,
+		dropdown : dropdown
+	}
 };
 
