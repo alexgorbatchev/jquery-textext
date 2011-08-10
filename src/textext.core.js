@@ -4,8 +4,10 @@
 	{
 	};
 
-	var p = TextExt.prototype,
-		slice = Array.prototype.slice,
+	var p         = TextExt.prototype,
+		stringify = (JSON || {}).stringify,
+		slice     = Array.prototype.slice,
+
 		DEFAULT_OPTS = {
 			plugins : [],
 			ext : {},
@@ -66,13 +68,51 @@
 		return target;
 	};
 
+	/**
+	 * Hooks up specified events in the scope of the current object.
+	 * @author agorbatchev
+	 * @date 2011/08/09
+	 */
+	function hookupEvents(args)
+	{
+		var self  = this,
+			input = self.input(),
+			event
+			;
+
+		for(event in args)
+			(function(self, event, handler)
+			{
+				input.bind(event, function()
+				{
+					return handler.apply(self, arguments);
+				});
+			})(self, event, args[event]);
+	};
+
 	p.init = function(input, opts)
 	{
-		var self = this;
+		var self = this,
+			originalInput
+			;
 
-		self._opts    = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
-		self._plugins = {};
-		self._input   = input = $(input)
+		input               = $(input);
+		self._opts          = opts = $.extend(true, {}, DEFAULT_OPTS, opts || {});
+		self._plugins       = {};
+		self._originalInput = originalInput = input;
+
+		input = input.clone().insertAfter(originalInput);
+		originalInput.hide();
+
+		// clear certain attributes from the clone
+		input
+			.attr('id', null)
+			.attr('name', null)
+			;
+
+		self._input = input;
+
+		input
 			.wrap(opts.html.wrap)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
@@ -84,6 +124,9 @@
 
 		self.invalidateBounds();
 		self.initPlugins(opts.plugins);
+		self.on({
+			setData : self.onSetData
+		});
 
 		// `postInit` is fired to let plugins and users to run code after all plugins
 		// have been created and initialized. This is a good place to set some kind
@@ -121,12 +164,16 @@
 		}
 	};
 
+	p.on = hookupEvents;
+
+	p.bind = function(event, handler)
+	{
+		this.input().bind(event, handler);
+	};
+
 	p.trigger = function()
 	{
-		$(this.input()).trigger(
-			arguments[0],
-			slice.call(arguments, 1)
-		);
+		this.input().trigger(arguments[0], slice.call(arguments, 1));
 	};
 
 	p.input = function()
@@ -168,6 +215,43 @@
 		this.input()[0].focus();
 	};
 
+	/**
+	 * Serializes data for the default `setData` event handler.
+	 *
+	 * By default simple JSON serialization is used. It's expected that `JSON.stringify`
+	 * method would be available either through built in class in most modern browsers
+	 * or through JSON2 library.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/09
+	 */
+	p.serializeData = function(data)
+	{
+		return stringify ? stringify(data) : 'JSON.stringify() not found';
+	};
+
+	//--------------------------------------------------------------------------------
+	// Event handlers
+
+	/**
+	 * Reacts to `setData` event. Recieves data from plugins which should be
+	 * popuplated into the original text input with expactation that it will
+	 * be either submitted or retrieved in some fashion.
+	 *
+	 * Relies on `serializeData` to serialize all data.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/09
+	 */
+	p.onSetData = function(e, data)
+	{
+		var self = this;
+		data = self.serializeData(data);
+		self._originalInput.val(data);
+
+		console.log('>>', data);
+	};
+
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
 	
@@ -184,6 +268,7 @@
 				result
 				;
 
+			self.trigger('anyKey' + type, e);
 			self.trigger(eventName.charAt(0).toLowerCase() + eventName.substring(1));
 
 			return defaultResult;
@@ -199,25 +284,7 @@
 
 	p = TextExtPlugin.prototype;
 
-	p.on = function(args)
-	{
-		var self  = this,
-			input = self.input(),
-			wrap  = self.core().getWrapContainer(),
-			event
-			;
-
-		for(event in args)
-			(function(self, event, handler)
-			{
-
-				(event == 'click' ? wrap : input).bind(event, function()
-				{
-					return handler.apply(self, arguments);
-				});
-
-			})(self, event, args[event]);
-	};
+	p.on = hookupEvents;
 
 	p.baseInit = function(parent, opts)
 	{
@@ -266,11 +333,16 @@
 	
 	var textext = $.fn.textext = function(opts)
 	{
+		if(opts == null)
+			return this.data('textext');
+
 		return this.map(function()
 		{
-			 var instance = new TextExt();
-			 instance.init(this, opts);
-			 return this;
+			var self = $(this);
+			var instance = new TextExt();
+			instance.init(self, opts);
+			self.data('textext', instance);
+			return instance.input()[0];
 		});
 	};
 
