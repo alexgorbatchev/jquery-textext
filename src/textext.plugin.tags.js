@@ -16,7 +16,8 @@
 		CSS_DOT_TAG         = CSS_DOT + CSS_TAG,
 
 		DEFAULT_OPTS = {
-			tagsEnabled : true,
+			tagsEnabled    : true,
+			allowTextInput : false,
 
 			html : {
 				tags : '<div class="text-tags"/>',
@@ -30,13 +31,12 @@
 		this.baseInit(parent, DEFAULT_OPTS);
 
 		var self  = this,
-			input = self.input(),
-			opts  = self.opts()
+			input = self.input()
 			;
 
-		if(opts.tagsEnabled)
+		if(self.opts('tagsEnabled'))
 		{
-			input.after(opts.html.tags);
+			input.after(self.opts('html.tags'));
 
 			self.on({
 				enterKeyUp     : self.onEnterKeyUp,
@@ -84,7 +84,7 @@
 	p.onPostInit = function(e)
 	{
 		var self = this;
-		self.addTags(self.opts().items);
+		self.addTags(self.opts('items'));
 	};
 
 	/**
@@ -136,10 +136,7 @@
 			;
 
 		if(input.val().length == 0)
-		{
 			self.removeTag(lastTag);
-			self.core().invalidateBounds();
-		}
 	};
 
 	p.onInvalidate = function()
@@ -187,8 +184,8 @@
 	{
 		var self = this;
 
-		if(self.opts().tagsEnabled)
-			self.trigger('selectItem', self.input().val());//addTagFromInput();
+		if(self.opts('tagsEnabled'))
+			self.trigger('selectItem', self.input().val());
 	};
 
 	//--------------------------------------------------------------------------------
@@ -211,7 +208,7 @@
 			result.push($(this).data(CSS_TAG));
 		});
 
-		self.trigger('setData', result);
+		self.trigger('setData', result, result.length > 0);
 	};
 
 	/**
@@ -335,7 +332,7 @@
 	p.renderTag = function(tag)
 	{
 		var self = this,
-			node = $(self.opts().html.tag)
+			node = $(self.opts('html.tag'))
 			;
 
 		node.find('.text-label').text(self.itemToString(tag));

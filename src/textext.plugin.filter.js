@@ -38,12 +38,11 @@
 	p.onIsTagAllowed = function(e, data)
 	{
 		var self = this,
-			opts = self.opts(),
-			list = opts.filterItems || self.suggestions() || [],
+			list = self.opts('filterItems') || self.suggestions() || [],
 			i
 			;
 
-		if(!opts.filterEnabled)
+		if(!self.opts('filterEnabled'))
 			return;
 
 		data.result = false;

@@ -3,12 +3,12 @@ var soda   = require('soda'),
 	common = require('./common')
 	;
 
+var focus    = common.css.focus,
+	textarea = common.css.textarea
+	;
+
 function testFocusFunctionality(browser)
 {
-	var focus    = 'css=.text-focus',
-		textarea = 'css=textarea'
-		;
-
 	browser
 		.fireEvent(textarea, 'focus')
 		.waitForVisible(focus)

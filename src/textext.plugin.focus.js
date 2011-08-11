@@ -20,7 +20,7 @@
 		var self = this;
 
 		self.baseInit(parent, DEFAULT_OPTS);
-		self.core().getWrapContainer().append(self.opts().html.focus);
+		self.core().getWrapContainer().append(self.opts('html.focus'));
 		self.on({
 			blur  : self.onBlur,
 			focus : self.onFocus

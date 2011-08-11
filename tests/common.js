@@ -1,7 +1,9 @@
 var soda = require('soda');
 
-var textarea = 'css=.text-core > .text-wrap > textarea',
-	dropdown = 'css=.text-core > .text-wrap > .text-dropdown'
+var prefix    = 'css=.text-core > .text-wrap > ',
+	focus     = prefix + '.text-focus',
+	textarea  = prefix + 'textarea',
+	dropdown  = prefix + '.text-dropdown'
 	;
 
 function log(cmd, args)
@@ -46,13 +48,13 @@ function assertTagNotPresent(value)
 
 function typeTag(value)
 {
-
 	return function(browser)
 	{
 		browser
 			.type(textarea, '')
 			.typeKeys(textarea, value)
 			.keyDown(textarea, '\\13')
+			.keyUp(textarea, '\\13')
 			;
 	};
 };
@@ -142,6 +144,7 @@ function testTagFunctionality(wrap)
 
 			// backspace
 			.keyDown(textarea, '\\8')
+			.keyUp(textarea, '\\8')
 			.and(assertTagNotPresent('world'))
 			;
 	};
@@ -183,6 +186,7 @@ module.exports = {
 	testTagFunctionality    : testTagFunctionality,
 
 	css : {
+		focus    : focus,
 		textarea : textarea,
 		dropdown : dropdown
 	}

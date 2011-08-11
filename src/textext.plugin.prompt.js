@@ -22,16 +22,12 @@
 
 	p.init = function(parent)
 	{
-		var self = this,
-			opts
-			;
+		var self = this;
 
 		self.baseInit(parent, DEFAULT_OPTS);
 		
-		opts = self.opts();
-
-		self.core().getWrapContainer().append(opts.html.prompt);
-		self.setPrompt(opts.prompt);
+		self.core().getWrapContainer().append(self.opts('html.prompt'));
+		self.setPrompt(self.opts('prompt'));
 		
 		self.on({
 			blur  : self.onBlur,
@@ -55,7 +51,7 @@
 
 		clearTimeout(self._timeoutId);
 
-		if(self.input().val() == '')
+		if(self.input().val() == '' && self.core().hasData())
 			self._timeoutId = setTimeout(function()
 			{
 				self.getPrompt().removeClass(CSS_HIDE_PROMPT);
