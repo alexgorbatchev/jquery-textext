@@ -1,9 +1,16 @@
 var soda = require('soda');
 
-var prefix    = 'css=.text-core > .text-wrap > ',
-	focus     = prefix + '.text-focus',
-	textarea  = prefix + 'textarea',
-	dropdown  = prefix + '.text-dropdown'
+var prefix   = 'css=.text-core > .text-wrap > ',
+	focus    = prefix + '.text-focus',
+	textarea = prefix + 'textarea',
+	dropdown = prefix + '.text-dropdown',
+	prompt   = prefix + '.text-prompt'
+	;
+
+var DOWN  = '\\40',
+	UP    = '\\38',
+	ESC   = '\\27',
+	ENTER = '\\13'
 	;
 
 function log(cmd, args)
@@ -34,7 +41,13 @@ function suggestionsXPath(selected, index)
 	selected = selected == true ? '[contains(@class, "text-selected")]' : '';
 
 	return '//div[@class="text-core"]//div[@class="text-dropdown"]//div[contains(@class, "text-suggestion")]' + index + selected;
-}
+};
+
+function assertOutput(value)
+{
+	// @TODO add actual value check
+	return function(browser) { browser.assertElementPresent('//textarea[@id="output"]') };
+};
 
 function assertTagPresent(value)
 {
@@ -46,6 +59,14 @@ function assertTagNotPresent(value)
 	return function(browser) { browser.assertElementNotPresent(tagXPath(value)) };
 };
 
+function enterKey(browser)
+{
+	browser
+		.keyDown(textarea, '\\13')
+		.keyUp(textarea, '\\13')
+		;
+};
+
 function typeTag(value)
 {
 	return function(browser)
@@ -53,10 +74,14 @@ function typeTag(value)
 		browser
 			.type(textarea, '')
 			.typeKeys(textarea, value)
-			.keyDown(textarea, '\\13')
-			.keyUp(textarea, '\\13')
+			.and(enterKey)
 			;
 	};
+};
+
+function focusInput(browser)
+{
+	browser.fireEvent(textarea, 'focus');
 };
 
 function defaultWrap(value)
@@ -111,7 +136,7 @@ function testFilterFunctionality()
 	return function(browser)
 	{
 		browser
-			.click('css=.text-wrap')
+			.and(focusInput)
 
 			.and(typeTag('hello'))
 			.and(assertTagNotPresent('hello'))
@@ -130,22 +155,101 @@ function testTagFunctionality(wrap)
 	return function(browser)
 	{
 		browser
-			.click('css=.text-wrap')
+			.and(focusInput)
 
 			.and(typeAndValidateTag('hello', wrap))
+			.and(assertOutput('["hello"]'))
 			.and(typeAndValidateTag('world', wrap))
+			.and(assertOutput('["hello","world"]'))
 			.and(typeAndValidateTag('word1', wrap))
+			.and(assertOutput('["hello","world","word1"]'))
 			.and(typeAndValidateTag('word2', wrap))
+			.and(assertOutput('["hello","world","word1","word2"]'))
 			.and(typeAndValidateTag('word3', wrap))
+			.and(assertOutput('["hello","world","word1","word2","word3"]'))
 
 			.and(closeTag('word2', wrap))
+			.and(assertOutput('["hello","world","word1","word3"]'))
 			.and(closeTag('word1', wrap))
+			.and(assertOutput('["hello","world","word3"]'))
 			.and(closeTag('word3', wrap))
+			.and(assertOutput('["hello","world"]'))
 
 			// backspace
 			.keyDown(textarea, '\\8')
 			.keyUp(textarea, '\\8')
 			.and(assertTagNotPresent('world'))
+			;
+	};
+};
+
+function testPromptFunctionality(secondary)
+{
+	return function(browser)
+	{
+		browser
+			.assertVisible(prompt)
+			.and(focusInput)
+			.and(secondary)
+			.assertNotVisible(prompt)
+			;
+	};
+};
+
+function testAutocompleteFunctionality(finalAssert)
+{
+	finalAssert = finalAssert || function(browser)
+	{
+		browser.assertValue(textarea, 'OCAML');
+	};
+ 
+	return function(browser)
+	{
+		browser
+			.click(textarea)
+			
+			// activate the dropdown
+			.keyDown(textarea, DOWN)
+			.assertVisible(dropdown)
+			.assertVisible(suggestionsXPath(true, 0))
+
+			// go to the second item
+			.keyDown(textarea, DOWN)
+			.assertElementNotPresent(suggestionsXPath(true, 0))
+			.assertVisible(suggestionsXPath(true, 1))
+
+			// go to the third item
+			.keyDown(textarea, DOWN)
+			.assertElementNotPresent(suggestionsXPath(true, 1))
+			.assertVisible(suggestionsXPath(true, 2))
+
+			// go back up to the second item
+			.keyDown(textarea, UP)
+			.assertElementNotPresent(suggestionsXPath(true, 2))
+			.assertVisible(suggestionsXPath(true, 1))
+
+			// go back up to the first item
+			.keyDown(textarea, UP)
+			.assertElementNotPresent(suggestionsXPath(true, 1))
+			.assertVisible(suggestionsXPath(true, 0))
+
+			.typeKeys(textarea, 'oca')
+			.assertVisible(suggestionsXPath(true, 0))
+			.keyDown(textarea, ENTER)
+			.assertNotVisible(dropdown)
+
+			.and(finalAssert)
+			;
+	};
+};
+
+function testPlainInputFunctionality()
+{
+	return function(browser)
+	{
+		browser
+			.typeKeys(textarea, 'Hello world')
+			.and(assertOutput('"Hello world"'))
 			;
 	};
 };
@@ -169,21 +273,26 @@ function runModule(run)
 };
 
 module.exports = {
-	log                     : log,
-	echo                    : echo,
-	verifyTextExt           : verifyTextExt,
-	tagXPath                : tagXPath,
-	suggestionsXPath        : suggestionsXPath,
-	assertTagPresent        : assertTagPresent,
-	assertTagNotPresent     : assertTagNotPresent,
-	typeTag                 : typeTag,
-	typeAndValidateTag      : typeAndValidateTag,
-	closeTag                : closeTag,
-	screenshot              : screenshot,
-	createBrowser           : createBrowser,
-	runModule               : runModule,
-	testFilterFunctionality : testFilterFunctionality,
-	testTagFunctionality    : testTagFunctionality,
+	log                           : log,
+	echo                          : echo,
+	verifyTextExt                 : verifyTextExt,
+	tagXPath                      : tagXPath,
+	suggestionsXPath              : suggestionsXPath,
+	assertTagPresent              : assertTagPresent,
+	assertTagNotPresent           : assertTagNotPresent,
+	assertOutput                  : assertOutput,
+	typeTag                       : typeTag,
+	typeAndValidateTag            : typeAndValidateTag,
+	enterKey                      : enterKey,
+	closeTag                      : closeTag,
+	screenshot                    : screenshot,
+	createBrowser                 : createBrowser,
+	runModule                     : runModule,
+	testFilterFunctionality       : testFilterFunctionality,
+	testTagFunctionality          : testTagFunctionality,
+	testPromptFunctionality       : testPromptFunctionality,
+	testAutocompleteFunctionality : testAutocompleteFunctionality,
+	testPlainInputFunctionality   : testPlainInputFunctionality,
 
 	css : {
 		focus    : focus,

@@ -3,65 +3,6 @@ var soda   = require('soda'),
 	common = require('./common')
 	;
 
-var DOWN  = '\\40',
-	UP    = '\\38',
-	ESC   = '\\27',
-	ENTER = '\\13'
-	;
-
-var textarea = common.css.textarea,
-	dropdown = common.css.dropdown
-	;
-
-function assertTextareaValue(browser)
-{
-	browser.assertValue(textarea, 'OCAML');
-};
-
-function testDropdownFunctionality(finalAssert)
-{
-	finalAssert = finalAssert || assertTextareaValue;
-
-	return function(browser)
-	{
-		browser
-			.click(textarea)
-			
-			// activate the dropdown
-			.keyDown(textarea, DOWN)
-			.assertVisible(dropdown)
-			.assertVisible(common.suggestionsXPath(true, 0))
-
-			// go to the second item
-			.keyDown(textarea, DOWN)
-			.assertElementNotPresent(common.suggestionsXPath(true, 0))
-			.assertVisible(common.suggestionsXPath(true, 1))
-
-			// go to the third item
-			.keyDown(textarea, DOWN)
-			.assertElementNotPresent(common.suggestionsXPath(true, 1))
-			.assertVisible(common.suggestionsXPath(true, 2))
-
-			// go back up to the second item
-			.keyDown(textarea, UP)
-			.assertElementNotPresent(common.suggestionsXPath(true, 2))
-			.assertVisible(common.suggestionsXPath(true, 1))
-
-			// go back up to the first item
-			.keyDown(textarea, UP)
-			.assertElementNotPresent(common.suggestionsXPath(true, 1))
-			.assertVisible(common.suggestionsXPath(true, 0))
-
-			.typeKeys(textarea, 'oca')
-			.assertVisible(common.suggestionsXPath(true, 0))
-			.keyDown(textarea, ENTER)
-			.assertNotVisible(dropdown)
-
-			.and(finalAssert)
-			;
-	};
-};
-
 function testAutocomplete(exampleId, finalAssert)
 {
 	return function(browser)
@@ -71,7 +12,7 @@ function testAutocomplete(exampleId, finalAssert)
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
-			.and(testDropdownFunctionality(finalAssert))
+			.and(common.testAutocompleteFunctionality(finalAssert))
 			.and(common.screenshot('autocomplete-' + exampleId))
 			;
 	};

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-java -jar selenium-server-standalone-2.1.0.jar -firefoxProfileTemplate "/Users/alex/Library/Application Support/Firefox/Profiles/212wjvze.third profile"
+java -jar selenium-server-standalone-2.1.0.jar -firefoxProfileTemplate "/Users/alexgorbatchev/Library/Application Support/Firefox/Profiles/6czh8ca4.default"
 
