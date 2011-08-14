@@ -40,20 +40,9 @@
 	{
 		var self        = this,
 			suggestions = self.opts('suggestions'),
-			result      = [],
-			query       = data.query.toLowerCase(),
-			item
 			;
 
 		suggestions.sort();
-
-		if(query == '')
-			result = suggestions.slice();
-		else
-			for(var i = 0; i < suggestions.length, item = suggestions[i]; i++)
-				if(item.toLowerCase().indexOf(query) == 0)
-					result.push(item);
-
-		self.setSuggestions(result);
+		self.setSuggestions(self.itemManager().filterItems(suggestions, data.query));
 	};
 })(jQuery);
