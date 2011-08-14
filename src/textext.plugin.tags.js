@@ -39,11 +39,11 @@
 			input.after(self.opts('html.tags'));
 
 			self.on({
-				enterKeyUp     : self.onEnterKeyUp,
-				invalidate     : self.onInvalidate,
-				selectItem     : self.onSelectItem,
-				backspaceKeyUp : self.onBackspaceKeyUp,
-				postInit       : self.onPostInit
+				enterKeyUp       : self.onEnterKeyUp,
+				invalidate       : self.onInvalidate,
+				selectItem       : self.onSelectItem,
+				backspaceKeyDown : self.onBackspaceKeyDown,
+				postInit         : self.onPostInit
 			});
 
 			self.getContainer()
@@ -128,14 +128,13 @@
 	 * @author agorbatchev
 	 * @date 2011/08/02
 	 */
-	p.onBackspaceKeyUp = function(e)
+	p.onBackspaceKeyDown = function(e)
 	{
 		var self    = this,
-			input   = self.input(),
 			lastTag = self.getAllTagElements().last()
 			;
 
-		if(input.val().length == 0)
+		if(self.input().val().length == 0)
 			self.removeTag(lastTag);
 	};
 
