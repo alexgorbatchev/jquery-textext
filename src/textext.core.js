@@ -99,7 +99,7 @@
 
 	p.itemContains = function(item, needle)
 	{
-		return this.itemToString(item).toLowerCase().indexOf(needle.toLowerCase()) >= 0;
+		return this.itemToString(item).toLowerCase().indexOf(needle.toLowerCase()) == 0;
 	};
 
 	p.stringToItem = function(str)
