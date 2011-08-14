@@ -153,6 +153,7 @@
 			.wrap(self.opts('html.wrap'))
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
+			.data('textext', self)
 			;
 
 		$.extend(true, itemManager, self.opts('ext.itemManager'));
@@ -425,15 +426,18 @@
 	
 	var textext = $.fn.textext = function(opts)
 	{
-		if(opts == null)
-			return this.data('textext');
-
 		return this.map(function()
 		{
 			var self = $(this);
+
+			if(opts == null)
+				return self.data('textext');
+
 			var instance = new TextExt();
+
 			instance.init(self, opts);
 			self.data('textext', instance);
+
 			return instance.input()[0];
 		});
 	};
