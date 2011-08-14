@@ -48,7 +48,7 @@
 		data.result = false;
 
 		for(i = 0; i < list.length; i++)
-			if(self.compareItems(data.tag, list[i]))
+			if(self.itemManager().compareItems(data.tag, list[i]))
 				return data.result = true;
 	};
 

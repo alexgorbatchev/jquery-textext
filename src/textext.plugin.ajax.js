@@ -58,22 +58,6 @@
 		$.ajax(opts);
 	};
 
-	p.filterSuggestions = function(suggestions, query)
-	{
-		var result = [],
-			i, item
-			;
-
-		for(i = 0; i < suggestions.length; i++)
-		{
-			item = suggestions[i];
-			if(this.itemContains(item, query))
-				result.push(item);
-		}
-
-		return result;
-	};
-
 	p.onComplete = function(data, query)
 	{
 		var self   = this,
@@ -83,7 +67,7 @@
 		if(self.opts('ajax.cacheResults') == true)
 		{
 			self._suggestions = data;
-			result = self.filterSuggestions(data, query);
+			result = self.itemManager().filter(data, query);
 		}
 
 		self.setSuggestions(result);

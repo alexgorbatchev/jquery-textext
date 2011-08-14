@@ -248,7 +248,7 @@
 		if(val.length == 0)
 			return;
 
-		tag = self.stringToItem(val);
+		tag = self.itemManager().stringToItem(val);
 
 		if(self.isTagAllowed(tag) == false)
 			return;
@@ -304,7 +304,7 @@
 			;
 
 		for(i = 0; i < list.length, item = $(list[i]); i++)
-			if(self.compareItems(item.data(CSS_TAG), tag))
+			if(self.itemManager().compareItems(item.data(CSS_TAG), tag))
 				return item;
 	};
 
@@ -335,7 +335,7 @@
 			node = $(self.opts('html.tag'))
 			;
 
-		node.find('.text-label').text(self.itemToString(tag));
+		node.find('.text-label').text(self.itemManager().itemToString(tag));
 		node.data(CSS_TAG, tag);
 		return node;
 	};

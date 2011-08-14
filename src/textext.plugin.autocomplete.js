@@ -171,7 +171,7 @@
 		{
 			item = $(all[i]);
 
-			if(self.compareItems(item.data(CSS_SUGGESTION), suggestion))
+			if(self.itemManager().compareItems(item.data(CSS_SUGGESTION), suggestion))
 			{
 				target = item.addClass(CSS_SELECTED);
 				break;
@@ -277,7 +277,7 @@
 	p.addSuggestion = function(suggestion)
 	{
 		var self = this,
-			node = self.addDropdownItem(self.itemToString(suggestion))
+			node = self.addDropdownItem(self.itemManager().itemToString(suggestion))
 			;
 
 		node.data(CSS_SUGGESTION, suggestion);
@@ -383,7 +383,7 @@
 
 		if(suggestion)
 		{
-			self.input().val(self.itemToString(suggestion));
+			self.input().val(self.itemManager().itemToString(suggestion));
 			self.trigger('setData', suggestion);
 			self.trigger('selectItem', suggestion);
 		}

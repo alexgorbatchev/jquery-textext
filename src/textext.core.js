@@ -1,15 +1,14 @@
 (function($, undefined)
 {
-	function TextExt()
-	{
-	};
+	function TextExt() {};
+	function ItemManager() {};
 
-	var p         = TextExt.prototype,
-		stringify = (JSON || {}).stringify,
+	var stringify = (JSON || {}).stringify,
 		slice     = Array.prototype.slice,
 
 		DEFAULT_OPTS = {
 			allowTextInput : true,
+			itemManager : ItemManager,
 
 			plugins : [],
 			ext : {},
@@ -73,10 +72,61 @@
 			})(self, event, args[event]);
 	};
 
+	//--------------------------------------------------------------------------------
+	// TextExt core component
+	
+	p = ItemManager.prototype;
+
+	p.init = function(core)
+	{
+	};
+
+	p.filter = function(list, query)
+	{
+		var result = [],
+			i, item
+			;
+
+		for(i = 0; i < list.length; i++)
+		{
+			item = list[i];
+			if(this.itemContains(item, query))
+				result.push(item);
+		}
+
+		return result;
+	};
+
+	p.itemContains = function(item, needle)
+	{
+		return this.itemToString(item).toLowerCase().indexOf(needle.toLowerCase()) >= 0;
+	};
+
+	p.stringToItem = function(str)
+	{
+		return str;
+	};
+
+	p.itemToString = function(item)
+	{
+		return item;
+	};
+
+	p.compareItems = function(item1, item2)
+	{
+		return item1 == item2;
+	};
+
+	//--------------------------------------------------------------------------------
+	// TextExt core component
+
+	p = TextExt.prototype;
+		
 	p.init = function(input, opts)
 	{
 		var self = this,
-			originalInput
+			originalInput,
+			itemManager
 			;
 
 		input               = $(input);
@@ -84,6 +134,7 @@
 		self._opts          = opts || {};
 		self._plugins       = {};
 		self._originalInput = originalInput = input;
+		self._itemManager   = itemManager = new (self.opts('itemManager'))();
 
 		input = input.clone().insertAfter(originalInput);
 		
@@ -104,11 +155,13 @@
 			.keyup(function(e) { return self.onKeyUp(e) })
 			;
 
+		$.extend(true, itemManager, self.opts('ext.itemManager'));
 		$.extend(true, self, self.opts('ext.*'), self.opts('ext.core'));
 		
 		self.originalWidth = input.outerWidth();
 
 		self.invalidateBounds();
+		itemManager.init(self);
 		self.initPlugins(self.opts('plugins'));
 		self.on({
 			setData  : self.onSetData,
@@ -161,6 +214,11 @@
 	p.trigger = function()
 	{
 		this.input().trigger(arguments[0], slice.call(arguments, 1));
+	};
+
+	p.itemManager = function()
+	{
+		return this._itemManager;
 	};
 
 	/**
@@ -346,6 +404,11 @@
 		return this.core().opts(name);
 	};
 
+	p.itemManager = function()
+	{
+		return this.core().itemManager();
+	};
+
 	p.input = function()
 	{
 		return this.core().input();
@@ -355,27 +418,6 @@
 	{
 		var core = this.core();
 		core.trigger.apply(core, arguments);
-	};
-
-	p.itemContains = function(item, needle)
-	{
-		var regex = new RegExp(needle, 'i');
-		return regex.exec(this.itemToString(item));
-	};
-
-	p.stringToItem = function(str)
-	{
-		return str;
-	};
-
-	p.itemToString = function(item)
-	{
-		return item;
-	};
-
-	p.compareItems = function(item1, item2)
-	{
-		return item1 == item2;
 	};
 
 	//--------------------------------------------------------------------------------
@@ -404,5 +446,6 @@
 
 	textext.TextExt       = TextExt;
 	textext.TextExtPlugin = TextExtPlugin;
+	textext.ItemManager   = ItemManager;
 	textext.plugins       = {};
 })(jQuery);
