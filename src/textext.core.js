@@ -357,6 +357,12 @@
 		core.trigger.apply(core, arguments);
 	};
 
+	p.itemContains = function(item, needle)
+	{
+		var regex = new RegExp(needle, 'i');
+		return regex.exec(this.itemToString(item));
+	};
+
 	p.stringToItem = function(str)
 	{
 		return str;

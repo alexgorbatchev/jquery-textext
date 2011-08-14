@@ -197,12 +197,17 @@
 		this.hideDropdown();
 	};
 
-	p.onShowDropdown = function(e)
+	p.onShowDropdown = function(e, renderCallback)
 	{
 		var self    = this,
 			current = self.getSelectedSuggestion().data(CSS_SUGGESTION)
 			;
-		self.renderDropdown(self.suggestions);
+
+		renderCallback
+			? renderCallback(self)
+			: self.renderDropdown(self.suggestions)
+			;
+		
 		self.showDropdown(self.getDropdownContainer());
 		self.setSelectedSuggestion(current);
 	};
@@ -235,13 +240,18 @@
 		self.trigger('getSuggestions', { query : val });
 	};
 
+	p.clearItems = function()
+	{
+		this.getDropdownContainer().find('.text-list').children().remove();
+	};
+
 	p.renderDropdown = function(suggestions)
 	{
 		var self = this;
 
-		self.getDropdownContainer().find('.text-list').children().remove();
+		self.clearItems();
 
-		$.each(suggestions, function(index, item)
+		$.each(suggestions || [], function(index, item)
 		{
 			self.addSuggestion(item);
 		});
@@ -266,21 +276,22 @@
 
 	p.addSuggestion = function(suggestion)
 	{
-		var self      = this,
-			container = self.getDropdownContainer().find('.text-list')
+		var self = this,
+			node = self.addDropdownItem(self.itemToString(suggestion))
 			;
 
-		container.append(self.renderSuggestion(suggestion));
+		node.data(CSS_SUGGESTION, suggestion);
 	};
 
-	p.renderSuggestion = function(suggestion)
+	p.addDropdownItem = function(html)
 	{
-		var self = this,
-			node = $(self.opts('html.suggestion'))
+		var self      = this,
+			container = self.getDropdownContainer().find('.text-list'),
+			node      = $(self.opts('html.suggestion'))
 			;
 
-		node.find('.text-label').text(self.itemToString(suggestion));
-		node.data(CSS_SUGGESTION, suggestion);
+		node.find('.text-label').text(html);
+		container.append(node);
 		return node;
 	};
 
