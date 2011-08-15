@@ -43,8 +43,9 @@
 		if(typeof(name) == 'string')
 			name = name.split('.');
 
-		var property = name.shift(),
-			result   = source[property]
+		var fullCamelCaseName = name.join('.').replace(/\.(\w)/g, function(match, letter) { return letter.toUpperCase() }),
+			nestedName        = name.shift(),
+			result            = source[fullCamelCaseName] || source[nestedName]
 			;
 
 		return name.length == 0 || result == null ? result : getProperty(result, name);
