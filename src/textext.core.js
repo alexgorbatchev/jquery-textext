@@ -6,6 +6,13 @@
 	var stringify = (JSON || {}).stringify,
 		slice     = Array.prototype.slice,
 
+		OPT_ALLOWED             = 'allow.textInput',
+		OPT_ITEM_MANAGER        = 'item.manager',
+		OPT_PLUGINS             = 'plugins',
+		OPT_EXT                 = 'ext',
+		OPT_HTML_WRAP           = 'html.wrap',
+		OPT_KEYS                = 'keys',
+
 		DEFAULT_OPTS = {
 			allowTextInput : true,
 			itemManager : ItemManager,
@@ -135,7 +142,7 @@
 		self._opts          = opts || {};
 		self._plugins       = {};
 		self._originalInput = originalInput = input;
-		self._itemManager   = itemManager = new (self.opts('itemManager'))();
+		self._itemManager   = itemManager = new (self.opts(OPT_ITEM_MANAGER))();
 
 		input = input.clone().insertAfter(originalInput);
 		
@@ -151,14 +158,14 @@
 		self._input = input;
 
 		input
-			.wrap(self.opts('html.wrap'))
+			.wrap(self.opts(OPT_HTML_WRAP))
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
 			.data('textext', self)
 			;
 
-		$.extend(true, itemManager, self.opts('ext.itemManager'));
-		$.extend(true, self, self.opts('ext.*'), self.opts('ext.core'));
+		$.extend(true, itemManager, self.opts(OPT_EXT + '.itemManager'));
+		$.extend(true, self, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.core'));
 		
 		self.originalWidth = input.outerWidth();
 
@@ -197,7 +204,7 @@
 			if(plugin)
 			{
 				plugin              = new plugin();
-				ext                 = self.opts('ext');
+				ext                 = self.opts(OPT_EXT);
 				self._plugins[name] = plugin;
 
 				$.extend(true, plugin, ext['*'], ext[name]);
@@ -315,7 +322,7 @@
 	 */
 	p.textInputAllowed = function()
 	{
-		return this.opts('allowTextInput') === true;
+		return this.opts(OPT_ALLOWED) === true;
 	};
 
 	//--------------------------------------------------------------------------------
@@ -338,10 +345,10 @@
 	 *
 	 * Relies on `serializeData` to serialize all data.
 	 *
-	 * @param e Event jQuery event.
-	 * @param data Object Data in any format passed from a plugin. The data will
+	 * @param e {Event} jQuery event.
+	 * @param data {Object} Data in any format passed from a plugin. The data will
 	 * be serialized using `serializeData` method.
-	 * @param isEmpty Boolean A flag indicating if the data is empty. Because passed
+	 * @param isEmpty {Boolean} A flag indicating if the data is empty. Because passed
 	 * could be in any shape, there is no way to determine if it's empty, therefore
 	 * it's up to plugins to specify.
 	 *
@@ -367,7 +374,7 @@
 		p['onKey' + type] = function(e)
 		{
 			var self          = this,
-				keyName       = self.opts('keys')[e.keyCode] || 'Other',
+				keyName       = self.opts(OPT_KEYS)[e.keyCode] || 'Other',
 				eventName     = keyName.replace('!', '') + 'Key' + type,
 				defaultResult = keyName.substr(-1) != '!'
 				;
