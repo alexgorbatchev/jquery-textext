@@ -8,13 +8,18 @@
 	background : #fff
 	border     : 1px solid $border
 	width      : 100%
-	top        : 102%
 	max-height : 99px
 	padding    : 1px
 	font       : $font
 	display    : none
 	overflow-x : hidden
 	overflow-y : auto
+
+	&.{$prefix}position-below
+		margin-top: 1px;
+
+	&.{$prefix}position-above
+		margin-bottom: 1px;
 
 	.{$prefix}list
 		.{$prefix}suggestion
@@ -25,7 +30,7 @@
 				font-style      : normal
 				text-decoration : underline
 
-			&.{$prefix}selected, &:hover
+			&.{$prefix}selected
 				color      : #fff
 				background : $selected
 

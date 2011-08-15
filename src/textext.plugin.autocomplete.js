@@ -15,11 +15,25 @@
 		CSS_SUGGESTION     = 'text-suggestion',
 		CSS_DOT_SUGGESTION = CSS_DOT + CSS_SUGGESTION,
 
-		HIDE_DROPDOWN = 'hideDropdown',
-		SHOW_DROPDOWN = 'showDropdown',
+		OPT_ENABLED         = 'dropdown.enabled',
+		OPT_MAX_HEIGHT      = 'dropdown.maxHeight',
+		OPT_DIRECTION       = 'dropdown.direction',
+		OPT_HTML_DROPDOWN   = 'html.dropdown',
+		OPT_HTML_SUGGESTION = 'html.suggestion',
+
+		EVENT_HIDE_DROPDOWN   = 'hideDropdown',
+		EVENT_SHOW_DROPDOWN   = 'showDropdown',
+		EVENT_GET_SUGGESTIONS = 'getSuggestions',
+		EVENT_SET_SUGGESTIONS = 'setSuggestions',
+
+		POSITION_ABOVE = 'above',
+		POSITION_BELOW = 'below',
 
 		DEFAULT_OPTS = {
-			dropdownEnabled : true,
+			dropdown : {
+				enabled   : true,
+				position : POSITION_BELOW
+			},
 
 			html : {
 				dropdown   : '<div class="text-dropdown"><div class="text-list"/></div>',
@@ -34,12 +48,12 @@
 
 		self.baseInit(parent, DEFAULT_OPTS);
 
-		var input = self.input();
+		var input = self.input(),
+			container
+			;
 
-		if(self.opts('dropdownEnabled'))
+		if(self.opts(OPT_ENABLED) === true)
 		{
-			input.after(self.opts('html.dropdown'));
-
 			self.on({
 				click          : self.onClick,
 				blur           : self.onBlur,
@@ -52,13 +66,26 @@
 				escapeKeyUp    : self.onEscapeKeyUp,
 				setSuggestions : self.onSetSuggestions,
 				showDropdown   : self.onShowDropdown,
-				hideDropdown   : self.onHideDropdown
+				hideDropdown   : self.onHideDropdown,
+				postInvalidate : self.positionDropdown
 			});
 
-			self.getDropdownContainer().mouseover(function(e) { self.onMouseOver(e) });
+			input.after(self.opts(OPT_HTML_DROPDOWN));
+			container = self.getDropdownContainer();
+			container
+				.mouseover(function(e) { self.onMouseOver(e) })
+				.addClass('text-position-' + self.opts(OPT_DIRECTION))
+				;
+
+			self.positionDropdown();
 		}
 	};
 
+	/**
+	 * Returns top level dropdown container HTML element.
+	 * @author agorbatchev
+	 * @date 2011/08/15
+	 */
 	p.getDropdownContainer = function()
 	{
 		return this.input().siblings('.text-dropdown');
@@ -97,7 +124,7 @@
 		// use timeout here so that onClick has a chance to fire because if
 		// dropdown is hidden when clicked, onClick doesn't fire
 		if(self.isDropdownVisible())
-			setTimeout(function() { self.trigger(HIDE_DROPDOWN) }, 100);
+			setTimeout(function() { self.trigger(EVENT_HIDE_DROPDOWN) }, 100);
 	};
 
 	p.onBackspaceKeyUp = function(e)
@@ -143,11 +170,30 @@
 		var self = this;
 
 		if(self.isDropdownVisible())
-			self.trigger(HIDE_DROPDOWN);
+			self.trigger(EVENT_HIDE_DROPDOWN);
 	};
 
 	//--------------------------------------------------------------------------------
 	// Core functionality
+
+	/**
+	 * Positions dropdown either below or above the input based on the `dropdown.position`
+	 * option specified, which could be either `above` or `below`.
+	 * @author agorbatchev
+	 * @date 2011/08/15
+	 */
+	p.positionDropdown = function()
+	{
+		var self      = this,
+			container = self.getDropdownContainer(),
+			direction = self.opts(OPT_DIRECTION),
+			height    = self.core().getWrapContainer().outerHeight(),
+			css       = {}
+			;
+
+		css[direction === POSITION_ABOVE ? 'bottom' : 'top'] = height + 'px';
+		container.css(css);
+	};
 
 	p.getSuggestionElements = function()
 	{
@@ -219,7 +265,7 @@
 			;
 
 		if(data.showHideDropdown != false)
-			self.trigger(suggestions == null || suggestions.length == 0 ? HIDE_DROPDOWN : SHOW_DROPDOWN);
+			self.trigger(suggestions == null || suggestions.length == 0 ? EVENT_HIDE_DROPDOWN : EVENT_SHOW_DROPDOWN);
 	};
 
 	p.getSuggestions = function()
@@ -237,7 +283,7 @@
 			current = null;
 
 		self._previousInputValue = val;
-		self.trigger('getSuggestions', { query : val });
+		self.trigger(EVENT_GET_SUGGESTIONS, { query : val });
 	};
 
 	p.clearItems = function()
@@ -287,7 +333,7 @@
 	{
 		var self      = this,
 			container = self.getDropdownContainer().find('.text-list'),
-			node      = $(self.opts('html.suggestion'))
+			node      = $(self.opts(OPT_HTML_SUGGESTION))
 			;
 
 		node.find('.text-label').text(html);
@@ -388,6 +434,6 @@
 			self.trigger('selectItem', suggestion);
 		}
 
-		self.trigger(HIDE_DROPDOWN);
+		self.trigger(EVENT_HIDE_DROPDOWN);
 	};
 })(jQuery);
