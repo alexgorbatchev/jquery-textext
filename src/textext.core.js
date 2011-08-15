@@ -6,15 +6,23 @@
 	var stringify = (JSON || {}).stringify,
 		slice     = Array.prototype.slice,
 
-		OPT_ALLOWED             = 'allow.textInput',
-		OPT_ITEM_MANAGER        = 'item.manager',
-		OPT_PLUGINS             = 'plugins',
-		OPT_EXT                 = 'ext',
-		OPT_HTML_WRAP           = 'html.wrap',
-		OPT_KEYS                = 'keys',
+		UNDEFINED = 'undefined',
+
+		OPT_ENABLED      = 'enabled',
+		OPT_ITEM_MANAGER = 'item.manager',
+		OPT_PLUGINS      = 'plugins',
+		OPT_EXT          = 'ext',
+		OPT_HTML_WRAP    = 'html.wrap',
+		OPT_KEYS         = 'keys',
+
+		EVENT_PRE_INVALIDATE  = 'preInvalidate',
+		EVENT_POST_INVALIDATE = 'postInvalidate',
+		EVENT_SET_DATA        = 'setData',
+		EVENT_POST_INIT       = 'postInit',
+		EVENT_READY           = 'ready',
 
 		DEFAULT_OPTS = {
-			allowTextInput : true,
+			enabled : true,
 			itemManager : ItemManager,
 
 			plugins : [],
@@ -171,7 +179,7 @@
 
 		self.invalidateBounds();
 		itemManager.init(self);
-		self.initPlugins(self.opts('plugins'));
+		self.initPlugins(self.opts(OPT_PLUGINS));
 		self.on({
 			setData  : self.onSetData,
 			anyKeyUp : self.onAnyKeyUp
@@ -180,12 +188,12 @@
 		// `postInit` is fired to let plugins and users to run code after all plugins
 		// have been created and initialized. This is a good place to set some kind
 		// of global values before somebody gets to use them.
-		self.trigger('postInit');
+		self.trigger(EVENT_POST_INIT);
 
 		// `ready` is fired after all global configuration and prepearation has been
 		// done and the TextExt component is ready to use. Event handlers should
 		// expect all values to be set and the plugins to be in the final state.
-		self.trigger('ready');
+		self.trigger(EVENT_READY);
 	};
 
 	p.initPlugins = function(plugins)
@@ -261,13 +269,15 @@
 			height
 			;
 
-		self.trigger('invalidate');
+		self.trigger(EVENT_PRE_INVALIDATE);
 
-		height = input.outerHeight()
+		height = input.outerHeight();
 
 		input.width(width);
 		wrap.width(width).height(height);
 		container.height(height);
+
+		self.trigger(EVENT_POST_INVALIDATE);
 	};
 
 	p.focusInput = function()
@@ -316,13 +326,13 @@
 	};
 
 	/**
-	 * Returns true if `allowTextInput` option is true.
+	 * Returns true if `enabled` option is true.
 	 * @author agorbatchev
 	 * @date 2011/08/10
 	 */
-	p.textInputAllowed = function()
+	p.enabled = function()
 	{
-		return this.opts(OPT_ALLOWED) === true;
+		return this.opts(OPT_ENABLED) === true;
 	};
 
 	//--------------------------------------------------------------------------------
@@ -334,8 +344,8 @@
 			value = self.input().val()
 			;
 
-		if(self.textInputAllowed())
-			self.trigger('setData', value, value.length == 0)
+		if(self.enabled())
+			self.trigger(EVENT_SET_DATA, value, value.length == 0)
 	};
 
 	/**

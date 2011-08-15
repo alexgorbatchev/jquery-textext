@@ -40,7 +40,7 @@
 
 			self.on({
 				enterKeyUp       : self.onEnterKeyUp,
-				invalidate       : self.onInvalidate,
+				preInvalidate    : self.onPreInvalidate,
 				selectItem       : self.onSelectItem,
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				postInit         : self.onPostInit
@@ -138,7 +138,7 @@
 			self.removeTag(lastTag);
 	};
 
-	p.onInvalidate = function()
+	p.onPreInvalidate = function()
 	{
 		var self    = this,
 			lastTag = self.getAllTagElements().last(),
