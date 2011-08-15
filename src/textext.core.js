@@ -55,15 +55,22 @@
 	 */
 	function getProperty(source, name)
 	{
-		if(typeof(name) == 'string')
+		if(typeof(name) === 'string')
 			name = name.split('.');
 
 		var fullCamelCaseName = name.join('.').replace(/\.(\w)/g, function(match, letter) { return letter.toUpperCase() }),
 			nestedName        = name.shift(),
-			result            = source[fullCamelCaseName] || source[nestedName]
+			result
 			;
 
-		return name.length == 0 || result == null ? result : getProperty(result, name);
+		if(typeof(result = source[fullCamelCaseName]) != UNDEFINED)
+			result = result;
+
+		else if(typeof(result = source[nestedName]) != UNDEFINED && name.length > 0)
+			result = getProperty(result, name);
+
+		// name.length here should be zero
+		return result;
 	};
 
 	/**
