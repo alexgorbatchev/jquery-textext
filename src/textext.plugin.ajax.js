@@ -44,7 +44,7 @@
 	/**
 	 * Performas an async AJAX with specified options.
 	 *
-	 * @param query String Value that user has typed into the text area which is
+	 * @param query {String} Value that user has typed into the text area which is
 	 * presumably the query.
 	 *
 	 * @author agorbatchev
@@ -82,6 +82,8 @@
 			result = data
 			;
 		
+		self.dontShowLoading();
+
 		// If results are expected to be cached, then we store the original
 		// data set and return the filtered one based on the original query.
 		// That means we do filtering on the client side, instead of the
@@ -95,6 +97,11 @@
 		self.trigger('setSuggestions', { result : result });
 	};
 
+	p.dontShowLoading = function()
+	{
+		clearTimeout(this._loadingTimeoutId);
+	};
+
 	/**
 	 * Shows message specified in `ajaxLoadingMessage` if loading data takes more than
 	 * number of seconds specified in `ajaxLoadingDelay`.
@@ -106,7 +113,7 @@
 	{
 		var self = this;
 
-		clearTimeout(self._loadingTimeoutId);
+		self.dontShowLoading();
 		self._loadingTimeoutId = setTimeout(
 			function()
 			{
