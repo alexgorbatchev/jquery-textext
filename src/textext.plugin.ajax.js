@@ -120,7 +120,8 @@
 				self.trigger('showDropdown', function(autocomplete)
 				{
 					autocomplete.clearItems();
-					autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
+					var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
+					node.addClass('text-loading');
 				});
 			},
 			self.opts(OPT_LOADING_DELAY) * 1000

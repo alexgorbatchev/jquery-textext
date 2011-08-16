@@ -30,6 +30,22 @@ function verifyTextExt(browser)
 	browser.assertElementPresent(textarea);
 };
 
+function keyPress(charCode)
+{
+	return function(browser)
+	{
+		browser
+			.keyDown(textarea, '\\' + charCode)
+			.keyUp(textarea, '\\' + charCode)
+			;
+	};
+};
+
+function backspace(browser)
+{
+	browser.and(keyPress(8));
+};
+	
 function tagXPath(value)
 {
 	return '//div[contains(@class, "text-core")]//div[contains(@class, "text-tags")]//span[text()="' + value + '"]/../..';
@@ -37,10 +53,15 @@ function tagXPath(value)
 
 function suggestionsXPath(selected, index)
 {
-	index    = index != null ? '[' + (index + 1) + ']' : ''
+	index    = index != null ? '[' + (index + 1) + ']' : '';
 	selected = selected == true ? '[contains(@class, "text-selected")]' : '';
 
 	return '//div[contains(@class, "text-core")]//div[contains(@class, "text-dropdown")]//div[contains(@class, "text-suggestion")]' + index + selected;
+};
+
+function assertSuggestionItem(test)
+{
+	return function(browser) { browser.assertVisible(suggestionsXPath() + '//span[text()="Basic"]') };
 };
 
 function assertOutput(value)
@@ -131,6 +152,19 @@ function createBrowser()
 	});
 };
 
+function testAjaxFunctionality()
+{
+	return function(browser)
+	{
+		browser
+			.and(focusInput)
+			.typeKeys(textarea, 'ba')
+			.waitForVisible(dropdown)
+			.and(assertSuggestionItem('Basic'))
+			;
+	}
+};
+
 function testFilterFunctionality()
 {
 	return function(browser)
@@ -176,8 +210,7 @@ function testTagFunctionality(wrap)
 			.and(assertOutput('["hello","world"]'))
 
 			// backspace
-			.keyDown(textarea, '\\8')
-			.keyUp(textarea, '\\8')
+			.and(backspace)
 			.and(assertTagNotPresent('world'))
 			;
 	};
@@ -275,12 +308,16 @@ function runModule(run)
 module.exports = {
 	log                           : log,
 	echo                          : echo,
+	focusInput                    : focusInput,
+	backspace                     : backspace,
+	keyPress                      : keyPress,
 	verifyTextExt                 : verifyTextExt,
 	tagXPath                      : tagXPath,
 	suggestionsXPath              : suggestionsXPath,
 	assertTagPresent              : assertTagPresent,
 	assertTagNotPresent           : assertTagNotPresent,
 	assertOutput                  : assertOutput,
+	assertSuggestionItem          : assertSuggestionItem,
 	typeTag                       : typeTag,
 	typeAndValidateTag            : typeAndValidateTag,
 	enterKey                      : enterKey,
@@ -293,6 +330,7 @@ module.exports = {
 	testPromptFunctionality       : testPromptFunctionality,
 	testAutocompleteFunctionality : testAutocompleteFunctionality,
 	testPlainInputFunctionality   : testPlainInputFunctionality,
+	testAjaxFunctionality         : testAjaxFunctionality,
 
 	css : {
 		focus    : focus,
