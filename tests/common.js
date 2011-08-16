@@ -32,7 +32,7 @@ function verifyTextExt(browser)
 
 function tagXPath(value)
 {
-	return '//div[@class="text-core"]//div[@class="text-tags"]//span[text()="' + value + '"]/../..';
+	return '//div[contains(@class, "text-core")]//div[contains(@class, "text-tags")]//span[text()="' + value + '"]/../..';
 };
 
 function suggestionsXPath(selected, index)
@@ -40,7 +40,7 @@ function suggestionsXPath(selected, index)
 	index    = index != null ? '[' + (index + 1) + ']' : ''
 	selected = selected == true ? '[contains(@class, "text-selected")]' : '';
 
-	return '//div[@class="text-core"]//div[@class="text-dropdown"]//div[contains(@class, "text-suggestion")]' + index + selected;
+	return '//div[contains(@class, "text-core")]//div[contains(@class, "text-dropdown")]//div[contains(@class, "text-suggestion")]' + index + selected;
 };
 
 function assertOutput(value)
