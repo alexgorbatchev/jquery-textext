@@ -1,6 +1,35 @@
 (function($, undefined)
 {
+	/**
+	 * ### About
+	 *
+	 * TextExt is a plugin for jQuery which is designed to provide functioanlity such
+	 * as tag input and autocomplete.
+	 *
+	 * The core design principle behind TextExt is modularity and extensibility. Each
+	 * piece of functionality is separated from the main core and can act individually
+	 * and together with other plugins.
+	 *
+	 * The benifits of this approach is that not only you can easily configure an input
+	 * to provide just the functionality that you need, but that all other code that 
+	 * you aren't using doesn't need to be loaded at all.
+	 *
+	 * A wide number of plugins are available including Tags, Autocomplete, Filter, Ajax
+	 * as well as a few which are purely asthetical like Focus.
+	 *
+	 * ### Example
+	 *
+	 * <textarea></textarea>
+	 *
+	 * <script type="text/javascript">
+	 * </script>
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/16
+	 * @id TextExt
+	 */
 	function TextExt() {};
+
 	function ItemManager() {};
 
 	var stringify = (JSON || {}).stringify,
@@ -52,6 +81,7 @@
 	 * Returns object property by name where name is dot-separated and object is multiple levels deep.
 	 * @param target Object Source object.
 	 * @param name String Dot separated property name, ie `foo.bar.world`
+	 * @id core.getProperty
 	 */
 	function getProperty(source, name)
 	{
@@ -96,7 +126,7 @@
 	};
 
 	//--------------------------------------------------------------------------------
-	// TextExt core component
+	// ItemManager core component
 	
 	p = ItemManager.prototype;
 
@@ -326,6 +356,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/10
+	 * @id TextExt.hasData
 	 */
 	p.hasData = function()
 	{

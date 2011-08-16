@@ -1,16 +1,80 @@
 (function($)
 {
-	function TextExtAjax()
-	{
-	};
+	/**
+	 * 
+	 * @author agorbatchev
+	 * @date 2011/08/16
+	 * @id TextExtAjax
+	 */
+	function TextExtAjax() {};
 
 	$.fn.textext.TextExtAjax = TextExtAjax;
 	$.fn.textext.addPlugin('ajax', TextExtAjax);
 
 	var p = TextExtAjax.prototype,
 
+		/**
+		 * ### Options
+		 *
+		 * AJAX plugin options are grouped under `ajax` when passed to the `$().textext()` function. Be
+		 * mindful that the whole `ajax` object is also passed to jQuery `$.ajax` call which means that
+		 * you can change all jQuery options as well. Please refer to the jQuery documentation on how
+		 * to set url and all other parameters.
+		 * 
+		 * @author agorbatchev
+		 * @date 2011/08/16
+		 * @id TextExtAjax.options
+		 */
+
+		/**
+		 * #### ajax.data.callback
+		 *
+		 * By default, when user starts typing into the text input, AJAX plugin will start making requests
+		 * to the `url` that you have specified and will pass whatever user has typed so far as a parameter
+		 * named `q`, eg `?q=foo`.
+		 *
+		 * If you wish to change this behaviour, you can pass a function as a value for this option which
+		 * takes one argument (the user input) and should return a key/value object that will be converted
+		 * to the request parameters. For example:
+		 *
+		 *     'dataCallback' : function(query)
+		 *     {
+		 *         return { 'search' : query };
+		 *     } 
+		 *
+		 * @author agorbatchev
+		 * @date 2011/08/16
+		 * @id TextExtAjax.options.data.callback
+		 */
 		OPT_DATA_CALLBACK   = 'ajax.data.callback',
+		
+		/**
+		 * #### ajax.cache.results
+		 *
+		 * By default, the server end point is constantly being reloaded whenever user changes the value
+		 * in the text input. If you'd rather have the client do result filtering, you can return all
+		 * possible results from the server and cache them on the client by setting this option to `true`.
+		 *
+		 * In such a case, only one call to the server will be made and filtering will be performed on
+		 * the client side using `ItemManager` attached to the core.
+		 *
+		 * @author agorbatchev
+		 * @date 2011/08/16
+		 * @id TextExtAjax.options.cache.results
+		 */
 		OPT_CACHE_RESULTS   = 'ajax.cache.results',
+		
+		/**
+		 * #### ajax.loading.delay
+		 *
+		 * The loading message delay is set in seconds and will specify how long it would take before
+		 * user sees the message. If you don't want user to ever see this message, set the option value
+		 * to `Number.MAX_VALUE`.
+		 *
+		 * @author agorbatchev
+		 * @date 2011/08/16
+		 * @id TextExtAjax.options.loading.delay
+		 */
 		OPT_LOADING_DELAY   = 'ajax.loading.delay',
 		OPT_LOADING_MESSAGE = 'ajax.loading.message',
 		OPT_TYPE_DELAY      = 'ajax.type.delay',
@@ -97,6 +161,13 @@
 		self.trigger('setSuggestions', { result : result });
 	};
 
+	/**
+	 * If show loading message timer was started, calling this function disables it,
+	 * otherwise nothing else happens.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/16
+	 */
 	p.dontShowLoading = function()
 	{
 		clearTimeout(this._loadingTimeoutId);
