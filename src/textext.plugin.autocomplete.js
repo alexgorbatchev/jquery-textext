@@ -17,7 +17,7 @@
 
 		OPT_ENABLED         = 'dropdown.enabled',
 		OPT_MAX_HEIGHT      = 'dropdown.maxHeight',
-		OPT_DIRECTION       = 'dropdown.direction',
+		OPT_POSITION        = 'dropdown.position',
 		OPT_HTML_DROPDOWN   = 'html.dropdown',
 		OPT_HTML_SUGGESTION = 'html.suggestion',
 
@@ -74,7 +74,7 @@
 			container = self.getDropdownContainer();
 			container
 				.mouseover(function(e) { self.onMouseOver(e) })
-				.addClass('text-position-' + self.opts(OPT_DIRECTION))
+				.addClass('text-position-' + self.opts(OPT_POSITION))
 				;
 
 			self.positionDropdown();
@@ -186,7 +186,7 @@
 	{
 		var self      = this,
 			container = self.getDropdownContainer(),
-			direction = self.opts(OPT_DIRECTION),
+			direction = self.opts(OPT_POSITION),
 			height    = self.core().getWrapContainer().outerHeight(),
 			css       = {}
 			;
