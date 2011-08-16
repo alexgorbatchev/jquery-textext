@@ -3,7 +3,7 @@ var soda   = require('soda'),
 	common = require('./common')
 	;
 
-function ajaxTest(exampleId, test)
+function beginAjaxTest(exampleId, test)
 {
 	return function(browser)
 	{
@@ -42,7 +42,7 @@ function testLoadingMessage()
 	return function(browser)
 	{
 		browser.and(
-			ajaxTest('with-autocomplete', function(browser)
+			beginAjaxTest('with-autocomplete', function(browser)
 			{
 				var loadingMessage = common.css.dropdown + ' .text-suggestion.text-loading';
 
@@ -65,9 +65,26 @@ function testLoadingMessage()
 					.and(common.assertSuggestionItem('Basic'))
 
 					// run the autocomplete tests
-					.and(common.keyPress(27))
-					.type(common.css.textarea, '')
+					.and(common.clearInput)
 					.and(common.testAutocompleteFunctionality())
+					;
+			})
+		);
+	};
+};
+
+function testWithTags()
+{
+	return function(browser)
+	{
+		browser.and(
+			beginAjaxTest('with-filter-tags-and-autocomplete', function(browser)
+			{
+				browser
+					.and(common.testAjaxFunctionality())
+					.and(common.clearInput)
+					.and(common.testAutocompleteFunctionality(function() {}))
+					.and(common.testFilterFunctionality())
 					;
 			})
 		);
@@ -78,6 +95,7 @@ function run(browser)
 {
 	browser
 		.and(testLoadingMessage())
+		.and(testWithTags())
 	;
 };
 

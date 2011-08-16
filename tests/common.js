@@ -100,6 +100,14 @@ function typeTag(value)
 	};
 };
 
+function clearInput(browser)
+{
+	browser
+		.and(keyPress(27))
+		.type(textarea, '')
+		;
+};
+
 function focusInput(browser)
 {
 	browser.fireEvent(textarea, 'focus');
@@ -308,6 +316,7 @@ function runModule(run)
 module.exports = {
 	log                           : log,
 	echo                          : echo,
+	clearInput                    : clearInput,
 	focusInput                    : focusInput,
 	backspace                     : backspace,
 	keyPress                      : keyPress,
