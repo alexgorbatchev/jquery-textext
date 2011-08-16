@@ -14,10 +14,21 @@
 		CSS_DOT_TAGS_ON_TOP = CSS_DOT + CSS_TAGS_ON_TOP,
 		CSS_TAG             = 'text-tag',
 		CSS_DOT_TAG         = CSS_DOT + CSS_TAG,
+		CSS_TAGS            = 'text-tags',
+		CSS_DOT_TAGS        = CSS_DOT + CSS_TAGS,
+
+		OPT_ENABLED   = 'tags.enabled',
+		OPT_HTML_TAG  = 'html.tag',
+		OPT_HTML_TAGS = 'html.tags',
+		OPT_ITEMS     = 'items',
+
+		EVENT_IS_TAG_ALLOWED = 'isTagAllowed',
+		EVENT_SET_DATA       = 'setData',
+		EVENT_SELECT_ITEM    = 'selectItem',
 
 		DEFAULT_OPTS = {
-			tagsEnabled    : true,
-			allowTextInput : false,
+			tagsEnabled : true,
+			items : [],
 
 			html : {
 				tags : '<div class="text-tags"/>',
@@ -34,9 +45,9 @@
 			input = self.input()
 			;
 
-		if(self.opts('tagsEnabled'))
+		if(self.opts(OPT_ENABLED))
 		{
-			input.after(self.opts('html.tags'));
+			input.after(self.opts(OPT_HTML_TAGS));
 
 			self.on({
 				enterKeyUp       : self.onEnterKeyUp,
@@ -51,7 +62,7 @@
 				.mousemove(function(e) { self.onContainerMouseMove(e) })
 				;
 
-			self.input()
+			input
 				.mousemove(function(e) { self.onInputMouseMove(e) })
 				;
 		}
@@ -67,9 +78,14 @@
 		};
 	};
 
+	/**
+	 * Returns HTML element in which all tag HTML elements are residing.
+	 * @author agorbatchev
+	 * @date 2011/08/15
+	 */
 	p.getContainer = function()
 	{
-		return this.core().input().siblings('.text-tags');
+		return this.core().input().siblings(CSS_DOT_TAGS);
 	};
 
 	//--------------------------------------------------------------------------------
@@ -84,7 +100,7 @@
 	p.onPostInit = function(e)
 	{
 		var self = this;
-		self.addTags(self.opts('items'));
+		self.addTags(self.opts(OPT_ITEMS));
 	};
 
 	/**
@@ -165,7 +181,7 @@
 			focus  = 0
 			;
 
-		if(source.is('.text-tags'))
+		if(source.is(CSS_DOT_TAGS))
 		{
 			focus = 1;
 		}
@@ -183,8 +199,8 @@
 	{
 		var self = this;
 
-		if(self.opts('tagsEnabled'))
-			self.trigger('selectItem', self.input().val());
+		if(self.opts(OPT_ENABLED))
+			self.trigger(EVENT_SELECT_ITEM, self.input().val());
 	};
 
 	//--------------------------------------------------------------------------------
@@ -207,7 +223,7 @@
 			result.push($(this).data(CSS_TAG));
 		});
 
-		self.trigger('setData', result, result.length > 0);
+		self.trigger(EVENT_SET_DATA, result, result.length > 0);
 	};
 
 	/**
@@ -268,7 +284,7 @@
 	p.isTagAllowed = function(tag)
 	{
 		var opts = { tag : tag, result : true };
-		this.trigger('isTagAllowed', opts);
+		this.trigger(EVENT_IS_TAG_ALLOWED, opts);
 		return opts.result;
 	};
 
@@ -331,7 +347,7 @@
 	p.renderTag = function(tag)
 	{
 		var self = this,
-			node = $(self.opts('html.tag'))
+			node = $(self.opts(OPT_HTML_TAG))
 			;
 
 		node.find('.text-label').text(self.itemManager().itemToString(tag));
