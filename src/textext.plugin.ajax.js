@@ -1,13 +1,11 @@
 (function($)
 {
 	/**
-	 * ### About
+	 * AJAX plugin is very useful if you want to load list of items from a data point and pass it
+	 * to the Autocomplete or Filter plugins.
 	 *
-	 * AJAX component is very useful if you want to load list of items from a data point and pass it
-	 * to the Autocomplete or Filter components.
-	 *
-	 * Because it meant to be as a helper method for either Autocomplete or Filter components, without
-	 * either of these two present AJAX component won't do anything.
+	 * Because it meant to be as a helper method for either Autocomplete or Filter plugin, without
+	 * either of these two present AJAX plugin won't do anything.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/16
@@ -21,12 +19,17 @@
 	var p = TextExtAjax.prototype,
 
 		/**
-		 * ### Options
-		 *
 		 * AJAX plugin options are grouped under `ajax` when passed to the `$().textext()` function. Be
 		 * mindful that the whole `ajax` object is also passed to jQuery `$.ajax` call which means that
 		 * you can change all jQuery options as well. Please refer to the jQuery documentation on how
-		 * to set url and all other parameters.
+		 * to set url and all other parameters. For example:
+		 *
+		 *     $('textarea').textext({
+		 *         plugins: 'ajax',
+		 *         ajax: {
+		 *             url: 'http://...'
+		 *         }
+		 *     })
 		 * 
 		 * @author agorbatchev
 		 * @date 2011/08/16
@@ -112,9 +115,7 @@
 		OPT_TYPE_DELAY = 'ajax.type.delay',
 
 		/**
-		 * ### Events
-		 *
-		 * AJAX component dispatches or reacts to the following events.
+		 * AJAX plugin dispatches or reacts to the following events.
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
@@ -122,7 +123,7 @@
 		 */
 
 		/**
-		 * AJAX component reacts to the `getSuggestions` event dispatched by the Autocomplete plugin.
+		 * AJAX plugin reacts to the `getSuggestions` event dispatched by the Autocomplete plugin.
 		 *
 		 * @name getSuggestions
 		 * @author agorbatchev
@@ -140,6 +141,18 @@
 		 * @id TextExtAjax.events.setSuggestions
 		 */
 		EVENT_SET_SUGGESTION = 'setSuggestions',
+
+		/**
+		 * AJAX plugin dispatches the `showDropdown` event which Autocomplete plugin is expecting.
+		 * This is used to temporarily show the loading message if the AJAX request is taking longer
+		 * than expected.
+		 *
+		 * @name showDropdown
+		 * @author agorbatchev
+		 * @date 2011/08/17
+		 * @id TextExtAjax.events.showDropdown
+		 */
+		EVENT_SHOW_DROPDOWN = 'showDropdown',
 
 		DEFAULT_OPTS = {
 			ajax : {
@@ -278,7 +291,7 @@
 		self._loadingTimeoutId = setTimeout(
 			function()
 			{
-				self.trigger('showDropdown', function(autocomplete)
+				self.trigger(EVENT_SHOW_DROPDOWN, function(autocomplete)
 				{
 					autocomplete.clearItems();
 					var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
