@@ -39,7 +39,7 @@
 		 */
 
 		/**
-		 * This is a toggle switch to enable or disable this plugin. The value is checked
+		 * This is a toggle switch to enable or disable the Autucomplete plugin. The value is checked
 		 * each time at the top level which allows you to toggle this setting on the fly.
 		 *
 		 * @name autocomplete.enabled
