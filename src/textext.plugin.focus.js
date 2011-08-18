@@ -15,7 +15,7 @@
 
 	var p = TextExtFocus.prototype,
 		/**
-		 * Focus plugin only has option and that its HTML template. It could be 
+		 * Focus plugin only has one option and that is its HTML template. It could be 
 		 * changed when passed to the `$().textext()` function. For example:
 		 *
 		 *     $('textarea').textext({
@@ -43,6 +43,9 @@
 
 		/**
 		 * Focus plugin dispatches or reacts to the following events.
+		 *
+		 * @author agorbatchev
+		 * @date 2011/08/17
 		 * @id TextExtFocus.events
 		 */
 
@@ -88,7 +91,7 @@
 		var self = this;
 
 		self.baseInit(parent, DEFAULT_OPTS);
-		self.core().getWrapContainer().append(self.opts('html.focus'));
+		self.core().getWrapContainer().append(self.opts(OPT_HTML_FOCUS));
 		self.on({
 			blur  : self.onBlur,
 			focus : self.onFocus
