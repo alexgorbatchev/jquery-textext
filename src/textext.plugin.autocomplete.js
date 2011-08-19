@@ -85,7 +85,7 @@
 		OPT_HTML_SUGGESTION = 'html.suggestion',
 
 		/**
-		 * Autocomplete plugin dispatches or reacts to the following events.
+		 * Autocomplete plugin triggers or reacts to the following events.
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
@@ -127,7 +127,7 @@
 		EVENT_SHOW_DROPDOWN = 'showDropdown',
 
 		/**
-		 * Autocomplete plugin reacts to the `setSuggestions` event dispatched by other plugins which
+		 * Autocomplete plugin reacts to the `setSuggestions` event triggered by other plugins which
 		 * wish to populate the suggestion items. Suggestions should be passed as event argument in the 
 		 * following format: `{ data : [ ... ] }`. 
 		 *
