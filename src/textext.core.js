@@ -12,6 +12,22 @@
 	 */
 	function TextExt() {};
 
+	/**
+	 * ItemManager is used to seamlessly convert between string to whatever the format the item
+	 * data is being passed around. It's used by all plugins that in one way or another operate
+	 * with items, such as Tags, Filter, Autocomplete and Suggestions. Default implementation works 
+	 * with strings. 
+	 *
+	 * Each instance of `TextExt` creates a new instance of default implementation of `ItemManager`
+	 * unless something `itemManager` option was set to another implementation.
+	 *
+	 * To satisfy requirements of managing items of type other than a `String`, different implementation
+	 * if `ItemManager` should be supplied.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager
+	 */
 	function ItemManager() {};
 
 	var stringify = (JSON || {}).stringify,
@@ -409,10 +425,34 @@
 	
 	p = ItemManager.prototype;
 
+	/**
+	 * Initialization method called by the core during instantiation.
+	 *
+	 * @signature ItemManager.init(parent)
+	 *
+	 * @param parent {TextExt} Instance of the TextExt core class.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager.init
+	 */
 	p.init = function(core)
 	{
 	};
 
+	/**
+	 * Filters out items from the list that don't match the query and returns remaining items. Default 
+	 * implementation checks if the item starts with the query.
+	 *
+	 * @signature ItemManager.filter(list, query)
+	 *
+	 * @param list [Array] List of items. Default implementation works with strings.
+	 * @param query {String} Query string.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager.filter
+	 */
 	p.filter = function(list, query)
 	{
 		var result = [],
@@ -429,21 +469,74 @@
 		return result;
 	};
 
+	/**
+	 * Returns `true` if specified item contains another string, `false` otherwise. In the default implementation 
+	 * `String.indexOf()` is used to check if item string begins with the needle string.
+	 *
+	 * @signature ItemManager.itemContains(item, needle)
+	 *
+	 * @param item {Object} Item to check. Default implementation works with strings.
+	 * @param needle {String} Search string to be found within the item.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager.itemContains
+	 */
 	p.itemContains = function(item, needle)
 	{
 		return this.itemToString(item).toLowerCase().indexOf(needle.toLowerCase()) == 0;
 	};
 
+	/**
+	 * Converts specified string to item. Because default implemenation works with string, input string
+	 * is simply returned back. To use custom objects, different implementation of this method could
+	 * return something like `{ name : {String} }`.
+	 *
+	 * @signature ItemManager.stringToItem(str)
+	 *
+	 * @param str {String} Input string.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager.stringToItem
+	 */
 	p.stringToItem = function(str)
 	{
 		return str;
 	};
 
+	/**
+	 * Converts specified item to string. Because default implemenation works with string, input string
+	 * is simply returned back. To use custom objects, different implementation of this method could
+	 * for example return `name` field of `{ name : {String} }`.
+	 *
+	 * @signature ItemManager.itemToString(item)
+	 *
+	 * @param item {Object} Input item to be converted to string.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager.itemToString
+	 */
 	p.itemToString = function(item)
 	{
 		return item;
 	};
 
+	/**
+	 * Returns `true` if both items are equal, `false` otherwise. Because default implemenation works with 
+	 * string, input items are compared as strings. To use custom objects, different implementation of this 
+	 * method could for example compare `name` fields of `{ name : {String} }` type object.
+	 *
+	 * @signature ItemManager.compareItems(item1, item2)
+	 *
+	 * @param item1 {Object} First item.
+	 * @param item2 {Object} Second item.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id ItemManager.compareItems
+	 */
 	p.compareItems = function(item1, item2)
 	{
 		return item1 == item2;
