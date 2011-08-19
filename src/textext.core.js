@@ -19,7 +19,7 @@
 	 * with strings. 
 	 *
 	 * Each instance of `TextExt` creates a new instance of default implementation of `ItemManager`
-	 * unless something `itemManager` option was set to another implementation.
+	 * unless `itemManager` option was set to another implementation.
 	 *
 	 * To satisfy requirements of managing items of type other than a `String`, different implementation
 	 * if `ItemManager` should be supplied.
