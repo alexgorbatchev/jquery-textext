@@ -78,19 +78,19 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtFocus.init(parent)
+	 * @signature TextExtFocus.init(core)
 	 *
-	 * @param parent {TextExt} Instance of the TextExt core class.
+	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
 	 * @id TextExtFocus.init
 	 */
-	p.init = function(parent)
+	p.init = function(core)
 	{
 		var self = this;
 
-		self.baseInit(parent, DEFAULT_OPTS);
+		self.baseInit(core, DEFAULT_OPTS);
 		self.core().getWrapContainer().append(self.opts(OPT_HTML_FOCUS));
 		self.on({
 			blur  : self.onBlur,

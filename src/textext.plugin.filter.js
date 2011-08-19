@@ -102,18 +102,18 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtFilter.init(parent)
+	 * @signature TextExtFilter.init(core)
 	 *
-	 * @param parent {TextExt} Instance of the TextExt core class.
+	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
 	 * @id TextExtFilter.init
 	 */
-	p.init = function(parent)
+	p.init = function(core)
 	{
 		var self = this;
-		self.baseInit(parent, DEFAULT_OPTS);
+		self.baseInit(core, DEFAULT_OPTS);
 
 		self.on({
 			isTagAllowed   : self.onIsTagAllowed,

@@ -155,17 +155,17 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtTags.init(parent)
+	 * @signature TextExtTags.init(core)
 	 *
-	 * @param parent {TextExt} Instance of the TextExt core class.
+	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
 	 * @id TextExtTags.init
 	 */
-	p.init = function(parent)
+	p.init = function(core)
 	{
-		this.baseInit(parent, DEFAULT_OPTS);
+		this.baseInit(core, DEFAULT_OPTS);
 
 		var self  = this,
 			input = self.input()
