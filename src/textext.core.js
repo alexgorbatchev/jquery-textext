@@ -1,31 +1,13 @@
 (function($, undefined)
 {
 	/**
-	 * ### About
-	 *
-	 * TextExt is a plugin for jQuery which is designed to provide functioanlity such
-	 * as tag input and autocomplete.
-	 *
-	 * The core design principle behind TextExt is modularity and extensibility. Each
-	 * piece of functionality is separated from the main core and can act individually
-	 * and together with other plugins.
-	 *
-	 * The benifits of this approach is that not only you can easily configure an input
-	 * to provide just the functionality that you need, but that all other code that 
-	 * you aren't using doesn't need to be loaded at all.
-	 *
-	 * A wide number of plugins are available including Tags, Autocomplete, Filter, Ajax
-	 * as well as a few which are purely asthetical like Focus.
-	 *
-	 * ### Example
-	 *
-	 * <textarea></textarea>
-	 *
-	 * <script type="text/javascript">
-	 * </script>
+	 * TextExt is the main core class which by itself doesn't provide any functionality
+	 * that is user facing, however it has the underlying mechanics to bring all the
+	 * plugins together under one roof and make them work with each other or on their
+	 * own.
 	 *
 	 * @author agorbatchev
-	 * @date 2011/08/16
+	 * @date 2011/08/19
 	 * @id TextExt
 	 */
 	function TextExt() {};
@@ -37,18 +19,215 @@
 
 		UNDEFINED = 'undefined',
 
-		OPT_ENABLED      = 'enabled',
-		OPT_ITEM_MANAGER = 'item.manager',
-		OPT_PLUGINS      = 'plugins',
-		OPT_EXT          = 'ext',
-		OPT_HTML_WRAP    = 'html.wrap',
-		OPT_KEYS         = 'keys',
+		/**
+		 * TextExt provides a way to pass in the options to configure the core as well as
+		 * each plugin that is being currently used. The jQuery exposed plugin `$().textext()` 
+		 * function takes a hash object with key/value set of options. For example:
+		 *
+		 *     $('textarea').textext({
+		 *         enabled: true
+		 *     })
+		 *
+		 * There are multiple ways of passing in the options:
+		 *
+		 * 1. You can nest option sets and option names in this manual are using nested
+		 * notation for clarity, which is all lowercased, dot separated style, eg `foo.bar.world`.
+		 * For example:
+		 *
+		 *        {
+		 *            item: {
+		 *                manager: ...
+		 *            },
+		 *
+		 *            html: {
+		 *                wrap: ...
+		 *            },
+		 *
+		 *            autocomplete: {
+		 *                enabled: ...,
+		 *                dropdown: {
+		 *                   position: ...
+		 *                }
+		 *            }
+		 *        }
+		 *
+		 * 2. You can use camel cased properties in a flat key/value fashion like so:
+		 *
+		 *        {
+		 *            itemManager: ...,
+		 *            htmlWrap: ...,
+		 *            autocompleteEnabled: ...,
+		 *            autocompleteDropdownPosition: ...
+		 *        }
+		 *
+		 * 3. You can also mix and match. For each dot separated name, its alternative in camel
+		 * case is also checked for, eg for `foo.bar.world` it's alternatives could be `fooBarWorld`,
+		 * `foo.barWorld` or `fooBar.world`, which translates to `{ foo: { bar: { world: ... } } }`,
+		 * `{ fooBarWorld: ... }`, `{ foo : { barWorld : ... } }` or `{ fooBar: { world: ... } }`
+		 * respectively. For example:
+		 *
+		 *        {
+		 *            itemManager : ...,
+		 *            htmlWrap: ...,
+		 *            autocomplete: {
+		 *                enabled: ...,
+		 *                dropdownPosition: ...
+		 *            }
+		 *        }
+		 *
+		 * Mixed case is used through out the code, however it seems appropriate. However, all option
+		 * names are specified in the dot notation because it works both ways where as camel case is not
+		 * being converted to its alternative dot notation.
+		 *
+		 * @author agorbatchev
+		 * @date 2011/08/17
+		 * @id TextExt.options
+		 */
 
-		EVENT_PRE_INVALIDATE  = 'preInvalidate',
+		/**
+		 * Default instance of `ItemManager` which takes `String` type as default for tags.
+		 *
+		 * @name item.manager
+		 * @default ItemManager
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.options.item.manager
+		 */
+		OPT_ITEM_MANAGER = 'item.manager',
+		
+		/**
+		 * List of plugins that should be used with the current instance of TextExt. The list could be
+		 * specified as array of strings or as comma or space separated string.
+		 *
+		 * @name plugins
+		 * @default []
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.options.plugins
+		 */
+		OPT_PLUGINS = 'plugins',
+		
+		/**
+		 * TextExt allows for overriding of virtually any method that the core or any of its plugins
+		 * use. This could be accomplished through the use of the `ext` option.
+		 *
+		 * It's possible to specifically target the core or any plugin, as well as overwrite all the
+		 * desired methods everywhere.
+		 *
+		 * 1. Targeting the core:
+		 *
+		 *        ext: {
+		 *            core: {
+		 *                trigger: function()
+		 *                {
+		 *                    console.log('TextExt.trigger', arguments);
+		 *                    $.fn.textext.TextExt.prototype.trigger.apply(this, arguments);
+		 *                }
+		 *            }
+		 *        }
+		 *
+		 * 2. Targeting individual plugins:
+		 *
+		 *        ext: {
+		 *            tags: {
+		 *                addTags: function(tags)
+		 *                {
+		 *                    console.log('TextExtTags.addTags', tags);
+		 *                    $.fn.textext.TextExtTags.prototype.addTags.apply(this, arguments);
+		 *                }
+		 *            }
+		 *        }
+		 *
+		 * 3. Targeting `ItemManager` instance:
+		 *
+		 *        ext: {
+		 *            itemManager: {
+		 *                stringToItem: function(str)
+		 *                {
+		 *                    console.log('ItemManager.stringToItem', str);
+		 *                    return $.fn.textext.ItemManager.prototype.stringToItem.apply(this, arguments);
+		 *                }
+		 *            }
+		 *        }
+		 *
+		 * 4. And finally, in edge cases you can extend everything at once:
+		 *
+		 *        ext: {
+		 *            '*': {
+		 *                fooBar: function() {}
+		 *            }
+		 *        }
+		 *
+		 * @name ext
+		 * @default {}
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.options.ext
+		 */
+		OPT_EXT = 'ext',
+		
+		/**
+		 * HTML source that is used to generate elements necessary for the core and all other
+		 * plugins to function.
+		 *
+		 * @name html.wrap
+		 * @default '<div class="text-core"><div class="text-wrap"/></div>'
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.options.html.wrap
+		 */
+		OPT_HTML_WRAP = 'html.wrap',
+		
+		/**
+		 * Hash table of key codes and key names for which special events will be created
+		 * by the core. For each entry a `nameKeyDown`, `nameKeyUp` and `nameKeyPress` events 
+		 * will be triggered along side with `anyKeyUp` and `anyKeyDown` events for every 
+		 * key stroke.
+		 *
+		 * Here's a list of default keys:
+		 *
+		 *     {
+		 *         8   : 'Backspace',
+		 *         9   : 'Tab',
+		 *         13  : 'Enter!',
+		 *         27  : 'Escape!',
+		 *         37  : 'Left',
+		 *         38  : 'Up!',
+		 *         39  : 'Right',
+		 *         40  : 'Down!',
+		 *         46  : 'Delete',
+		 *         108 : 'NumpadEnter',
+		 *         188 : 'Comma'
+		 *     }
+		 *
+		 * Please note the `!` at the end of some keys. This tells the core that by default
+		 * this keypress will be trapped and not passed on to the text input.
+		 *
+		 * @name keys
+		 * @default { ... }
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.options.keys
+		 */
+		OPT_KEYS = 'keys',
+
+		/**
+		 * The core triggers or reacts to the following events.
+		 *
+		 * @author agorbatchev
+		 * @date 2011/08/17
+		 * @id TextExt.events
+		 */
+
+		EVENT_PRE_INVALIDATE = 'preInvalidate',
+
 		EVENT_POST_INVALIDATE = 'postInvalidate',
-		EVENT_SET_DATA        = 'setData',
-		EVENT_POST_INIT       = 'postInit',
-		EVENT_READY           = 'ready',
+		
+		EVENT_SET_DATA = 'setData',
+		
+		EVENT_POST_INIT = 'postInit',
+		
+		EVENT_READY = 'ready',
 
 		DEFAULT_OPTS = {
 			itemManager : ItemManager,
@@ -208,7 +387,7 @@
 			.data('textext', self)
 			;
 
-		$.extend(true, itemManager, self.opts(OPT_EXT + '.itemManager'));
+		$.extend(true, itemManager, self.opts(OPT_EXT + '.item.manager'));
 		$.extend(true, self, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.core'));
 		
 		self.originalWidth = input.outerWidth();
@@ -247,11 +426,8 @@
 
 			if(plugin)
 			{
-				plugin              = new plugin();
-				ext                 = self.opts(OPT_EXT);
-				self._plugins[name] = plugin;
-
-				$.extend(true, plugin, ext['*'], ext[name]);
+				self._plugins[name] = plugin = new plugin();
+				$.extend(true, plugin, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.' + name));
 				plugin.init(self);
 			}
 		}
@@ -266,7 +442,8 @@
 
 	p.trigger = function()
 	{
-		this.input().trigger(arguments[0], slice.call(arguments, 1));
+		var args = arguments;
+		this.input().trigger(args[0], slice.call(args, 1));
 	};
 
 	p.itemManager = function()
