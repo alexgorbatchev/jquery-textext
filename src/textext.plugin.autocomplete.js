@@ -216,8 +216,8 @@
 			self.on({
 				click          : self.onClick,
 				blur           : self.onBlur,
-				otherKeyUp     : self.onOtherKeyUp,
-				deleteKeyUp    : self.onOtherKeyUp,
+				anyKeyUp       : self.onAnyKeyUp,
+				deleteKeyUp    : self.onAnyKeyUp,
 				backspaceKeyUp : self.onBackspaceKeyUp,
 				downKeyDown    : self.onDownKeyDown,
 				upKeyDown      : self.onUpKeyDown,
@@ -345,17 +345,17 @@
 	};
 
 	/**
-	 * Reacts to the `otherKeyUp` event triggered by the TextExt core.
+	 * Reacts to the `anyKeyUp` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onOtherKeyUp(e)
+	 * @signature TextExtAutocomplete.onAnyKeyUp(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onOtherKeyUp
+	 * @id TextExtAutocomplete.onAnyKeyUp
 	 */
-	p.onOtherKeyUp = function(e)
+	p.onAnyKeyUp = function(e)
 	{
 		this.getSuggestions();
 	};
