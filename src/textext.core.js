@@ -219,15 +219,116 @@
 		 * @id TextExt.events
 		 */
 
+		/**
+		 * Core triggers `preInvalidate` event before the dimensions of padding on the text input
+		 * are set.
+		 *
+		 * @name preInvalidate
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.preInvalidate
+		 */
 		EVENT_PRE_INVALIDATE = 'preInvalidate',
 
+		/**
+		 * Core triggers `postInvalidate` event after the dimensions of padding on the text input
+		 * are set.
+		 *
+		 * @name postInvalidate
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.postInvalidate
+		 */
 		EVENT_POST_INVALIDATE = 'postInvalidate',
 		
+		/**
+		 * Core triggers `setData` on every key press to update the orignal text input data
+		 * which will be submitted with the form. Other plugins that trigger `setData` do so
+		 * after this event handler and therefore can sent their own data. Only the very last
+		 * update will be reflected as data is overwritten each time.
+		 *
+		 * Core reacts to the `setData` and updates the original text input data which will be
+		 * submitted with the form.
+		 *
+		 * @name setData
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.setData
+		 */
 		EVENT_SET_DATA = 'setData',
 		
+		/**
+		 * Core triggers `postInit` event to let plugins run code after all plugins have been 
+		 * created and initialized. This is a good place to set some kind of global values before 
+		 * somebody gets to use them. This is not the right place to expect all plugins to finish
+		 * their initialization.
+		 *
+		 * @name postInit
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.postInit
+		 */
 		EVENT_POST_INIT = 'postInit',
-		
+
+		/**
+		 * Core triggers `ready` event after all global configuration and prepearation has been
+		 * done and the TextExt component is ready for use. Event handlers should expect all 
+		 * values to be set and the plugins to be in the final state.
+		 *
+		 * @name ready
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.ready
+		 */
 		EVENT_READY = 'ready',
+
+		/**
+		 * Core triggers `anyKeyUp` event for every key up event triggered within the component.
+		 *
+		 * @name anyKeyUp
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.anyKeyUp
+		 */
+
+		/**
+		 * Core triggers `anyKeyDown` event for every key down event triggered within the component.
+		 *
+		 * @name anyKeyDown
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.anyKeyDown
+		 */
+
+		/**
+		 * Core triggers `[name]KeyUp` event for every key specifid in the `keys` option that is 
+		 * triggered within the component.
+		 *
+		 * @name [name]KeyUp
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.[name]KeyUp
+		 */
+
+		/**
+		 * Core triggers `[name]KeyDown` event for every key specified in the `keys` option that is 
+		 * triggered within the component.
+		 *
+		 * @name [name]KeyDown
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.[name]KeyDown
+		 */
+
+		/**
+		 * Core triggers `[name]KeyPress` event for every key specified in the `keys` option that is 
+		 * triggered within the component.
+		 *
+		 * @name [name]KeyPress
+		 * @author agorbatchev
+		 * @date 2011/08/19
+		 * @id TextExt.events.[name]KeyPress
+		 */
 
 		DEFAULT_OPTS = {
 			itemManager : ItemManager,
@@ -353,6 +454,18 @@
 
 	p = TextExt.prototype;
 		
+	/**
+	 * Initializes current component instance with work with the supplied text input and options.
+	 *
+	 * @signature TextExt.init(input, opts)
+	 *
+	 * @param input {HTMLElement} Text input.
+	 * @param opts {Object} Options.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.init
+	 */
 	p.init = function(input, opts)
 	{
 		var self = this,
@@ -400,17 +513,21 @@
 			anyKeyUp : self.onAnyKeyUp
 		});
 
-		// `postInit` is fired to let plugins and users to run code after all plugins
-		// have been created and initialized. This is a good place to set some kind
-		// of global values before somebody gets to use them.
 		self.trigger(EVENT_POST_INIT);
-
-		// `ready` is fired after all global configuration and prepearation has been
-		// done and the TextExt component is ready to use. Event handlers should
-		// expect all values to be set and the plugins to be in the final state.
 		self.trigger(EVENT_READY);
 	};
 
+	/**
+	 * Creates and initializes all specified plugins.
+	 *
+	 * @signature TextExt.initPlugins(plugins)
+	 *
+	 * @param plugins {Array} List of plugin names to initialize.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.initPlugins
+	 */
 	p.initPlugins = function(plugins)
 	{
 		var self = this,
@@ -433,45 +550,125 @@
 		}
 	};
 
+	/**
+	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
+	 * 
+	 * @signature TextExt.on(handlers)
+	 *
+	 * @param handlers {Object} Key/value pairs of event names and handlers, eg `{ event: handler }`.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.on
+	 */
 	p.on = hookupEvents;
 
+	/**
+	 * Binds an event handler to the input box that user interacts with.
+	 *
+	 * @signature TextExt.bind(event, handler)
+	 *
+	 * @param event {String} Event name.
+	 * @param handler {Function} Event handler.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.bind
+	 */
 	p.bind = function(event, handler)
 	{
 		this.input().bind(event, handler);
 	};
 
+	/**
+	 * Triggers an event on the input box that user interacts with. All core events are originated here.
+	 * 
+	 * @signature TextExt.trigger(event, ...args)
+	 *
+	 * @param event {String} Name of the event to trigger.
+	 * @param ...args All remaining arguments will be passed to the event handler.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.trigger
+	 */
 	p.trigger = function()
 	{
 		var args = arguments;
 		this.input().trigger(args[0], slice.call(args, 1));
 	};
 
+	/**
+	 * Returns instance of `itemManager` that is used by the component.
+	 *
+	 * @signature TextExt.itemManager()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.itemManager
+	 */
 	p.itemManager = function()
 	{
 		return this._itemManager;
 	};
 
 	/**
-	 * Returns jQuery input element with which user is interacting.
+	 * Returns jQuery input element with which user is interacting with.
+	 *
+	 * @signature TextExt.input()
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/10
+	 * @id TextExt.input
 	 */
 	p.input = function()
 	{
 		return this._input;
 	};
 
+	/**
+	 * Returns option value for the specified option by name. If the value isn't found in the user
+	 * provided options, it will try looking for default value.
+	 *
+	 * @signature TextExt.opts(name)
+	 *
+	 * @param name {String} Option name as described in the options.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.opts
+	 */
 	p.opts = function(name)
 	{
 		var result = getProperty(this._opts, name);
 		return typeof(result) == 'undefined' ? getProperty(this._defaults, name) : result;
 	};
 
+	/**
+	 * Returns HTML element that was created from the `html.wrap` option. This is the top level HTML
+	 * container for the text input with which user is interacting with.
+	 *
+	 * @signature TextExt.getWrapContainer()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.getWrapContainer
+	 */
 	p.getWrapContainer = function()
 	{
 		return this.input().parent();
 	};
 
+	/**
+	 * Updates container to match dimensions of the text input. Triggers `preInvalidate` and `postInvalidate`
+	 * events.
+	 *
+	 * @signature TextExt.invalidateBounds()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.invalidateBounds
+	 */
 	p.invalidateBounds = function()
 	{
 		var self      = this,
@@ -493,6 +690,15 @@
 		self.trigger(EVENT_POST_INVALIDATE);
 	};
 
+	/**
+	 * Focuses user input on the text box.
+	 *
+	 * @signature TextExt.focusInput()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.focusInput
+	 */
 	p.focusInput = function()
 	{
 		this.input()[0].focus();
@@ -505,8 +711,13 @@
 	 * method would be available either through built in class in most modern browsers
 	 * or through JSON2 library.
 	 *
+	 * @signature TextExt.serializeData(data)
+	 *
+	 * @param data {Object} Data to serialize.
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
+	 * @id TextExt.serializeData
 	 */
 	p.serializeData = function(data)
 	{
@@ -516,8 +727,12 @@
 	/**
 	 * Returns current value contained in the original text input field. This value
 	 * is typically set during `setData` event handling/dispatching.
+	 *
+	 * @signature TextExt.getData()
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
+	 * @id TextExt.getData
 	 */
 	p.getData = function()
 	{
@@ -529,6 +744,8 @@
 	 * actually contains any value. Example of this would be an empty string, array
 	 * or object which would be `""`, `[]` and `{}` respectively. While they represent
 	 * empty values, their string representation isn't zero length or null.
+	 *
+	 * @signature TextExt.hasData()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/10
@@ -542,6 +759,19 @@
 	//--------------------------------------------------------------------------------
 	// Event handlers
 
+	/**
+	 * Reacts to the `anyKeyUp` event and triggers the `setData` to change data that will be submitted
+	 * with the form. Default behaviour is that everything that is typed in will be JSON serialized, so
+	 * the end result will be a JSON string.
+	 *
+	 * @signature TextExt.onAnyKeyUp(e)
+	 *
+	 * @param e {Object} jQuery event.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.onAnyKeyUp
+	 */
 	p.onAnyKeyUp = function(e)
 	{
 		var self = this,
@@ -552,11 +782,12 @@
 	};
 
 	/**
-	 * Reacts to `setData` event. Recieves data from plugins which should be
-	 * popuplated into the original text input with expactation that it will
-	 * be either submitted or retrieved in some fashion.
+	 * Reacts to `setData` event. Recieves data from plugins which should be popuplated into the original 
+	 * text input with expactation that it will be either submitted or retrieved in some fashion.
 	 *
-	 * Relies on `serializeData` to serialize all data.
+	 * Relies on `TextExt.serializeData()` to serialize all data.
+	 *
+	 * @signature TextExt.onSetData(e, data, isEmpty)
 	 *
 	 * @param e {Event} jQuery event.
 	 * @param data {Object} Data in any format passed from a plugin. The data will
@@ -567,6 +798,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
+	 * @id TextExt.onSetData
 	 */
 	p.onSetData = function(e, data, isEmpty)
 	{
@@ -579,6 +811,28 @@
 
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
+
+	/**
+	 * Triggers `[name]KeyUp` and `[name]KeyPress` for every keystroke as described in the events.
+	 *
+	 * @signature TextExt.onKeyUp(e)
+	 *
+	 * @param e {Object} jQuery event.
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.onKeyUp
+	 */
+
+	/**
+	 * Triggers `[name]KeyDown` for every keystroke as described in the events.
+	 *
+	 * @signature TextExt.onKeyDown(e)
+	 *
+	 * @param e {Object} jQuery event.
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.onKeyDown
+	 */
 	
 	$(['Down', 'Up']).each(function()
 	{
