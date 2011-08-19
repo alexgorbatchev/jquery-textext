@@ -51,7 +51,6 @@
 		EVENT_READY           = 'ready',
 
 		DEFAULT_OPTS = {
-			enabled : true,
 			itemManager : ItemManager,
 
 			plugins : [],
@@ -363,16 +362,6 @@
 		return this._isDataEmpty != true;
 	};
 
-	/**
-	 * Returns true if `enabled` option is true.
-	 * @author agorbatchev
-	 * @date 2011/08/10
-	 */
-	p.enabled = function()
-	{
-		return this.opts(OPT_ENABLED) === true;
-	};
-
 	//--------------------------------------------------------------------------------
 	// Event handlers
 
@@ -382,8 +371,7 @@
 			value = self.input().val()
 			;
 
-		if(self.enabled())
-			self.trigger(EVENT_SET_DATA, value, value.length == 0)
+		self.trigger(EVENT_SET_DATA, value, value.length == 0)
 	};
 
 	/**
