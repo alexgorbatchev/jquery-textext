@@ -134,9 +134,9 @@
 	 * @author agorbatchev
 	 * @date 2011/08/02
 	 */
-	p.onSelectItem = function(e, suggestion)
+	p.onSelectItem = function(e, tag)
 	{
-		this.addTagFromInput();
+		this.addTag(tag);
 	};
 
 	/**
@@ -197,10 +197,21 @@
 
 	p.onEnterKeyUp = function(e)
 	{
-		var self = this;
+		var self = this,
+			input = self.input(),
+			val, tag
+			;
 
 		if(self.opts(OPT_ENABLED))
-			self.trigger(EVENT_SELECT_ITEM, self.input().val());
+		{
+			val = input.val();
+			tag = self.itemManager().stringToItem(val);
+			self.trigger(EVENT_SELECT_ITEM, tag);
+			// clear the textarea after it was grabbed as a tag
+			input.val('');
+			// refocus the textarea just in case it lost the focus
+			input.focus();
+		}
 	};
 
 	//--------------------------------------------------------------------------------
@@ -252,30 +263,6 @@
 			container[(!isOnTop ? 'add' : 'remove') + 'Class'](CSS_TAGS_ON_TOP);
 	};
 
-	p.addTagFromInput = function()
-	{
-		var self  = this,
-			input = self.core().input(),
-			val   = input.val(),
-			tag
-			;
-
-		if(val.length == 0)
-			return;
-
-		tag = self.itemManager().stringToItem(val);
-
-		if(self.isTagAllowed(tag) == false)
-			return;
-
-		// add the tag
-		self.addTag(tag);
-		// clear the textarea after it was grabbed as a tag
-		input.val('');
-		// refocus the textarea just in case it lost the focus
-		input.focus();
-	};
-
 	p.getAllTagElements = function()
 	{
 		return this.getContainer().find(CSS_DOT_TAG);
@@ -285,7 +272,7 @@
 	{
 		var opts = { tag : tag, result : true };
 		this.trigger(EVENT_IS_TAG_ALLOWED, opts);
-		return opts.result;
+		return opts.result === true;
 	};
 
 	p.addTags = function(tags)
