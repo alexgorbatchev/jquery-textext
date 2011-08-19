@@ -30,6 +30,21 @@
 	 */
 	function ItemManager() {};
 
+	/**
+	 * TextExtPlugin is a base class for all plugins. It provides common methods which are reused
+	 * by majority of plugins.
+	 *
+	 * All plugins must register themselves by calling the `$.fn.textext.addPlugin(name, constructor)`
+	 * function and passing a name that will be passed into the `plugins` option and constructor
+	 * function which will create a new instance of the plugin. *Without registering, the core won't
+	 * be able to see the plugin.*
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin
+	 */
+	function TextExtPlugin() {};
+
 	var stringify = (JSON || {}).stringify,
 		slice     = Array.prototype.slice,
 
@@ -428,9 +443,9 @@
 	/**
 	 * Initialization method called by the core during instantiation.
 	 *
-	 * @signature ItemManager.init(parent)
+	 * @signature ItemManager.init(core)
 	 *
-	 * @param parent {TextExt} Instance of the TextExt core class.
+	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
@@ -967,40 +982,125 @@
 	//--------------------------------------------------------------------------------
 	// Plugin Base
 	
-	function TextExtPlugin()
+	p = TextExtPlugin.prototype;
+
+	/**
+	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
+	 * 
+	 * @signature TextExtPlugin.on(handlers)
+	 *
+	 * @param handlers {Object} Key/value pairs of event names and handlers, eg `{ event: handler }`.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.on
+	 */
+	p.on = hookupEvents;
+
+	/**
+	 * Initialization method called by the core during plugin instantiation. This method must be implemented
+	 * by each plugin individually
+	 *
+	 * @signature TextExtPlugin.init(core)
+	 *
+	 * @param core {TextExt} Instance of the TextExt core class.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.init
+	 */
+	p.init = function(core)
 	{
 	};
 
-	p = TextExtPlugin.prototype;
-
-	p.on = hookupEvents;
-
+	/**
+	 * Initialization method wich should be called by the plugin during the `init()` call.
+	 *
+	 * @signature TextExtPlugin.baseInit(core, defaults)
+	 *
+	 * @param core {TextExt} Instance of the TextExt core class.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.baseInit
+	 */
 	p.baseInit = function(core, defaults)
 	{
 		core._defaults = $.extend(true, core._defaults, defaults);
-		p._core = core;
+		this._core = core;
 	};
 
+	/**
+	 * Returns instance of the `TextExt` to which current instance of the plugin is attached to.
+	 *
+	 * @signature TextExtPlugin.core()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.core
+	 */
 	p.core = function()
 	{
 		return this._core;
 	};
 
+	/**
+	 * Shortcut to the core's `opts()` method. Returns option value.
+	 *
+	 * @signature TextExtPlugin.opts(name)
+	 * 
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.opts
+	 */
 	p.opts = function(name)
 	{
 		return this.core().opts(name);
 	};
 
+	/**
+	 * Shortcut to the core's `itemManager()` method. Returns instance of the `ItemManger` that is
+	 * currently in use.
+	 *
+	 * @signature TextExtPlugin.itemManager()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.itemManager
+	 */
 	p.itemManager = function()
 	{
 		return this.core().itemManager();
 	};
 
+	/**
+	 * Shortcut to the core's `input()` method. Returns instance of the HTML element that represents
+	 * current text input.
+	 *
+	 * @signature TextExtPlugin.input()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.input
+	 */
 	p.input = function()
 	{
 		return this.core().input();
 	};
 
+	/**
+	 * Shortcut to the core's `trigger()` method. Triggers specified event with arguments on the
+	 * component core.
+	 *
+	 * @signature TextExtPlugin.trigger(event, ...args)
+	 *
+	 * @param event {String} Name of the event to trigger.
+	 * @param ...args All remaining arguments will be passed to the event handler.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExtPlugin.trigger
+	 */
 	p.trigger = function()
 	{
 		var core = this.core();
