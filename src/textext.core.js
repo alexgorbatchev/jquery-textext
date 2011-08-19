@@ -1010,6 +1010,31 @@
 	//--------------------------------------------------------------------------------
 	// jQuery Integration
 	
+	/**
+	 * TextExt integrates as a jQuery plugin available through the `$(selector).textext(opts)` call. If
+	 * `opts` argument is passed, then a new instance of `TextExt` will be created for all the inputs
+	 * that match the `selector`. If `opts` wasn't passed and TextExt was already intantiated for 
+	 * inputs that match the `selector`, array of `TextExt` instances will be returned instead.
+	 *
+	 *     // will create a new instance of `TextExt` for all elements that match `.sample`
+	 *     $('.sample').textext({ ... });
+	 *
+	 *     // will return array of all `TextExt` instance
+	 *     var list = $('.sample').textext();
+	 *
+	 * The following properties are also exposed through the jQuery function:
+	 *
+	 * * `$.fn.textext.TextExt` -- `TextExt` class.
+	 * * `$.fn.textext.TextExtPlugin` -- `TextExtPlugin` class.
+	 * * `$.fn.textext.ItemManager` -- `ItemManager` class.
+	 * * `$.fn.textext.plugins` -- Key/value table of all registered plugins.
+	 * * `$.fn.textext.addPlugin(name, constructor)` -- All plugins should register themselves using this function.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/19
+	 * @id TextExt.jquery
+	 */
+
 	var textext = $.fn.textext = function(opts)
 	{
 		return this.map(function()
