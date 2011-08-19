@@ -176,7 +176,7 @@
 			input.after(self.opts(OPT_HTML_TAGS));
 
 			self.on({
-				enterKeyUp       : self.onEnterKeyUp,
+				enterKeyPress    : self.onEnterKeyPress,
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				preInvalidate    : self.onPreInvalidate,
 				selectItem       : self.onSelectItem,
@@ -292,7 +292,7 @@
 	 */
 	p.onSelectItem = function(e, tag)
 	{
-		this.addTag([ tag ]);
+		this.addTags([ tag ]);
 	};
 
 	/**
@@ -382,18 +382,18 @@
 	};
 
 	/**
-	 * Reacts to the `enterKeyUp` event and adds whatever is currently in the text input
+	 * Reacts to the `enterKeyPress` event and adds whatever is currently in the text input
 	 * as a new tag. Triggers `isTagAllowed` to check if the tag could be added first.
 	 *
-	 * @signature TextExtTags.onEnterKeyUp(e)
+	 * @signature TextExtTags.onEnterKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.onEnterKeyUp
+	 * @id TextExtTags.onEnterKeyPress
 	 */
-	p.onEnterKeyUp = function(e)
+	p.onEnterKeyPress = function(e)
 	{
 		var self  = this,
 			input = self.input(),
