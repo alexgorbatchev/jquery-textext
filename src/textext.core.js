@@ -422,13 +422,31 @@
 		p['onKey' + type] = function(e)
 		{
 			var self          = this,
-				keyName       = self.opts(OPT_KEYS)[e.keyCode] || 'Other',
-				eventName     = keyName.replace('!', '') + 'Key' + type,
-				defaultResult = keyName.substr(-1) != '!'
+				keyName       = self.opts(OPT_KEYS)[e.keyCode] || '',
+				defaultResult = true,
+				eventName
 				;
 
 			self.trigger('anyKey' + type, e);
-			self.trigger(eventName.charAt(0).toLowerCase() + eventName.substring(1));
+
+			if(keyName != '')
+			{
+				defaultResult = keyName.substr(-1) != '!';
+				keyName       = (keyName.charAt(0).toLowerCase() + keyName.substring(1)).replace('!', '');
+				eventName     = keyName + 'Key' + type;
+
+				self.trigger(eventName);
+
+				// manual *KeyPress event fimplementation for the function keys like Enter, Backspace, etc.
+				if(type == 'Up' && self._lastKeyDown == e.keyCode)
+				{
+					self._lastKeyDown = null;
+					self.trigger(keyName + 'KeyPress');
+				}
+
+				if(type == 'Down')
+					self._lastKeyDown = e.keyCode;
+			}
 
 			return defaultResult;
 		};
