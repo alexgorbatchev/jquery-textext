@@ -145,7 +145,7 @@
 			i
 			;
 
-		if(!self.opts('filterEnabled'))
+		if(!self.opts(OPT_ENABLED))
 			return;
 
 		data.result = false;
