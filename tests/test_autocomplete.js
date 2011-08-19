@@ -8,7 +8,7 @@ function testAutocomplete(exampleId, finalAssert)
 	return function(browser)
 	{
 		browser
-			.open('/manual/plugins/autocomplete/index.html')
+			.open('/manual/plugins/autocomplete.html')
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
@@ -21,10 +21,10 @@ function testAutocomplete(exampleId, finalAssert)
 function run(browser)
 {
 	browser
-		.and(testAutocomplete('basics'))
-		.and(testAutocomplete('with-filter'))
-		.and(testAutocomplete('with-tags', common.testTagFunctionality()))
-		.and(testAutocomplete('with-tags-and-filter', common.testFilterFunctionality()))
+		.and(testAutocomplete('autocomplete'))
+		.and(testAutocomplete('autocomplete-with-filter'))
+		.and(testAutocomplete('autocomplete-with-tags', common.testTagFunctionality()))
+		.and(testAutocomplete('autocomplete-with-tags-and-filter', common.testFilterFunctionality()))
 	;
 };
 

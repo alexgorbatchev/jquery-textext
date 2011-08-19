@@ -8,7 +8,7 @@ function beginAjaxTest(exampleId, test)
 	return function(browser)
 	{
 		browser
-			.open('/manual/plugins/ajax/index.html')
+			.open('/manual/plugins/ajax.html')
 			.clickAndWait('css=#example-' + exampleId)
 			.and(common.verifyTextExt)
 			.and(test)
@@ -42,7 +42,7 @@ function testLoadingMessage()
 	return function(browser)
 	{
 		browser.and(
-			beginAjaxTest('with-autocomplete', function(browser)
+			beginAjaxTest('ajax-with-autocomplete', function(browser)
 			{
 				var loadingMessage = common.css.dropdown + ' .text-suggestion.text-loading';
 
@@ -78,7 +78,7 @@ function testWithTags()
 	return function(browser)
 	{
 		browser.and(
-			beginAjaxTest('with-filter-tags-and-autocomplete', function(browser)
+			beginAjaxTest('ajax-with-filter-tags-and-autocomplete', function(browser)
 			{
 				browser
 					.and(common.testAjaxFunctionality())

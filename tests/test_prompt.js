@@ -8,7 +8,7 @@ function testPrompt(exampleId, secondary)
 	return function(browser)
 	{
 		browser
-			.open('/manual/plugins/prompt/index.html')
+			.open('/manual/plugins/prompt.html')
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
@@ -21,9 +21,9 @@ function testPrompt(exampleId, secondary)
 function run(browser)
 {
 	browser
-		.and(testPrompt('plain', common.testPlainInputFunctionality()))
-		.and(testPrompt('with-autocomplete', common.testAutocompleteFunctionality()))
-		.and(testPrompt('with-tags', common.testTagFunctionality()))
+		.and(testPrompt('prompt', common.testPlainInputFunctionality()))
+		.and(testPrompt('prompt-with-autocomplete', common.testAutocompleteFunctionality()))
+		.and(testPrompt('prompt-with-tags', common.testTagFunctionality()))
 	;
 };
 

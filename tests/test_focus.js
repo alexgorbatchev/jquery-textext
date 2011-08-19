@@ -22,7 +22,7 @@ function testFocus(exampleId)
 	return function(browser)
 	{
 		browser
-			.open('/manual/plugins/focus/index.html')
+			.open('/manual/plugins/focus.html')
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)

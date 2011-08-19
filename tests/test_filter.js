@@ -8,7 +8,7 @@ function testFilter(exampleId)
 	return function(browser)
 	{
 		browser
-			.open('/manual/plugins/filter/index.html')
+			.open('/manual/plugins/filter.html')
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
@@ -21,8 +21,8 @@ function testFilter(exampleId)
 function run(browser)
 {
 	browser
-		.and(testFilter('with-static-list-of-items'))
-		.and(testFilter('using-suggestions'))
+		.and(testFilter('filter-with-static-list-of-items'))
+		.and(testFilter('filter-using-suggestions'))
 	;
 };
 

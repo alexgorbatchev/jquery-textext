@@ -8,7 +8,7 @@ function testTags(exampleId, wrap)
 	return function(browser)
 	{
 		browser
-			.open('/manual/plugins/tags/index.html')
+			.open('/manual/plugins/tags.html')
 			.clickAndWait('css=#example-' + exampleId)
 
 			.and(common.verifyTextExt)
@@ -21,11 +21,11 @@ function testTags(exampleId, wrap)
 function run(browser)
 {
 	browser
-		.and(testTags('basics'))
-		.and(testTags('pre-populating'))
-		.and(testTags('custom-labels', function(v) { return '[ ' + v + ' ]' }))
-		.and(testTags('custom-rendering'))
-		.and(testTags('custom-data-objects'))
+		.and(testTags('tags'))
+		.and(testTags('tags-with-items'))
+		.and(testTags('tags-with-custom-labels', function(v) { return '[ ' + v + ' ]' }))
+		.and(testTags('tags-with-custom-rendering'))
+		.and(testTags('tags-with-custom-data-objects'))
 	;
 };
 
