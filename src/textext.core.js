@@ -420,15 +420,14 @@
 	 */
 	function hookupEvents(args)
 	{
-		var self  = this,
-			input = self.input(),
+		var self = this,
 			event
 			;
 
 		for(event in args)
 			(function(self, event, handler)
 			{
-				input.bind(event, function()
+				self.bind(event, function()
 				{
 					return handler.apply(self, arguments);
 				});
@@ -577,29 +576,16 @@
 	p.init = function(input, opts)
 	{
 		var self = this,
-			originalInput,
+			hiddenInput,
 			itemManager
 			;
 
-		input               = $(input);
-		self._defaults      = $.extend({}, DEFAULT_OPTS);
-		self._opts          = opts || {};
-		self._plugins       = {};
-		self._originalInput = originalInput = input;
-		self._itemManager   = itemManager = new (self.opts(OPT_ITEM_MANAGER))();
-
-		input = input.clone().insertAfter(originalInput);
-		
-		// hide original input field
-		originalInput.hide();
-
-		// clear certain attributes from the clone
-		input
-			.attr('id', null)
-			.attr('name', null)
-			;
-
-		self._input = input;
+		hiddenInput       = $('<input type="hidden"/>');
+		self._defaults    = $.extend({}, DEFAULT_OPTS);
+		self._opts        = opts || {};
+		self._plugins     = {};
+		self._input       = input = $(input);
+		self._itemManager = itemManager = new (self.opts(OPT_ITEM_MANAGER))();
 
 		input
 			.wrap(self.opts(OPT_HTML_WRAP))
@@ -607,6 +593,13 @@
 			.keyup(function(e) { return self.onKeyUp(e) })
 			.data('textext', self)
 			;
+
+		// keep a reference to the hidden input using jQuery.data() to avoid circular
+		$(self).data('hiddenInput', hiddenInput);
+
+		hiddenInput.attr('name', input.attr('name'));
+		input.attr('name', null);
+		hiddenInput.insertAfter(input);
 
 		$.extend(true, itemManager, self.opts(OPT_EXT + '.item.manager'));
 		$.extend(true, self, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.core'));
@@ -844,7 +837,7 @@
 	 */
 	p.getFormData = function()
 	{
-		return this._hiddenInput.val();
+		return $(this).data('hiddenInput').val();
 	};
 
 	/**
@@ -912,7 +905,7 @@
 		var self = this;
 
 		data = self.serializeData(data);
-		self._hiddenInput.val(data);
+		$(self).data('hiddenInput').val(data);
 		self._hasFormData = isEmpty != true;
 	};
 
