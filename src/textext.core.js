@@ -208,6 +208,18 @@
 		 * @id TextExt.options.html.wrap
 		 */
 		OPT_HTML_WRAP = 'html.wrap',
+
+		/**
+		 * HTML source that is used to generate hidden input value of which will be submitted 
+		 * with the HTML form.
+		 *
+		 * @name html.hidden
+		 * @default '<input type="hidden" />'
+		 * @author agorbatchev
+		 * @date 2011/08/20
+		 * @id TextExt.options.html.hidden
+		 */
+		OPT_HTML_HIDDEN = 'html.hidden',
 		
 		/**
 		 * Hash table of key codes and key names for which special events will be created
@@ -368,7 +380,8 @@
 			ext : {},
 
 			html : {
-				wrap : '<div class="text-core"><div class="text-wrap"/></div>'
+				wrap   : '<div class="text-core"><div class="text-wrap"/></div>',
+				hidden : '<input type="hidden" />'
 			},
 
 			keys : {
@@ -577,28 +590,37 @@
 	{
 		var self = this,
 			hiddenInput,
-			itemManager
+			itemManager,
+			container
 			;
 
-		hiddenInput       = $('<input type="hidden"/>');
+		container         = $(self.opts(OPT_HTML_WRAP));
+		hiddenInput       = $(self.opts(OPT_HTML_HIDDEN));
+		input             = $(input);
 		self._defaults    = $.extend({}, DEFAULT_OPTS);
 		self._opts        = opts || {};
 		self._plugins     = {};
-		self._input       = input = $(input);
 		self._itemManager = itemManager = new (self.opts(OPT_ITEM_MANAGER))();
 
 		input
-			.wrap(self.opts(OPT_HTML_WRAP))
+			.wrap(container)
 			.keydown(function(e) { return self.onKeyDown(e) })
 			.keyup(function(e) { return self.onKeyUp(e) })
 			.data('textext', self)
 			;
 
-		// keep a reference to the hidden input using jQuery.data() to avoid circular
-		$(self).data('hiddenInput', hiddenInput);
+		// keep references to html elements using jQuery.data() to avoid circular references
+		$(self).data({
+			'hiddenInput'   : hiddenInput,
+			'wrapContainer' : container,
+			'input'         : input
+		});
 
+		// set the name of the hidden input to the text input's name
 		hiddenInput.attr('name', input.attr('name'));
+		// remove name attribute from the text input
 		input.attr('name', null);
+		// add hidden input to the DOM
 		hiddenInput.insertAfter(input);
 
 		$.extend(true, itemManager, self.opts(OPT_EXT + '.item.manager'));
@@ -638,8 +660,9 @@
 		if(typeof(plugins) == 'string')
 			plugins = plugins.split(/\s*,\s*|\s+/g);
 
-		for(var i = 0; i < plugins.length, name = plugins[i]; i++)
+		for(var i = 0; i < plugins.length; i++)
 		{
+			name   = plugins[i];
 			plugin = $.fn.textext.plugins[name];
 
 			if(plugin)
@@ -724,7 +747,7 @@
 	 */
 	p.input = function()
 	{
-		return this._input;
+		return $(this).data('input');
 	};
 
 	/**
@@ -757,7 +780,7 @@
 	 */
 	p.getWrapContainer = function()
 	{
-		return this.input().parent();
+		return $(this).data('wrapContainer');
 	};
 
 	/**
@@ -1097,6 +1120,23 @@
 	{
 		var core = this.core();
 		core.trigger.apply(core, arguments);
+	};
+
+	/**
+	 * Shortcut to the core's `bind()` method. Binds specified handler to the event.
+	 *
+	 * @signature TextExtPlugin.bind(event, handler)
+	 *
+	 * @param event {String} Event name.
+	 * @param handler {Function} Event handler.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/20
+	 * @id TextExtPlugin.bind
+	 */
+	p.bind = function(event, handler)
+	{
+		this.core().bind(event, handler);
 	};
 
 	//--------------------------------------------------------------------------------
