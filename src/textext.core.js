@@ -836,32 +836,31 @@
 	 * Returns current value contained in the original text input field. This value
 	 * is typically set during `setFormData` event handling/dispatching.
 	 *
-	 * @signature TextExt.getData()
+	 * @signature TextExt.getFormData()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExt.getData
+	 * @id TextExt.getFormData
 	 */
-	p.getData = function()
+	p.getFormData = function()
 	{
-		return this._originalInput.val();
+		return this._hiddenInput.val();
 	};
 
 	/**
-	 * Returns flag indicating whether or not serialized data returned by `getData` 
-	 * actually contains any value. Example of this would be an empty string, array
-	 * or object which would be `""`, `[]` and `{}` respectively. While they represent
-	 * empty values, their string representation isn't zero length or null.
+	 * Returns `true` if serialized data returned by `getFormData()` actually contains any meaningfull value. 
+	 * Example of this would be an empty string, array or object which would be `""`, `[]` and `{}` respectively. 
+	 * While they represent empty values, their string representation isn't empty or null.
 	 *
-	 * @signature TextExt.hasData()
+	 * @signature TextExt.hasFormData()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/10
-	 * @id TextExt.hasData
+	 * @id TextExt.hasFormData
 	 */
-	p.hasData = function()
+	p.hasFormData = function()
 	{
-		return this._isDataEmpty != true;
+		return this._hasFormData === true;
 	};
 
 	//--------------------------------------------------------------------------------
@@ -913,8 +912,8 @@
 		var self = this;
 
 		data = self.serializeData(data);
-		self._originalInput.val(data);
-		self._isDataEmpty = isEmpty == true;
+		self._hiddenInput.val(data);
+		self._hasFormData = isEmpty != true;
 	};
 
 	//--------------------------------------------------------------------------------
