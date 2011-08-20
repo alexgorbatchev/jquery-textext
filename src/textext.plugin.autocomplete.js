@@ -153,15 +153,15 @@
 		EVENT_GET_SUGGESTIONS = 'getSuggestions',
 
 		/**
-		 * Autocomplete plugin triggers `setData` event with the current suggestion so that the the core
-		 * will be updated with serialized data to be submitted with the form.
+		 * Autocomplete plugin triggers `setFormData` event with the current suggestion so that the the core
+		 * will be updated with serialized data to be submitted with the HTML form.
 		 * 
-		 * @name setData
+		 * @name setFormData
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtAutocomplete.events.setData
+		 * @id TextExtAutocomplete.events.setFormData
 		 */
-		EVENT_SET_DATA = 'setData',
+		EVENT_SET_FORM_DATA = 'setFormData',
 
 		/**
 		 * Autocomplete plugin triggers the `selectItem` event to indicate that a new selection has been made.
@@ -886,11 +886,11 @@
 
 	/**
 	 * Uses the value from the text input to finish autocomplete action. Currently selected
-	 * suggestion from the dropdown will be used to complete the action. Triggers `setData`
+	 * suggestion from the dropdown will be used to complete the action. Triggers `setFormData`
 	 * and `selectItem` events.
 	 *
-	 * `setData` event is triggered with the current suggestion so that the the core will
-	 * be updated with serialized data to be submitted with the form.
+	 * `setFormData` event is triggered with the current suggestion so that the the core will
+	 * be updated with serialized data to be submitted with the HTML form.
 	 *
 	 * `selectItem` event is triggered to indicate that a new selection has been made.
 	 *
@@ -909,7 +909,7 @@
 		if(suggestion)
 		{
 			self.input().val(self.itemManager().itemToString(suggestion));
-			self.trigger(EVENT_SET_DATA, suggestion);
+			self.trigger(EVENT_SET_FORM_DATA, suggestion);
 			self.trigger(EVENT_SELECT_ITEM, suggestion);
 		}
 

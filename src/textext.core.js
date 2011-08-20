@@ -273,20 +273,20 @@
 		EVENT_POST_INVALIDATE = 'postInvalidate',
 		
 		/**
-		 * Core triggers `setData` on every key press to update the orignal text input data
-		 * which will be submitted with the form. Other plugins that trigger `setData` do so
-		 * after this event handler and therefore can sent their own data. Only the very last
-		 * update will be reflected as data is overwritten each time.
+		 * Core triggers `setFormData` on every key press to update the orignal text input data
+		 * which will be submitted with the HTML form. Other plugins that trigger `setFormData` 
+		 * do so after this event handler is executed and therefore can sent their own data. 
+		 * Only the very last update will be reflected as data is overwritten each time.
 		 *
-		 * Core reacts to the `setData` and updates the original text input data which will be
-		 * submitted with the form.
+		 * Core reacts to the `setFormData` and updates hidden input with data which will be
+		 * submitted with the HTML form.
 		 *
-		 * @name setData
+		 * @name setFormData
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.setData
+		 * @id TextExt.events.setFormData
 		 */
-		EVENT_SET_DATA = 'setData',
+		EVENT_SET_DATA = 'setFormData',
 		
 		/**
 		 * Core triggers `postInit` event to let plugins run code after all plugins have been 
@@ -617,8 +617,8 @@
 		itemManager.init(self);
 		self.initPlugins(self.opts(OPT_PLUGINS));
 		self.on({
-			setData  : self.onSetData,
-			anyKeyUp : self.onAnyKeyUp
+			setFormData : self.onSetFormData,
+			anyKeyUp    : self.onAnyKeyUp
 		});
 
 		self.trigger(EVENT_POST_INIT);
@@ -813,7 +813,7 @@
 	};
 
 	/**
-	 * Serializes data for the default `setData` event handler.
+	 * Serializes data for the default `setFormData` event handler.
 	 *
 	 * By default simple JSON serialization is used. It's expected that `JSON.stringify`
 	 * method would be available either through built in class in most modern browsers
@@ -834,7 +834,7 @@
 
 	/**
 	 * Returns current value contained in the original text input field. This value
-	 * is typically set during `setData` event handling/dispatching.
+	 * is typically set during `setFormData` event handling/dispatching.
 	 *
 	 * @signature TextExt.getData()
 	 *
@@ -868,7 +868,7 @@
 	// Event handlers
 
 	/**
-	 * Reacts to the `anyKeyUp` event and triggers the `setData` to change data that will be submitted
+	 * Reacts to the `anyKeyUp` event and triggers the `setFormData` to change data that will be submitted
 	 * with the form. Default behaviour is that everything that is typed in will be JSON serialized, so
 	 * the end result will be a JSON string.
 	 *
@@ -890,12 +890,12 @@
 	};
 
 	/**
-	 * Reacts to `setData` event. Recieves data from plugins which should be popuplated into the original 
-	 * text input with expactation that it will be either submitted or retrieved in some fashion.
+	 * Reacts to `setFormData` event. Recieves data from plugins which is intendet to be submitted
+	 * with the form. TextExt uses hidden input field for storing of such data.
 	 *
 	 * Relies on `TextExt.serializeData()` to serialize all data.
 	 *
-	 * @signature TextExt.onSetData(e, data, isEmpty)
+	 * @signature TextExt.onSetFormData(e, data, isEmpty)
 	 *
 	 * @param e {Event} jQuery event.
 	 * @param data {Object} Data in any format passed from a plugin. The data will
@@ -906,9 +906,9 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExt.onSetData
+	 * @id TextExt.onSetFormData
 	 */
-	p.onSetData = function(e, data, isEmpty)
+	p.onSetFormData = function(e, data, isEmpty)
 	{
 		var self = this;
 

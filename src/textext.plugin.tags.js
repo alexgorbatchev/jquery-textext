@@ -116,16 +116,15 @@
 		EVENT_IS_TAG_ALLOWED = 'isTagAllowed',
 
 		/**
-		 * Tags plugin triggers the `setData` event after there was a change in the tags list. This event is
-		 * used to send serialized tags list back to the original text input which will be submitted with the
-		 * form.
+		 * Tags plugin triggers the `setFormData` event after there was a change in the tags list. This event is
+		 * used to send serialized tags list back to the core so that they could be submitted with the form.
 		 *
-		 * @name setData
+		 * @name setFormData
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.events.setData
+		 * @id TextExtTags.events.setFormData
 		 */
-		EVENT_SET_DATA = 'setData',
+		EVENT_SET_FORM_DATA = 'setFormData',
 
 		/**
 		 * Tags plugin triggers and reacts to the `selectItem` event which allows other entities to add 
@@ -415,16 +414,16 @@
 	// Core functionality
 
 	/**
-	 * Triggeres `setData` event with array of tag values. The `setData` event is
-	 * processed by the core which in turn sets original text input's value.
+	 * Triggeres `setFormData` event with array of tag values to set the data to be
+	 * submitted with the HTML form
 	 *
-	 * @signature TextExtTags.setData()
+	 * @signature TextExtTags.setFormData()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExtTags.setData
+	 * @id TextExtTags.setFormData
 	 */
-	p.setData = function()
+	p.setFormData = function()
 	{
 		var self   = this,
 			result = []
@@ -435,7 +434,7 @@
 			result.push($(this).data(CSS_TAG));
 		});
 
-		self.trigger(EVENT_SET_DATA, result, result.length > 0);
+		self.trigger(EVENT_SET_FORM_DATA, result, result.length > 0);
 	};
 
 	/**
@@ -505,8 +504,8 @@
 
 	/**
 	 * Adds specified tags to the tag list. Triggers `isTagAllowed` event for each tag
-	 * to insure that it could be added. Also triggers `setData` event to update the
-	 * original input with the latest set of tags.
+	 * to insure that it could be added. Triggers `setFormData` event to update the
+	 * data to be submitted with the HTML form.
 	 *
 	 * @signature TextExtTags.addTags(tags)
 	 *
@@ -535,7 +534,7 @@
 				container.append(self.renderTag(tag));
 		}
 
-		self.setData();
+		self.setFormData();
 		self.core().invalidateBounds();
 	};
 
@@ -564,7 +563,7 @@
 	};
 
 	/**
-	 * Removes specified tag from the list. Triggers `setData` to update the original text
+	 * Removes specified tag from the list. Triggers `setFormData` to update the original text
 	 * input with the new tag list.
 	 *
 	 * @signature TextExtTags.removeTag(tag)
@@ -593,7 +592,7 @@
 		}
 
 		element.remove();
-		self.setData();
+		self.setFormData();
 		self.core().invalidateBounds();
 	};
 
