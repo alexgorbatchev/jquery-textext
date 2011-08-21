@@ -229,12 +229,15 @@
 				postInvalidate : self.positionDropdown
 			});
 
-			input.after(self.opts(OPT_HTML_DROPDOWN));
-			container = self.getDropdownContainer();
+			container = $(self.opts(OPT_HTML_DROPDOWN));
+			container.insertAfter(input);
+
 			container
 				.mouseover(function(e) { self.onMouseOver(e) })
 				.addClass('text-position-' + self.opts(OPT_POSITION))
 				;
+
+			$(self).data('container', container);
 
 			self.positionDropdown();
 		}
@@ -251,7 +254,7 @@
 	 */
 	p.getDropdownContainer = function()
 	{
-		return this.input().siblings('.text-dropdown');
+		return $(this).data('container');
 	};
 
 	//--------------------------------------------------------------------------------
