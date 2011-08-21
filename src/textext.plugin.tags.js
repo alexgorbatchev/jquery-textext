@@ -312,7 +312,7 @@
 			lastTag = self.getAllTagElements().last()
 			;
 
-		if(self.input().val().length == 0)
+		if(self.val().length == 0)
 			self.removeTag(lastTag);
 	};
 
@@ -394,19 +394,21 @@
 	 */
 	p.onEnterKeyPress = function(e)
 	{
-		var self  = this,
-			input = self.input(),
-			val   = input.val(),
-			tag   = self.itemManager().stringToItem(val)
+		var self = this,
+			val  = self.val(),
+			tag  = self.itemManager().stringToItem(val)
 			;
+
+		if(self.core().hasPlugin('autocomplete'))
+			return;
 
 		if(self.opts(OPT_ENABLED) && self.isTagAllowed(tag))
 		{
 			self.trigger(EVENT_SELECT_ITEM, tag);
 			// clear the textarea after it was grabbed as a tag
-			input.val('');
+			self.val('');
 			// refocus the textarea just in case it lost the focus
-			input.focus();
+			self.core().focusInput();
 		}
 	};
 

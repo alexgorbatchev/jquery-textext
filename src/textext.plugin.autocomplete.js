@@ -632,7 +632,7 @@
 	};
 
 	/**
-	 * Prepears for and triggers the `getSuggestions` event with the `{ query : "..." }` as second
+	 * Prepears for and triggers the `getSuggestions` event with the `{ query : {String} }` as second
 	 * argument.
 	 *
 	 * @signature TextExtAutocomplete.getSuggestions()
@@ -644,7 +644,7 @@
 	p.getSuggestions = function()
 	{
 		var self = this,
-			val  = self.input().val()
+			val  = self.val()
 			;
 
 		if(self._previousInputValue == val)
@@ -908,7 +908,7 @@
 
 		if(suggestion)
 		{
-			self.input().val(self.itemManager().itemToString(suggestion));
+			self.val(self.itemManager().itemToString(suggestion));
 			self.trigger(EVENT_SET_FORM_DATA, suggestion);
 			self.trigger(EVENT_SELECT_ITEM, suggestion);
 		}

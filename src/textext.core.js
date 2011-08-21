@@ -1104,6 +1104,28 @@
 	};
 
 	/**
+	 * Shortcut to the commonly used `this.input().val()` call to get or set value of the text input.
+	 *
+	 * @signature TextExtPlugin.val(value)
+	 *
+	 * @param value {String} Optional value. If specified, the value will be set, otherwise it will be
+	 * returned.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/20
+	 * @id TextExtPlugin.val
+	 */
+	p.val = function(value)
+	{
+		var input = this.input();
+
+		if(typeof(value) === 'undefined')
+			return input.val();
+		else
+			input.val(value);
+	};
+
+	/**
 	 * Shortcut to the core's `trigger()` method. Triggers specified event with arguments on the
 	 * component core.
 	 *
