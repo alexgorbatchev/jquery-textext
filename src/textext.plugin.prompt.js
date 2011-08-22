@@ -101,13 +101,21 @@
 	 */
 	p.init = function(core)
 	{
-		var self = this;
+		var self = this,
+			prompt
+			;
 
 		self.baseInit(core, DEFAULT_OPTS);
 		
-		self.core().getWrapContainer().append(self.opts(OPT_HTML_PROMPT));
+		prompt = $(self.opts(OPT_HTML_PROMPT));
+		$(self).data('prompt', prompt);
+
+		self.core().getWrapContainer().append(prompt);
 		self.setPrompt(self.opts(OPT_PROMPT));
 		
+		if(self.val().length > 0)
+			self.hidePrompt();
+
 		self.on({
 			blur  : self.onBlur,
 			focus : self.onFocus
@@ -137,12 +145,42 @@
 
 		clearTimeout(self._timeoutId);
 
-		if(self.input().val() == '' && self.core().hasData())
-			self._timeoutId = setTimeout(function()
-			{
-				self.getPrompt().removeClass(CSS_HIDE_PROMPT);
-			},
-			100);
+		if(self.val().length == 0)
+			self._timeoutId = setTimeout(
+				function()
+				{
+					self.showPrompt();
+				},
+				100
+			);
+	};
+
+	/**
+	 * Shows prompt HTML element.
+	 *
+	 * @signature TextExtPrompt.showPrompt()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/22
+	 * @id TextExtPrompt.showPrompt
+	 */
+	p.showPrompt = function()
+	{
+		this.getPrompt().removeClass(CSS_HIDE_PROMPT);
+	};
+
+	/**
+	 * Hides prompt HTML element.
+	 *
+	 * @signature TextExtPrompt.hidePrompt()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/22
+	 * @id TextExtPrompt.hidePrompt
+	 */
+	p.hidePrompt = function()
+	{
+		this.getPrompt().addClass(CSS_HIDE_PROMPT);
 	};
 
 	/**
@@ -160,7 +198,7 @@
 		var self = this;
 
 		clearTimeout(self._timeoutId);
-		self.getPrompt().addClass(CSS_HIDE_PROMPT);
+		self.hidePrompt();
 	};
 	
 	//--------------------------------------------------------------------------------
@@ -193,6 +231,6 @@
 	 */
 	p.getPrompt = function()
 	{
-		return this.core().getWrapContainer().find('.text-prompt');
+		return $(this).data('prompt');
 	};
 })(jQuery);
