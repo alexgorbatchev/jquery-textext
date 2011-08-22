@@ -240,13 +240,13 @@
 	/**
 	 * Returns top level dropdown container HTML element.
 	 * 
-	 * @signature TextExtAutocomplete.getDropdownContainer()
+	 * @signature TextExtAutocomplete.containerElement()
 	 * 
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id TextExtAutocomplete.getDropdownContainer
+	 * @id TextExtAutocomplete.containerElement
 	 */
-	p.getDropdownContainer = function()
+	p.containerElement = function()
 	{
 		return $(this).data('container');
 	};
@@ -454,9 +454,9 @@
 	p.positionDropdown = function()
 	{
 		var self      = this,
-			container = self.getDropdownContainer(),
+			container = self.containerElement(),
 			direction = self.opts(OPT_POSITION),
-			height    = self.core().getWrapContainer().outerHeight(),
+			height    = self.core().wrapElement().outerHeight(),
 			css       = {}
 			;
 
@@ -467,15 +467,15 @@
 	/**
 	 * Returns list of all the suggestion HTML elements in the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.getSuggestionElements()
+	 * @signature TextExtAutocomplete.suggestionElements()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.getSuggestionElements
+	 * @id TextExtAutocomplete.suggestionElements
 	 */
-	p.getSuggestionElements = function()
+	p.suggestionElements = function()
 	{
-		return this.getDropdownContainer().find(CSS_DOT_SUGGESTION);
+		return this.containerElement().find(CSS_DOT_SUGGESTION);
 	};
 
 
@@ -497,7 +497,7 @@
 			return;
 
 		var self   = this,
-			all    = self.getSuggestionElements(),
+			all    = self.suggestionElements(),
 			target = all.first(),
 			item, i
 			;
@@ -522,15 +522,15 @@
 	/**
 	 * Returns the first suggestion HTML element from the dropdown that is highlighted as selected.
 	 *
-	 * @signature TextExtAutocomplete.getSelectedSuggestionElement()
+	 * @signature TextExtAutocomplete.selectedSuggestionElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.getSelectedSuggestionElement
+	 * @id TextExtAutocomplete.selectedSuggestionElement
 	 */
-	p.getSelectedSuggestionElement = function()
+	p.selectedSuggestionElement = function()
 	{
-		return this.getSuggestionElements().filter(CSS_DOT_SELECTED).first();
+		return this.suggestionElements().filter(CSS_DOT_SELECTED).first();
 	};
 
 	/**
@@ -544,7 +544,7 @@
 	 */
 	p.isDropdownVisible = function()
 	{
-		return this.getDropdownContainer().is(':visible') === true;
+		return this.containerElement().is(':visible') === true;
 	};
 
 	/**
@@ -628,7 +628,7 @@
 	p.onShowDropdown = function(e, renderCallback)
 	{
 		var self    = this,
-			current = self.getSelectedSuggestionElement().data(CSS_SUGGESTION)
+			current = self.selectedSuggestionElement().data(CSS_SUGGESTION)
 			;
 
 		if($.isFunction(renderCallback))
@@ -641,7 +641,7 @@
 			self.toggleNextSuggestion();
 		}
 		
-		self.showDropdown(self.getDropdownContainer());
+		self.showDropdown(self.containerElement());
 		self.setSelectedSuggestion(current);
 	};
 
@@ -715,7 +715,7 @@
 	 */
 	p.clearItems = function()
 	{
-		this.getDropdownContainer().find('.text-list').children().remove();
+		this.containerElement().find('.text-list').children().remove();
 	};
 
 	/**
@@ -752,7 +752,7 @@
 	 */
 	p.showDropdown = function()
 	{
-		this.getDropdownContainer().show();
+		this.containerElement().show();
 	};
 
 	/**
@@ -767,7 +767,7 @@
 	p.hideDropdown = function()
 	{
 		var self     = this,
-			dropdown = self.getDropdownContainer()
+			dropdown = self.containerElement()
 			;
 
 		self._previousInputValue = null;
@@ -809,7 +809,7 @@
 	p.addDropdownItem = function(html)
 	{
 		var self      = this,
-			container = self.getDropdownContainer().find('.text-list'),
+			container = self.containerElement().find('.text-list'),
 			node      = $(self.opts(OPT_HTML_SUGGESTION))
 			;
 
@@ -829,7 +829,7 @@
 	 */
 	p.clearSelected = function()
 	{
-		this.getSuggestionElements().removeClass(CSS_SELECTED);
+		this.suggestionElements().removeClass(CSS_SELECTED);
 	};
 
 	/**
@@ -846,7 +846,7 @@
 	p.toggleNextSuggestion = function()
 	{
 		var self     = this,
-			selected = self.getSelectedSuggestionElement(),
+			selected = self.selectedSuggestionElement(),
 			next
 			;
 
@@ -859,7 +859,7 @@
 		}
 		else
 		{
-			next = self.getSuggestionElements().first();
+			next = self.suggestionElements().first();
 		}
 
 		next.addClass(CSS_SELECTED);
@@ -879,7 +879,7 @@
 	p.togglePreviousSuggestion = function()
 	{
 		var self     = this,
-			selected = self.getSelectedSuggestionElement(),
+			selected = self.selectedSuggestionElement(),
 			prev     = selected.prev()
 			;
 
@@ -906,7 +906,7 @@
 	p.scrollSuggestionIntoView = function(item)
 	{
 		var itemHeight     = item.outerHeight(),
-			dropdown       = this.getDropdownContainer(),
+			dropdown       = this.containerElement(),
 			dropdownHeight = dropdown.innerHeight(),
 			scrollPos      = dropdown.scrollTop(),
 			itemTop        = (item.position() || {}).top,
@@ -943,7 +943,7 @@
 	p.selectFromDropdown = function()
 	{
 		var self       = this,
-			suggestion = self.getSelectedSuggestionElement().data(CSS_SUGGESTION)
+			suggestion = self.selectedSuggestionElement().data(CSS_SUGGESTION)
 			;
 
 		if(suggestion)

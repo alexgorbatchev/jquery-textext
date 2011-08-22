@@ -102,15 +102,15 @@
 	p.init = function(core)
 	{
 		var self = this,
-			prompt
+			container
 			;
 
 		self.baseInit(core, DEFAULT_OPTS);
 		
-		prompt = $(self.opts(OPT_HTML_PROMPT));
-		$(self).data('prompt', prompt);
+		container = $(self.opts(OPT_HTML_PROMPT));
+		$(self).data('container', container);
 
-		self.core().getWrapContainer().append(prompt);
+		self.core().wrapElement().append(container);
 		self.setPrompt(self.opts(OPT_PROMPT));
 		
 		if(self.val().length > 0)
@@ -166,7 +166,7 @@
 	 */
 	p.showPrompt = function()
 	{
-		this.getPrompt().removeClass(CSS_HIDE_PROMPT);
+		this.containerElement().removeClass(CSS_HIDE_PROMPT);
 	};
 
 	/**
@@ -180,7 +180,7 @@
 	 */
 	p.hidePrompt = function()
 	{
-		this.getPrompt().addClass(CSS_HIDE_PROMPT);
+		this.containerElement().addClass(CSS_HIDE_PROMPT);
 	};
 
 	/**
@@ -217,20 +217,20 @@
 	 */
 	p.setPrompt = function(str)
 	{
-		this.getPrompt().text(str);
+		this.containerElement().text(str);
 	};
 
 	/**
 	 * Returns prompt effect HTML element.
 	 *
-	 * @signature TextExtPrompt.getPrompt()
+	 * @signature TextExtPrompt.containerElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtPrompt.getPrompt
+	 * @id TextExtPrompt.containerElement
 	 */
-	p.getPrompt = function()
+	p.containerElement = function()
 	{
-		return $(this).data('prompt');
+		return $(this).data('container');
 	};
 })(jQuery);

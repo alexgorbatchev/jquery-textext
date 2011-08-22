@@ -668,7 +668,7 @@
 		// keep references to html elements using jQuery.data() to avoid circular references
 		$(self).data({
 			'hiddenInput'   : hiddenInput,
-			'wrapContainer' : input.parents('.text-wrap').first(),
+			'wrapElement' : input.parents('.text-wrap').first(),
 			'input'         : input
 		});
 
@@ -856,15 +856,15 @@
 	 * Returns HTML element that was created from the `html.wrap` option. This is the top level HTML
 	 * container for the text input with which user is interacting with.
 	 *
-	 * @signature TextExt.getWrapContainer()
+	 * @signature TextExt.wrapElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.getWrapContainer
+	 * @id TextExt.wrapElement
 	 */
-	p.getWrapContainer = function()
+	p.wrapElement = function()
 	{
-		return $(this).data('wrapContainer');
+		return $(this).data('wrapElement');
 	};
 
 	/**
@@ -881,7 +881,7 @@
 	{
 		var self      = this,
 			input     = self.input(),
-			wrap      = self.getWrapContainer(),
+			wrap      = self.wrapElement(),
 			container = wrap.parent(),
 			width     = self.originalWidth,
 			height

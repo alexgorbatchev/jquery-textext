@@ -91,7 +91,7 @@
 		var self = this;
 
 		self.baseInit(core, DEFAULT_OPTS);
-		self.core().getWrapContainer().append(self.opts(OPT_HTML_FOCUS));
+		self.core().wrapElement().append(self.opts(OPT_HTML_FOCUS));
 		self.on({
 			blur  : self.onBlur,
 			focus : self.onFocus
@@ -161,6 +161,6 @@
 	 */
 	p.getFocus = function()
 	{
-		return this.core().getWrapContainer().find('.text-focus');
+		return this.core().wrapElement().find('.text-focus');
 	};
 })(jQuery);

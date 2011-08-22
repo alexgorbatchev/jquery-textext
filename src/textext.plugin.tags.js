@@ -145,12 +145,16 @@
 		this.baseInit(core, DEFAULT_OPTS);
 
 		var self  = this,
-			input = self.input()
+			input = self.input(),
+			container
 			;
 
 		if(self.opts(OPT_ENABLED))
 		{
-			input.after(self.opts(OPT_HTML_TAGS));
+			container = $(self.opts(OPT_HTML_TAGS));
+			input.after(container);
+
+			$(self).data('container', container);
 
 			self.on({
 				enterKeyPress    : self.onEnterKeyPress,
@@ -160,7 +164,7 @@
 				getFormData      : self.onGetFormData
 			});
 
-			self.getContainer()
+			container
 				.click(function(e) { self.onClick(e) })
 				.mousemove(function(e) { self.onContainerMouseMove(e) })
 				;
@@ -184,15 +188,15 @@
 	/**
 	 * Returns HTML element in which all tag HTML elements are residing.
 	 *
-	 * @signature TextExtTags.getContainer()
+	 * @signature TextExtTags.containerElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id TextExtTags.getContainer
+	 * @id TextExtTags.containerElement
 	 */
-	p.getContainer = function()
+	p.containerElement = function()
 	{
-		return this.core().input().siblings(CSS_DOT_TAGS);
+		return $(this).data('container');
 	};
 
 	//--------------------------------------------------------------------------------
@@ -312,7 +316,7 @@
 	p.onBackspaceKeyDown = function(e)
 	{
 		var self    = this,
-			lastTag = self.getAllTagElements().last()
+			lastTag = self.tagElements().last()
 			;
 
 		if(self.val().length == 0)
@@ -334,7 +338,7 @@
 	p.onPreInvalidate = function(e)
 	{
 		var self    = this,
-			lastTag = self.getAllTagElements().last(),
+			lastTag = self.tagElements().last(),
 			pos     = lastTag.position()
 			;
 		
@@ -429,7 +433,7 @@
 			result = []
 			;
 
-		self.getAllTagElements().each(function()
+		self.tagElements().each(function()
 		{
 			result.push($(this).data(CSS_TAG));
 		});
@@ -460,7 +464,7 @@
 			mouseX          = e.clientX - offset.left,
 			mouseY          = e.clientY - offset.top,
 			box             = self._paddingBox,
-			container       = self.getContainer(),
+			container       = self.containerElement(),
 			isOnTop         = container.is(CSS_DOT_TAGS_ON_TOP),
 			isMouseOverText = mouseX > box.left && mouseY > box.top
 			;
@@ -472,15 +476,15 @@
 	/**
 	 * Returns all tag HTML elements.
 	 *
-	 * @signature TextExtTags.getAllTagElements()
+	 * @signature TextExtTags.tagElements()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.getAllTagElements
+	 * @id TextExtTags.tagElements
 	 */
-	p.getAllTagElements = function()
+	p.tagElements = function()
 	{
-		return this.getContainer().find(CSS_DOT_TAG);
+		return this.containerElement().find(CSS_DOT_TAG);
 	};
 
 	/**
@@ -523,7 +527,7 @@
 
 		var self      = this,
 			core      = self.core(),
-			container = self.getContainer(),
+			container = self.containerElement(),
 			i, tag
 			;
 
@@ -555,7 +559,7 @@
 	p.getTagElement = function(tag)
 	{
 		var self = this,
-			list = self.getAllTagElements(),
+			list = self.tagElements(),
 			i, item
 			;
 
