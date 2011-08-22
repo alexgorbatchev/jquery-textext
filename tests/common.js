@@ -7,10 +7,10 @@ var prefix   = 'css=.text-core > .text-wrap > ',
 	prompt   = prefix + '.text-prompt'
 	;
 
-var DOWN  = '\\40',
-	UP    = '\\38',
-	ESC   = '\\27',
-	ENTER = '\\13'
+var DOWN  = 40,
+	UP    = 38,
+	ESC   = 27,
+	ENTER = 13
 	;
 
 function log(cmd, args)
@@ -67,7 +67,7 @@ function assertSuggestionItem(test)
 function assertOutput(value)
 {
 	// @TODO add actual value check
-	return function(browser) { browser.assertElementPresent('//textarea[@id="output"]') };
+	return function(browser) { browser.assertElementPresent('//pre[@id="output"][contains(text(), \'' + value + '\')]') };
 };
 
 function assertTagPresent(value)
@@ -82,10 +82,7 @@ function assertTagNotPresent(value)
 
 function enterKey(browser)
 {
-	browser
-		.keyDown(textarea, '\\13')
-		.keyUp(textarea, '\\13')
-		;
+	browser.and(keyPress(13));
 };
 
 function typeTag(value)
@@ -192,30 +189,55 @@ function testFilterFunctionality()
 	};
 };
 
-function testTagFunctionality(wrap)
+function testTagFunctionality(opts)
 {
+	opts = opts || {};
+
+	var labelWrap = opts.label,
+		objectWrap = opts.object
+		;
+
+	function output()
+	{
+		var list = Array.prototype.slice.apply(arguments);
+
+		if(objectWrap)
+			for(var i = 0; i < list.length; i++)
+				list[i] = objectWrap(list[i]);
+
+		var match = JSON.stringify(list).replace(/^\[|\]$/g, '');
+
+		return assertOutput(match);
+	};
+
 	return function(browser)
 	{
 		browser
 			.and(focusInput)
 
-			.and(typeAndValidateTag('hello', wrap))
-			.and(assertOutput('["hello"]'))
-			.and(typeAndValidateTag('world', wrap))
-			.and(assertOutput('["hello","world"]'))
-			.and(typeAndValidateTag('word1', wrap))
-			.and(assertOutput('["hello","world","word1"]'))
-			.and(typeAndValidateTag('word2', wrap))
-			.and(assertOutput('["hello","world","word1","word2"]'))
-			.and(typeAndValidateTag('word3', wrap))
-			.and(assertOutput('["hello","world","word1","word2","word3"]'))
+			.and(typeAndValidateTag('hello', labelWrap))
+			.and(output('hello'))
 
-			.and(closeTag('word2', wrap))
-			.and(assertOutput('["hello","world","word1","word3"]'))
-			.and(closeTag('word1', wrap))
-			.and(assertOutput('["hello","world","word3"]'))
-			.and(closeTag('word3', wrap))
-			.and(assertOutput('["hello","world"]'))
+			.and(typeAndValidateTag('world', labelWrap))
+			.and(output('hello','world'))
+			
+			.and(typeAndValidateTag('word1', labelWrap))
+			.and(output('hello','world','word1'))
+			
+			.and(typeAndValidateTag('word2', labelWrap))
+			.and(output('hello','world','word1','word2'))
+			
+			.and(typeAndValidateTag('word3', labelWrap))
+			.and(output('hello','world','word1','word2','word3'))
+
+			.and(closeTag('word2', labelWrap))
+			.and(output('hello','world','word1','word3'))
+			
+			.and(closeTag('word1', labelWrap))
+			.and(output('hello','world','word3'))
+			
+			.and(closeTag('word3', labelWrap))
+			.and(output('hello','world'))
 
 			// backspace
 			.and(backspace)
@@ -250,33 +272,33 @@ function testAutocompleteFunctionality(finalAssert)
 			.click(textarea)
 			
 			// activate the dropdown
-			.keyDown(textarea, DOWN)
+			.and(keyPress(DOWN))
 			.assertVisible(dropdown)
 			.assertVisible(suggestionsXPath(true, 0))
 
 			// go to the second item
-			.keyDown(textarea, DOWN)
+			.and(keyPress(DOWN))
 			.assertElementNotPresent(suggestionsXPath(true, 0))
 			.assertVisible(suggestionsXPath(true, 1))
 
 			// go to the third item
-			.keyDown(textarea, DOWN)
+			.and(keyPress(DOWN))
 			.assertElementNotPresent(suggestionsXPath(true, 1))
 			.assertVisible(suggestionsXPath(true, 2))
 
 			// go back up to the second item
-			.keyDown(textarea, UP)
+			.and(keyPress(UP))
 			.assertElementNotPresent(suggestionsXPath(true, 2))
 			.assertVisible(suggestionsXPath(true, 1))
 
 			// go back up to the first item
-			.keyDown(textarea, UP)
+			.and(keyPress(UP))
 			.assertElementNotPresent(suggestionsXPath(true, 1))
 			.assertVisible(suggestionsXPath(true, 0))
 
 			.typeKeys(textarea, 'oca')
 			.assertVisible(suggestionsXPath(true, 0))
-			.keyDown(textarea, ENTER)
+			.and(enterKey)
 			.assertNotVisible(dropdown)
 
 			.and(finalAssert)

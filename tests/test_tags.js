@@ -23,9 +23,9 @@ function run(browser)
 	browser
 		.and(testTags('tags'))
 		.and(testTags('tags-with-items'))
-		.and(testTags('tags-with-custom-labels', function(v) { return '[ ' + v + ' ]' }))
+		.and(testTags('tags-with-custom-labels', { label: function(v) { return '[ ' + v + ' ]' } }))
 		.and(testTags('tags-with-custom-rendering'))
-		.and(testTags('tags-with-custom-data-objects'))
+		.and(testTags('tags-with-custom-data-objects', { object: function(v) { return { name : v } }} ))
 	;
 };
 
