@@ -106,7 +106,8 @@
 		 *             data.result = false;
 		 *     })
 		 *
-		 * The second argument `data` has the following format: `{ tag : {String}, result : {Boolean} }`.
+		 * The second argument `data` has the following format: `{ tag : {Object}, result : {Boolean} }`. `tag`
+		 * property is in the format that the current `ItemManager` can understand.
 		 *
 		 * @name isTagAllowed
 		 * @author agorbatchev
@@ -114,29 +115,6 @@
 		 * @id TextExtTags.events.isTagAllowed
 		 */
 		EVENT_IS_TAG_ALLOWED = 'isTagAllowed',
-
-		/**
-		 * Tags plugin triggers the `setFormData` event after there was a change in the tags list. This event is
-		 * used to send serialized tags list back to the core so that they could be submitted with the form.
-		 *
-		 * @name setFormData
-		 * @author agorbatchev
-		 * @date 2011/08/19
-		 * @id TextExtTags.events.setFormData
-		 */
-		EVENT_SET_FORM_DATA = 'setFormData',
-
-		/**
-		 * Tags plugin triggers and reacts to the `selectItem` event which allows other entities to add 
-		 * tags to the list bypassing the user. Second argument is expected to the be tag in the format
-		 * that current `ItemManager` can understand. By default it's a `String`.
-		 *
-		 * @name selectItem
-		 * @author agorbatchev
-		 * @date 2011/08/19
-		 * @id TextExtTags.events.selectItem
-		 */
-		EVENT_SELECT_ITEM = 'selectItem',
 
 		DEFAULT_OPTS = {
 			tags : {
@@ -178,8 +156,8 @@
 				enterKeyPress    : self.onEnterKeyPress,
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				preInvalidate    : self.onPreInvalidate,
-				selectItem       : self.onSelectItem,
-				postInit         : self.onPostInit
+				postInit         : self.onPostInit,
+				getFormData      : self.onGetFormData
 			});
 
 			self.getContainer()
@@ -239,6 +217,49 @@
 	};
 
 	/**
+	 * Reacts to the `getFormData` event triggered by the core. Returns data with the
+	 * weight of 200 to be *greater than the Autocomplete plugin* data weight. The weights 
+	 * system is covered in greater detail in the [`getFormData`][1] event documentation.
+	 *
+	 * [1]: /manual/textext.html#getformdata
+	 *
+	 * @signature TextExtTags.onGetFormData(e, data, keyCode)
+	 *
+	 * @param e {Object} jQuery event.
+	 * @param data {Object} Data object to be populated.
+	 * @param keyCode {Number} Key code that triggered the original update request.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/22
+	 * @id TextExtTags.onGetFormData
+	 */
+	p.onGetFormData = function(e, data, keyCode)
+	{
+		var self       = this,
+			inputValue = keyCode == 13 ? '' : self.val(),
+			formValue  = self._formData
+			;
+
+		data[200] = self.formDataObject(inputValue, formValue);
+	};
+
+	/**
+	 * Returns initialization priority of the Tags plugin which is expected to be
+	 * *less than the Autocomplete plugin* because of the dependencies. The value is
+	 * 100.
+	 *
+	 * @signature TextExtTags.initPriority()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/22
+	 * @id TextExtTags.initPriority
+	 */
+	p.initPriority = function()
+	{
+		return 100;
+	};
+
+	/**
 	 * Reacts to user moving mouse over the text area when cursor is over the text
 	 * and not over the tags. Whenever mouse cursor is over the area covered by
 	 * tags, the tags container is flipped to be on top of the text area which
@@ -274,24 +295,6 @@
 	p.onContainerMouseMove = function(e)
 	{
 		this.toggleZIndex(e);
-	};
-
-	/**
-	 * Reacts to `selectItem` event triggered by the Autocomplete plugin.
-	 *
-	 * @signature TextExtTags.onSelectItem(e, tag)
-	 *
-	 * @param e {Object} jQuery event.
-	 * @param tag {Object} Tag to add in the format that the current `ItemManager` understands.
-	 * By default it should be a `String`.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/02
-	 * @id TextExtTags.onSelectItem
-	 */
-	p.onSelectItem = function(e, tag)
-	{
-		this.addTags([ tag ]);
 	};
 
 	/**
@@ -399,14 +402,9 @@
 			tag  = self.itemManager().stringToItem(val)
 			;
 
-		if(self.core().hasPlugin('autocomplete'))
-			return;
-
-		if(self.opts(OPT_ENABLED) && self.isTagAllowed(tag))
+		if(self.isTagAllowed(tag))
 		{
-			self.trigger(EVENT_SELECT_ITEM, tag);
-			// clear the textarea after it was grabbed as a tag
-			self.val('');
+			self.addTags([ tag ]);
 			// refocus the textarea just in case it lost the focus
 			self.core().focusInput();
 		}
@@ -416,16 +414,16 @@
 	// Core functionality
 
 	/**
-	 * Triggeres `setFormData` event with array of tag values to set the data to be
-	 * submitted with the HTML form
+	 * Creates a cache object with all the tags currently added which will be returned
+	 * in the `onGetFormData` handler.
 	 *
-	 * @signature TextExtTags.setFormData()
+	 * @signature TextExtTags.updateFormCache()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExtTags.setFormData
+	 * @id TextExtTags.updateFormCache
 	 */
-	p.setFormData = function()
+	p.updateFormCache = function()
 	{
 		var self   = this,
 			result = []
@@ -436,7 +434,8 @@
 			result.push($(this).data(CSS_TAG));
 		});
 
-		self.trigger(EVENT_SET_FORM_DATA, result, result.length > 0);
+		// cache the results to be used in the onGetFormData
+		self._formData = result;
 	};
 
 	/**
@@ -506,8 +505,7 @@
 
 	/**
 	 * Adds specified tags to the tag list. Triggers `isTagAllowed` event for each tag
-	 * to insure that it could be added. Triggers `setFormData` event to update the
-	 * data to be submitted with the HTML form.
+	 * to insure that it could be added. Calls `TextExt.getFormData()` to refresh the data.
 	 *
 	 * @signature TextExtTags.addTags(tags)
 	 *
@@ -524,6 +522,7 @@
 			return;
 
 		var self      = this,
+			core      = self.core(),
 			container = self.getContainer(),
 			i, tag
 			;
@@ -536,8 +535,9 @@
 				container.append(self.renderTag(tag));
 		}
 
-		self.setFormData();
-		self.core().invalidateBounds();
+		self.updateFormCache();
+		core.getFormData();
+		core.invalidateBounds();
 	};
 
 	/**
@@ -565,8 +565,7 @@
 	};
 
 	/**
-	 * Removes specified tag from the list. Triggers `setFormData` to update the original text
-	 * input with the new tag list.
+	 * Removes specified tag from the list. Calls `TextExt.getFormData()` to refresh the data.
 	 *
 	 * @signature TextExtTags.removeTag(tag)
 	 *
@@ -580,6 +579,7 @@
 	p.removeTag = function(tag)
 	{
 		var self = this,
+			core = self.core(),
 			element
 			;
 
@@ -594,12 +594,13 @@
 		}
 
 		element.remove();
-		self.setFormData();
-		self.core().invalidateBounds();
+		self.updateFormCache();
+		core.getFormData();
+		core.invalidateBounds();
 	};
 
 	/**
-	 * Create and returns new HTML element from the source code specified in the `html.tag` option.
+	 * Creates and returns new HTML element from the source code specified in the `html.tag` option.
 	 *
 	 * @signature TextExtTags.renderTag(tag)
 	 *

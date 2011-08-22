@@ -153,26 +153,15 @@
 		EVENT_GET_SUGGESTIONS = 'getSuggestions',
 
 		/**
-		 * Autocomplete plugin triggers `setFormData` event with the current suggestion so that the the core
+		 * Autocomplete plugin triggers `getFormData` event with the current suggestion so that the the core
 		 * will be updated with serialized data to be submitted with the HTML form.
 		 * 
-		 * @name setFormData
+		 * @name getFormData
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtAutocomplete.events.setFormData
+		 * @id TextExtAutocomplete.events.getFormData
 		 */
-		EVENT_SET_FORM_DATA = 'setFormData',
-
-		/**
-		 * Autocomplete plugin triggers the `selectItem` event to indicate that a new selection has been made.
-		 * Selection value is passed as the second argument.
-		 * 
-		 * @name selectItem
-		 * @author agorbatchev
-		 * @date 2011/08/18
-		 * @id TextExtAutocomplete.events.selectItem
-		 */
-		EVENT_SELECT_ITEM = 'selectItem',
+		EVENT_GET_FORM_DATA = 'getFormData',
 
 		POSITION_ABOVE = 'above',
 		POSITION_BELOW = 'below',
@@ -214,19 +203,24 @@
 		if(self.opts(OPT_ENABLED) === true)
 		{
 			self.on({
-				click          : self.onClick,
-				blur           : self.onBlur,
-				anyKeyUp       : self.onAnyKeyUp,
-				deleteKeyUp    : self.onAnyKeyUp,
-				backspaceKeyUp : self.onBackspaceKeyUp,
-				downKeyDown    : self.onDownKeyDown,
-				upKeyDown      : self.onUpKeyDown,
-				enterKeyDown   : self.onEnterKeyDown,
-				escapeKeyUp    : self.onEscapeKeyUp,
-				setSuggestions : self.onSetSuggestions,
-				showDropdown   : self.onShowDropdown,
-				hideDropdown   : self.onHideDropdown,
-				postInvalidate : self.positionDropdown
+				click             : self.onClick,
+				blur              : self.onBlur,
+				anyKeyUp          : self.onAnyKeyUp,
+				deleteKeyUp       : self.onAnyKeyUp,
+				backspaceKeyPress : self.onBackspaceKeyPress,
+				enterKeyPress     : self.onEnterKeyPress,
+				escapeKeyPress    : self.onEscapeKeyPress,
+				setSuggestions    : self.onSetSuggestions,
+				showDropdown      : self.onShowDropdown,
+				hideDropdown      : self.onHideDropdown,
+				postInvalidate    : self.positionDropdown,
+
+				getFormData       : self.onGetFormData,
+
+				// using keyDown for up/down keys so that repeat events are
+				// captured and user can scroll up/down by holding the keys
+				downKeyDown : self.onDownKeyDown,
+				upKeyDown   : self.onUpKeyDown
 			});
 
 			container = $(self.opts(OPT_HTML_DROPDOWN));
@@ -327,20 +321,20 @@
 	};
 
 	/**
-	 * Reacts to the `backspaceKeyUp` event triggered by the TextExt core.
+	 * Reacts to the `backspaceKeyPress` event triggered by the TextExt core. 
 	 *
-	 * @signature TextExtAutocomplete.onBackspaceKeyUp(e)
+	 * @signature TextExtAutocomplete.onBackspaceKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onBackspaceKeyUp
+	 * @id TextExtAutocomplete.onBackspaceKeyPress
 	 */
-	p.onBackspaceKeyUp = function(e)
+	p.onBackspaceKeyPress = function(e)
 	{
-		var self = this,
-			isEmpty = self.input().val().length > 0
+		var self    = this,
+			isEmpty = self.val().length > 0
 			;
 
 		if(isEmpty || self.isDropdownVisible())
@@ -358,9 +352,14 @@
 	 * @date 2011/08/17
 	 * @id TextExtAutocomplete.onAnyKeyUp
 	 */
-	p.onAnyKeyUp = function(e)
+	p.onAnyKeyUp = function(e, keyCode)
 	{
-		this.getSuggestions();
+		var self          = this,
+			isFunctionKey = self.opts('keys.' + keyCode) != null
+			;
+
+		if(self.val().length > 0 && !isFunctionKey)
+			self.getSuggestions();
 	};
 
 	/**
@@ -401,17 +400,17 @@
 	};
 
 	/**
-	 * Reacts to the `enterKeyDown` event triggered by the TextExt core.
+	 * Reacts to the `enterKeyPress` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onEnterKeyDown(e)
+	 * @signature TextExtAutocomplete.onEnterKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onEnterKeyDown
+	 * @id TextExtAutocomplete.onEnterKeyPress
 	 */
-	p.onEnterKeyDown = function(e)
+	p.onEnterKeyPress = function(e)
 	{
 		var self = this;
 
@@ -420,17 +419,18 @@
 	};
 
 	/**
-	 * Reacts to the `escapeKeyUp` event triggered by the TextExt core.
+	 * Reacts to the `escapeKeyPress` event triggered by the TextExt core. Hides the dropdown
+	 * if it's currently visible.
 	 *
-	 * @signature TextExtAutocomplete.onEscapeKeyUp(e)
+	 * @signature TextExtAutocomplete.onEscapeKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onEscapeKeyUp
+	 * @id TextExtAutocomplete.onEscapeKeyPress
 	 */
-	p.onEscapeKeyUp = function(e)
+	p.onEscapeKeyPress = function(e)
 	{
 		var self = this;
 
@@ -544,7 +544,49 @@
 	 */
 	p.isDropdownVisible = function()
 	{
-		return this.getDropdownContainer().is(':visible');
+		return this.getDropdownContainer().is(':visible') === true;
+	};
+
+	/**
+	 * Reacts to the `getFormData` event triggered by the core. Returns data with the
+	 * weight of 100 to be *less than the Tags plugin* data weight. The weights system is
+	 * covered in greater detail in the [`getFormData`][1] event documentation.
+	 *
+	 * [1]: /manual/textext.html#getformdata
+	 *
+	 * @signature TextExtAutocomplete.onGetFormData(e, data, keyCode)
+	 *
+	 * @param e {Object} jQuery event.
+	 * @param data {Object} Data object to be populated.
+	 * @param keyCode {Number} Key code that triggered the original update request.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/22
+	 * @id TextExtAutocomplete.onGetFormData
+	 */
+	p.onGetFormData = function(e, data, keyCode)
+	{
+		var self       = this,
+			val        = self.val(),
+			inputValue = val,
+			formValue  = val
+			;
+		data[100] = self.formDataObject(inputValue, formValue);
+	};
+
+	/**
+	 * Returns initialization priority of the Autocomplete plugin which is expected to be
+	 * *greater than the Tags plugin* because of the dependencies. The value is 200.
+	 *
+	 * @signature TextExtAutocomplete.initPriority()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/22
+	 * @id TextExtAutocomplete.initPriority
+	 */
+	p.initPriority = function()
+	{
+		return 200;
 	};
 
 	/**
@@ -889,13 +931,8 @@
 
 	/**
 	 * Uses the value from the text input to finish autocomplete action. Currently selected
-	 * suggestion from the dropdown will be used to complete the action. Triggers `setFormData`
-	 * and `selectItem` events.
-	 *
-	 * `setFormData` event is triggered with the current suggestion so that the the core will
-	 * be updated with serialized data to be submitted with the HTML form.
-	 *
-	 * `selectItem` event is triggered to indicate that a new selection has been made.
+	 * suggestion from the dropdown will be used to complete the action. Triggers `hideDropdown`
+	 * event.
 	 *
 	 * @signature TextExtAutocomplete.selectFromDropdown()
 	 *
@@ -910,11 +947,7 @@
 			;
 
 		if(suggestion)
-		{
 			self.val(self.itemManager().itemToString(suggestion));
-			self.trigger(EVENT_SET_FORM_DATA, suggestion);
-			self.trigger(EVENT_SELECT_ITEM, suggestion);
-		}
 
 		self.trigger(EVENT_HIDE_DROPDOWN);
 	};
