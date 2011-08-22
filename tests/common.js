@@ -312,6 +312,9 @@ function testPlainInputFunctionality()
 	{
 		browser
 			.typeKeys(textarea, 'Hello world')
+			// for some reason without the enter key last letter doesn't trigger events... 
+			// pressing the enter key puts the last letter through... odd??
+			.and(enterKey)
 			.and(assertOutput('"Hello world"'))
 			;
 	};
