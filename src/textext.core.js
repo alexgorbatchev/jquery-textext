@@ -62,9 +62,9 @@
 		 *
 		 * There are multiple ways of passing in the options:
 		 *
-		 * 1. You can nest option sets and option names in this manual are using nested
-		 * notation for clarity, which is all lowercased, dot separated style, eg `foo.bar.world`.
-		 * For example:
+		 * 1. Options could be nested multiple levels deep and accessed using all lowercased, dot
+		 * separated style, eg `foo.bar.world`. The manual is using this style for clarity and
+		 * consistency. For example:
 		 *
 		 *        {
 		 *            item: {
@@ -83,7 +83,7 @@
 		 *            }
 		 *        }
 		 *
-		 * 2. You can use camel cased properties in a flat key/value fashion like so:
+		 * 2. Options could be specified using camel cased names in a flat key/value fashion like so:
 		 *
 		 *        {
 		 *            itemManager: ...,
@@ -92,11 +92,11 @@
 		 *            autocompleteDropdownPosition: ...
 		 *        }
 		 *
-		 * 3. You can also mix and match. For each dot separated name, its alternative in camel
-		 * case is also checked for, eg for `foo.bar.world` it's alternatives could be `fooBarWorld`,
-		 * `foo.barWorld` or `fooBar.world`, which translates to `{ foo: { bar: { world: ... } } }`,
-		 * `{ fooBarWorld: ... }`, `{ foo : { barWorld : ... } }` or `{ fooBar: { world: ... } }`
-		 * respectively. For example:
+		 * 3. Finally, options could be specified in mixed style. It's important to understand that
+		 * for each dot separated name, its alternative in camel case is also checked for, eg for 
+		 * `foo.bar.world` it's alternatives could be `fooBarWorld`, `foo.barWorld` or `fooBar.world`, 
+		 * which translates to `{ foo: { bar: { world: ... } } }`, `{ fooBarWorld: ... }`, 
+		 * `{ foo : { barWorld : ... } }` or `{ fooBar: { world: ... } }` respectively. For example:
 		 *
 		 *        {
 		 *            itemManager : ...,
@@ -107,7 +107,7 @@
 		 *            }
 		 *        }
 		 *
-		 * Mixed case is used through out the code, however it seems appropriate. However, all option
+		 * Mixed case is used through out the code, wherever it seems appropriate. However in the code, all option
 		 * names are specified in the dot notation because it works both ways where as camel case is not
 		 * being converted to its alternative dot notation.
 		 *
