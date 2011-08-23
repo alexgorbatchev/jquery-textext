@@ -621,6 +621,12 @@
 	 *
 	 * @signature TextExtAutocomplete.onShowDropdown(e, renderCallback)
 	 *
+	 * @param e {Object} jQuery event.
+	 * @param renderCallback {Function} Optional callback function which would be used to 
+	 * render dropdown items. As a first argument, reference to the current instance of 
+	 * Autocomplete plugin will be supplied. It's assumed, that if this callback is provided
+	 * rendering will be handled completely manually.
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
 	 * @id TextExtAutocomplete.onShowDropdown

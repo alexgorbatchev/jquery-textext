@@ -13,16 +13,24 @@
 	function TextExt() {};
 
 	/**
-	 * ItemManager is used to seamlessly convert between string to whatever the format the item
-	 * data is being passed around. It's used by all plugins that in one way or another operate
-	 * with items, such as Tags, Filter, Autocomplete and Suggestions. Default implementation works 
-	 * with strings. 
+	 * ItemManager is used to seamlessly convert between string that come from the user input to whatever 
+	 * the format the item data is being passed around in. It's used by all plugins that in one way or 
+	 * another operate with items, such as Tags, Filter, Autocomplete and Suggestions. Default implementation 
+	 * works with `String` type. 
 	 *
 	 * Each instance of `TextExt` creates a new instance of default implementation of `ItemManager`
 	 * unless `itemManager` option was set to another implementation.
 	 *
 	 * To satisfy requirements of managing items of type other than a `String`, different implementation
 	 * if `ItemManager` should be supplied.
+	 *
+	 * If you wish to bring your own implementation, you need to create a new class and implement all the 
+	 * methods that `ItemManager` has. After, you need to supply your pass via the `itemManager` option during
+	 * initialization like so:
+	 *
+	 *     $('#input').textext({
+	 *         itemManager : CustomItemManager
+	 *     })
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
@@ -529,7 +537,7 @@
 	 *
 	 * @signature ItemManager.filter(list, query)
 	 *
-	 * @param list [Array] List of items. Default implementation works with strings.
+	 * @param list {Array} List of items. Default implementation works with strings.
 	 * @param query {String} Query string.
 	 *
 	 * @author agorbatchev
