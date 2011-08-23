@@ -698,6 +698,8 @@
 
 		self.trigger(EVENT_POST_INIT);
 		self.trigger(EVENT_READY);
+
+		self.getFormData(0);
 	};
 
 	/**

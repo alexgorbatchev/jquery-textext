@@ -183,6 +183,8 @@
 			left : 0,
 			top  : 0
 		};
+
+		self.updateFormCache();
 	};
 
 	/**
