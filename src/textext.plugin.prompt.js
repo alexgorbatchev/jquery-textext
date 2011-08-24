@@ -117,8 +117,10 @@
 			self.hidePrompt();
 
 		self.on({
-			blur  : self.onBlur,
-			focus : self.onFocus
+			blur           : self.onBlur,
+			focus          : self.onFocus,
+			postInvalidate : self.onPostInvalidate,
+			postInit       : self.onPostInit
 		});
 
 		self._timeoutId = 0;
@@ -127,6 +129,59 @@
 	//--------------------------------------------------------------------------------
 	// Event handlers
 	
+	/**
+	 * Reacts to the `postInit` and configured the plugin for initial display.
+	 *
+	 * @signature TextExtPrompt.onPostInit(e)
+	 *
+	 * @param e {Object} jQuery event.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/24
+	 * @id TextExtPrompt.onPostInit
+	 */
+	p.onPostInit = function(e)
+	{
+		this.invalidateBounds();
+	};
+
+	/**
+	 * Reacts to the `postInvalidate` and insures that prompt display remains correct.
+	 *
+	 * @signature TextExtPrompt.onPostInvalidate(e)
+	 *
+	 * @param e {Object} jQuery event.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/24
+	 * @id TextExtPrompt.onPostInvalidate
+	 */
+	p.onPostInvalidate = function(e)
+	{
+		this.invalidateBounds();
+	};
+
+	/**
+	 * Repositions the prompt to make sure it's always at the same place as in the text input carret.
+	 *
+	 * @signature TextExtPrompt.invalidateBounds()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/24
+	 * @id TextExtPrompt.invalidateBounds
+	 */
+	p.invalidateBounds = function()
+	{
+		var self  = this,
+			input = self.input()
+			;
+
+		self.containerElement().css({
+			paddingLeft : input.css('paddingLeft'),
+			paddingTop  : input.css('paddingTop')
+		});
+	};
+
 	/**
 	 * Reacts to the `blur` event and shows the prompt effect with a slight delay which 
 	 * allows quick refocusing without effect blinking in and out.
