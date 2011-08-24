@@ -36,7 +36,7 @@
 		 * Prompt message that is displayed to the user whenever there's no value in the input.
 		 *
 		 * @name prompt
-		 * @default "Awaiting input..."
+		 * @default 'Awaiting input...'
 		 * @author agorbatchev
 		 * @date 2011/08/18
 		 * @id TextExtPrompt.options.prompt
