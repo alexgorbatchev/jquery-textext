@@ -42,8 +42,8 @@
   background: url("close.png") 0 0 no-repeat;
 }
 .text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:hover {
-  background-position: 0 -22px;
+  background-position: 0 -11px;
 }
 .text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:active {
-  background-position: 0 -33px;
+  background-position: 0 -22px;
 }
