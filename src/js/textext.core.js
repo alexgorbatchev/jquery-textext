@@ -1,3 +1,13 @@
+/**
+ * jQuery TextExt Plugin
+ * http://alexgorbatchev.com/textext
+ *
+ * TextExt is NOT free. You must purchase a commercial license to use this plugin anywhere except for
+ * demonstration or development purposes.
+ *
+ * @version 1.0
+ * @copyright Copyright (C) 2011 Alex Gorbatchev. All rights reserved.
+ */
 (function($, undefined)
 {
 	/**
@@ -1373,8 +1383,18 @@
 	 * @id TextExt.jquery
 	 */
 
+	var cssInjected = false;
+
 	var textext = $.fn.textext = function(opts)
 	{
+		var css;
+		
+		if(!cssInjected && (css = $.fn.textext.css) != null)
+		{
+			$('head').append('<style>' + css + '</style>');
+			cssInjected = true;
+		}
+
 		return this.map(function()
 		{
 			var self = $(this);
