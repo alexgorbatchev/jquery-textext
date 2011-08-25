@@ -1208,6 +1208,8 @@
 	 * @signature TextExtPlugin.baseInit(core, defaults)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
+	 * @param defaults {Object} Default plugin options. These will be checked if desired value wasn't
+	 * found in the options supplied by the user.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
@@ -1240,6 +1242,8 @@
 	 *
 	 * @signature TextExtPlugin.opts(name)
 	 * 
+	 * @param name {String} Option name as described in the options.
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
 	 * @id TextExtPlugin.opts
