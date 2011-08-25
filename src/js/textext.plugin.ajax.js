@@ -159,6 +159,8 @@
 		 */
 		EVENT_SHOW_DROPDOWN = 'showDropdown',
 
+		TIMER_LOADING = 'loading',
+
 		DEFAULT_OPTS = {
 			ajax : {
 				typeDelay      : 0.5,
@@ -191,9 +193,7 @@
 			getSuggestions : self.onGetSuggestions
 		});
 
-		self._typeTimeoutId    = 0;
-		self._loadingTimeoutId = 0;
-		self._suggestions      = null;
+		self._suggestions = null;
 	};
 
 	/**
@@ -275,7 +275,7 @@
 	 */
 	p.dontShowLoading = function()
 	{
-		clearTimeout(this._loadingTimeoutId);
+		this.stopTimer(TIMER_LOADING);
 	};
 
 	/**
@@ -293,7 +293,9 @@
 		var self = this;
 
 		self.dontShowLoading();
-		self._loadingTimeoutId = setTimeout(
+		self.startTimer(
+			TIMER_LOADING,
+			self.opts(OPT_LOADING_DELAY),
 			function()
 			{
 				self.trigger(EVENT_SHOW_DROPDOWN, function(autocomplete)
@@ -302,8 +304,7 @@
 					var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
 					node.addClass('text-loading');
 				});
-			},
-			self.opts(OPT_LOADING_DELAY) * 1000
+			}
 		);
 	};
 
@@ -332,14 +333,14 @@
 		if(suggestions && self.opts(OPT_CACHE_RESULTS) == true)
 			return self.onComplete(suggestions, query);
 		
-		clearTimeout(self._typeTimeoutId);
-		self._typeTimeoutId = setTimeout(
+		self.startTimer(
+			'ajax',
+			self.opts(OPT_TYPE_DELAY),
 			function()
 			{
 				self.showLoading();
 				self.load(query);
-			},
-			self.opts(OPT_TYPE_DELAY) * 1000
+			}
 		);
 	};
 })(jQuery);

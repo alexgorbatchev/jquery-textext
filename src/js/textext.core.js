@@ -1221,6 +1221,55 @@
 
 		core._defaults = $.extend(true, core._defaults, defaults);
 		self._core     = core;
+		self._timers   = {};
+	};
+
+	/**
+	 * Allows starting of multiple timeout calls. Each time this method is called with the same
+	 * timer name, the timer is reset. This functionality is useful in cases where an action needs
+	 * to occur only after a certain period of inactivity. For example, making an AJAX call after 
+	 * user stoped typing for 1 second.
+	 *
+	 * @signature TextExtPlugin.startTimer(name, delay, callback)
+	 *
+	 * @param name {String} Timer name.
+	 * @param delay {Number} Delay in seconds.
+	 * @param callback {Function} Callback function.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/25
+	 * @id TextExtPlugin.startTimer
+	 */
+	p.startTimer = function(name, delay, callback)
+	{
+		var self = this;
+
+		self.stopTimer(name);
+
+		self._timers[name] = setTimeout(
+			function()
+			{
+				delete self._timers[name];
+				callback.apply(self);
+			},
+			delay * 1000
+		);
+	};
+
+	/**
+	 * Stops the timer by name without resetting it.
+	 *
+	 * @signature TextExtPlugin.stopTimer(name)
+	 *
+	 * @param name {String} Timer name.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/25
+	 * @id TextExtPlugin.stopTimer
+	 */
+	p.stopTimer = function(name)
+	{
+		clearTimeout(this._timers[name]);
 	};
 
 	/**
