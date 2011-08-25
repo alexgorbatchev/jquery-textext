@@ -30,6 +30,11 @@
 		 *             url: 'http://...'
 		 *         }
 		 *     })
+		 *
+		 * **Important**: Because it's necessary to pass options to `jQuery.ajax()` in a single object,
+		 * all jQuery related AJAX options like `url`, `dataType`, etc **must** be within the `ajax` object.
+		 * This is the exception to general rule that TextExt options can be specified in dot or camel case 
+		 * notation.
 		 * 
 		 * @author agorbatchev
 		 * @date 2011/08/16
