@@ -705,7 +705,9 @@
 		self.invalidateBounds();
 
 		itemManager.init(self);
-		self.initPlugins(self.opts(OPT_PLUGINS));
+
+		self.initPatches();
+		self.initPlugins(self.opts(OPT_PLUGINS), $.fn.textext.plugins);
 
 		self.on({
 			setFormData  : self.onSetFormData,
@@ -721,9 +723,40 @@
 	};
 
 	/**
+	 * Initialized all installed patches against current instance. The patches are initialized based on their
+	 * initialization priority which is returned by each patch's `initPriority()` method. Priority
+	 * is a `Number` where patches with higher value gets their `init()` method called before patches
+	 * with lower priority value.
+	 *
+	 * This facilitates initializing of patches in certain order to insure proper dependencies
+	 * regardless of which order they are loaded.
+	 *
+	 * By default all patches have the same priority - zero, which means they will be initialized
+	 * in rorder they are loaded, that is unless `initPriority()` is overriden.
+	 *
+	 * @signature TextExt.initPatches()
+	 *
+	 * @author agorbatchev
+	 * @date 2011/10/11
+	 * @id TextExt.initPatches
+	 */
+	p.initPatches = function()
+	{
+		var list   = [],
+			source = $.fn.textext.patches,
+			name
+			;
+
+		for(name in source)
+			list.push(name);
+
+		this.initPlugins(list, source);
+	};
+
+	/**
 	 * Creates and initializes all specified plugins. The plugins are initialized based on their
 	 * initialization priority which is returned by each plugin's `initPriority()` method. Priority
-	 * is a number where plugins with higher value gets their `init()` method called before plugins
+	 * is a `Number` where plugins with higher value gets their `init()` method called before plugins
 	 * with lower priority value.
 	 *
 	 * This facilitates initializing of plugins in certain order to insure proper dependencies
@@ -740,7 +773,7 @@
 	 * @date 2011/08/19
 	 * @id TextExt.initPlugins
 	 */
-	p.initPlugins = function(plugins)
+	p.initPlugins = function(plugins, source)
 	{
 		var self = this,
 			ext, name, plugin, initList = [], i
@@ -752,7 +785,7 @@
 		for(i = 0; i < plugins.length; i++)
 		{
 			name   = plugins[i];
-			plugin = $.fn.textext.plugins[name];
+			plugin = source[name];
 
 			if(plugin)
 			{
@@ -1464,9 +1497,42 @@
 		});
 	};
 
+	/**
+	 * This static function registers a new plugin which makes it available through the `plugins` option
+	 * to the end user. The name specified here is the name the end user would put in the `plugins` option
+	 * to add this plugin to a new instance of TextExt.
+	 * 
+	 * @signature $.fn.textext.addPlugin(name, constructor)
+	 *
+	 * @param name {String} Name of the plugin.
+	 * @param constructor {Function} Plugin constructor.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/10/11
+	 * @id TextExt.addPlugin
+	 */
 	textext.addPlugin = function(name, constructor)
 	{
-		textext.plugins[name]  = constructor;
+		textext.plugins[name] = constructor;
+		constructor.prototype = new textext.TextExtPlugin();
+	};
+
+	/**
+	 * This static function registers a new patch which is added to each instance of TextExt. If you are
+	 * adding a new patch, make sure to call this method.
+	 * 
+	 * @signature $.fn.textext.addPatch(name, constructor)
+	 *
+	 * @param name {String} Name of the patch.
+	 * @param constructor {Function} Patch constructor.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/10/11
+	 * @id TextExt.addPatch
+	 */
+	textext.addPatch = function(name, constructor)
+	{
+		textext.patches[name] = constructor;
 		constructor.prototype = new textext.TextExtPlugin();
 	};
 
@@ -1474,4 +1540,42 @@
 	textext.TextExtPlugin = TextExtPlugin;
 	textext.ItemManager   = ItemManager;
 	textext.plugins       = {};
+	textext.patches       = {};
 })(jQuery);
+
+(function($)
+{
+	function TextExtIE9Patches() {};
+
+	$.fn.textext.TextExtIE9Patches = TextExtIE9Patches;
+	$.fn.textext.addPatch('ie9',TextExtIE9Patches);
+
+	var p = TextExtIE9Patches.prototype;
+
+	p.init = function(core)
+	{
+		if(navigator.userAgent.indexOf('MSIE 9') == -1)
+			return;
+
+		var self = this;
+
+		core.on({
+			postInvalidate : self.onPostInvalidate,
+		});
+	};
+
+	p.onPostInvalidate = function()
+	{
+		var self  = this,
+			input = self.input(),
+			val   = input.val()
+			;
+
+		// agorbatchev :: IE9 doesn't seem to update the padding if box-sizing is on until the
+		// text box value changes, so forcing this change seems to do the trick of updating
+		// IE's padding visually.
+		input.val(Math.random());
+		input.val(val);
+	};
+})(jQuery);
+
