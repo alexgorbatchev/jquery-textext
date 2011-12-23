@@ -112,7 +112,7 @@
 		 *
 		 * Here's how another plugin should trigger this event with the optional render callback:
 		 *
-		 *     this.trigger('showDropdown', function(autocomplete)
+		 *     textext.trigger('showDropdown', function(autocomplete)
 		 *     {
 		 *         autocomplete.clearItems();
 		 *         var node = autocomplete.addDropdownItem('<b>Item</b>');
@@ -612,7 +612,7 @@
 	 *
 	 * Here's how another plugin should trigger this event with the optional render callback:
 	 *
-	 *     this.trigger('showDropdown', function(autocomplete)
+	 *     textext.trigger('showDropdown', function(autocomplete)
 	 *     {
 	 *         autocomplete.clearItems();
 	 *         var node = autocomplete.addDropdownItem('<b>Item</b>');
@@ -639,7 +639,7 @@
 
 		if($.isFunction(renderCallback))
 		{
-			renderCallback(self)
+			renderCallback(self);
 		}
 		else
 		{
@@ -678,8 +678,8 @@
 			suggestions = self._suggestions = data.result
 			;
 
-		if(data.showHideDropdown != false)
-			self.trigger(suggestions == null || suggestions.length == 0 ? EVENT_HIDE_DROPDOWN : EVENT_SHOW_DROPDOWN);
+		if(data.showHideDropdown !== false)
+			self.trigger(suggestions === null || suggestions.length === 0 ? EVENT_HIDE_DROPDOWN : EVENT_SHOW_DROPDOWN);
 	};
 
 	/**
