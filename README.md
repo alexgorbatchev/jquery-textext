@@ -7,7 +7,7 @@ The core design principle behind TextExt is modularity and extensibility. Each
 piece of functionality is separated from the main core and can act individually
 and together with other plugins.
 
-Modular design allows you easily turn a standard HTML text input into a wide range
+TextExt's modular design allows you easily turn a standard HTML text input into a wide range
 of modern, taylored to your needs data inputs without bloating your source code and
 slowing down your site with the code that you aren't using.
 
@@ -47,6 +47,17 @@ The steps to using TextExt are as follows:
 1. Specify which plugins you need via the `plugins` option
 2. Configure each plugin individually if necessary
 3. Enjoy!
+
+## History
+
+#### 1.1.0
+* Added `autocomplete.render` option for custom rendering. See the
+  [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-render) and 
+  [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
+* Switched to MIT license.
+
+#### 1.0.0
+* Initial release.
 
 ## License
 
