@@ -140,7 +140,7 @@
 		 *
 		 * Here's how another plugin should trigger this event with the optional render callback:
 		 *
-		 *     textext.trigger('showDropdown', function(autocomplete)
+		 *     this.trigger('showDropdown', function(autocomplete)
 		 *     {
 		 *         autocomplete.clearItems();
 		 *         var node = autocomplete.addDropdownItem('<b>Item</b>');
@@ -640,7 +640,7 @@
 	 *
 	 * Here's how another plugin should trigger this event with the optional render callback:
 	 *
-	 *     textext.trigger('showDropdown', function(autocomplete)
+	 *     this.trigger('showDropdown', function(autocomplete)
 	 *     {
 	 *         autocomplete.clearItems();
 	 *         var node = autocomplete.addDropdownItem('<b>Item</b>');
