@@ -25,6 +25,7 @@ function run(browser)
 		.and(testAutocomplete('autocomplete-with-filter'))
 		.and(testAutocomplete('autocomplete-with-tags', common.testTagFunctionality()))
 		.and(testAutocomplete('autocomplete-with-tags-and-filter', common.testFilterFunctionality()))
+		.and(testAutocomplete('autocomplete-with-custom-render', common.testFilterFunctionality()))
 	;
 };
 

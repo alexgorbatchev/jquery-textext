@@ -63,6 +63,34 @@
 		OPT_POSITION = 'autocomplete.dropdown.position',
 
 		/**
+		 * This option allows to override how a suggestion item is rendered. The value should be
+		 * a function, the first argument of which is suggestion to be rendered and `this` context
+		 * is the current instance of `TextExtAutocomplete`. 
+		 *
+		 * [Click here](/manual/examples/autocomplete-with-custom-render.html) to see a demo.
+		 *
+		 * For example:
+		 *
+		 *     $('textarea').textext({
+		 *         plugins: 'autocomplete',
+		 *         autocomplete: {
+		 *             render: function(suggestion)
+		 *             {
+		 *                 return '<b>' + suggestion + '</b>';
+		 *             }
+		 *         }
+		 *     })
+		 *
+		 * @name autocomplete.render
+		 * @default null
+		 * @author agorbatchev
+		 * @date 2011/12/23
+		 * @id TextExtAutocomplete.options.autocomplete.render
+		 * @version 1.1
+		 */
+		OPT_RENDER = 'autocomplete.render',
+
+		/**
 		 * HTML source that is used to generate the dropdown.
 		 *
 		 * @name html.dropdown
@@ -794,8 +822,9 @@
 	 */
 	p.addSuggestion = function(suggestion)
 	{
-		var self = this,
-			node = self.addDropdownItem(self.itemManager().itemToString(suggestion))
+		var self     = this,
+			renderer = self.opts(OPT_RENDER),
+			node     = self.addDropdownItem(renderer ? renderer.call(self, suggestion) : self.itemManager().itemToString(suggestion))
 			;
 
 		node.data(CSS_SUGGESTION, suggestion);
@@ -819,7 +848,7 @@
 			node      = $(self.opts(OPT_HTML_SUGGESTION))
 			;
 
-		node.find('.text-label').text(html);
+		node.find('.text-label').html(html);
 		container.append(node);
 		return node;
 	};
