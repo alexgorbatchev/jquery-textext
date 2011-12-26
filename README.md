@@ -16,6 +16,13 @@ as well as a few which are purely asthetical like Focus.
 
 Please refer to the [manual] for the full API documentation and examples.
 
+## Features
+
+* Tags
+* Autocomplete
+* AJAX loading
+* Placeholder text
+
 ## Example
 
     <textarea id="textarea" rows="1"></textarea>
@@ -43,13 +50,10 @@ The steps to using TextExt are as follows:
 
 ## License
 
-The TextExt component is released under the open source commercial license. This
-means that while the source is open to anyone for viewing and modification, you
-have to [purchase] a commercial license if you intend to use TextExt.
-
-All source contributions automatically become part of the TextExt source if
-accepted and the original author shall give up any further claim.
+The TextExt component is released under the open source MIT. This means that you
+can use it any way you want, but I would very much appreciate if you take a minute
+and support the project through a [donation].
 
 [manual]: http://textextjs.com/manual/index.html
-[purchase]: http://textextjs.com/purchase.html
+[donation]: http://textextjs.com/donate.html
 
