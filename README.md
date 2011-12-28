@@ -5,11 +5,11 @@ as tag input and autocomplete.
 
 The core design principle behind TextExt is modularity and extensibility. Each
 piece of functionality is separated from the main core and can act individually
-and together with other plugins.
+or together with other plugins.
 
-TextExt's modular design allows you easily turn a standard HTML text input into a wide range
-of modern, taylored to your needs data inputs without bloating your source code and
-slowing down your site with the code that you aren't using.
+TextExt's modular design allows you easily turn a standard HTML text input into a 
+wide range of modern, taylored to your needs input field without bloating your 
+source code and slowing down your site with the code that you aren't using.
 
 A wide number of plugins are available including Tags, Autocomplete, Filter, Ajax
 as well as a few which are purely asthetical like Focus.
@@ -29,7 +29,7 @@ Please refer to the [manual] for the full API documentation and examples.
 
     <script type="text/javascript">
         $('#textarea').textext({
-            plugins : 'tags prompt focus autocomplete ajax',
+            plugins : 'tags prompt focus autocomplete ajax arrow',
             tagsItems : [ 'jquery', 'plugin', 'tags', 'autocomplete' ],
             prompt : 'Add one...',
             ajax : {
@@ -54,6 +54,7 @@ The steps to using TextExt are as follows:
 * Added `autocomplete.render` option for custom rendering. See the
   [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-render) and 
   [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
+* Added [Arrow plugin](http://textextjs.com/manual/plugins/arrow.html).
 * Switched to MIT license.
 
 #### 1.0.0
