@@ -1,0 +1,13 @@
+.text-core .text-wrap .text-arrow {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 22px;
+  background: url("arrow.png") 50% 50% no-repeat;
+  cursor: pointer;
+  z-index: 2;
+}
