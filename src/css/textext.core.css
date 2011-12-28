@@ -5,7 +5,8 @@
 .text-core .text-wrap {
   position: absolute;
 }
-.text-core .text-wrap textarea {
+.text-core .text-wrap textarea,
+.text-core .text-wrap input {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -24,4 +25,5 @@
   white-space: nowrap;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
   line-height: 13px;
+  height: auto;
 }
