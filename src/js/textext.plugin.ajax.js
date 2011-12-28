@@ -327,10 +327,10 @@
 	{
 		var self        = this,
 			suggestions = self._suggestions,
-			query       = data.query
+			query       = (data || {}).query || ''
 			;
 
-		if(suggestions && self.opts(OPT_CACHE_RESULTS) == true)
+		if(suggestions && self.opts(OPT_CACHE_RESULTS) === true)
 			return self.onComplete(suggestions, query);
 		
 		self.startTimer(

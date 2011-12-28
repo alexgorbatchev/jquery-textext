@@ -506,14 +506,16 @@
 			event
 			;
 
-		for(event in args)
-			(function(self, event, handler)
+		function bind(self, event, handler)
+		{
+			self.bind(event, function()
 			{
-				self.bind(event, function()
-				{
-					return handler.apply(self, arguments);
-				});
-			})(self, event, args[event]);
+				return handler.apply(self, arguments);
+			});
+		}
+
+		for(event in args)
+			bind(self, event, args[event]);
 	};
 
 	function formDataObject(input, form)
@@ -1559,9 +1561,7 @@
 
 		var self = this;
 
-		core.on({
-			postInvalidate : self.onPostInvalidate,
-		});
+		core.on({ postInvalidate : self.onPostInvalidate });
 	};
 
 	p.onPostInvalidate = function()
