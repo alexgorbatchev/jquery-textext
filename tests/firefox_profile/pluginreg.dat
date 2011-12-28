@@ -1,0 +1,190 @@
+Generated File. Do not edit.
+
+[HEADER]
+Version:0.15:$
+Arch:x86_64-gcc3:$
+
+[PLUGINS]
+net.juniper.DSSafariExtensions.plugin:$
+/Library/Internet Plug-Ins/net.juniper.DSSafariExtensions.plugin:$
+19243:$
+1321897505000:0:1:$
+Juniper Networks Safari Extensions:$
+Juniper Networks Safari Extensions:$
+1
+0:application/x-net-juniper-dssafariextensions:Juniper Networks Extension Type::$
+AmazonMP3DownloaderPlugin.plugin:$
+/Applications/Amazon MP3 Downloader.app/Contents/Resources/AmazonMP3DownloaderPlugin.plugin:$
+AmazonMP3DownloaderPlugin 1.0.15:$
+1321560836000:0:1:$
+AmazonMP3DownloaderPlugin 1.0.15:$
+AmazonMP3DownloaderPlugin:$
+1
+0:application/x-amz:AmazonMP3DownloaderPlugin 1.0.15::$
+Flash Player.plugin:$
+/Library/Internet Plug-Ins/Flash Player.plugin:$
+10.3.181.14:$
+1310162668000:0:1:$
+Shockwave Flash 10.3 r181:$
+Shockwave Flash:$
+2
+0:application/x-shockwave-flash:Shockwave Flash:swf:$
+1:application/futuresplash:FutureSplash Player:spl:$
+npgtpo3dautoplugin.plugin:$
+/Library/Internet Plug-Ins/npgtpo3dautoplugin.plugin:$
+0.1.44.5:$
+1308958693000:0:1:$
+Google Talk Plugin Video Accelerator version:0.1.44.5:$
+Google Talk Plugin Video Accelerator:$
+1
+0:application/vnd.gtpo3d.auto:Google Talk Plugin Video Accelerator Type::$
+googletalkbrowserplugin.plugin:$
+/Library/Internet Plug-Ins/googletalkbrowserplugin.plugin:$
+2.1.7.2968:$
+1308958693000:0:1:$
+Version 2.1.7.2968:$
+Google Talk NPAPI Plugin:$
+1
+0:application/googletalk:Google voice and video chat:googletalk:$
+QuickTime Plugin.plugin:$
+/Library/Internet Plug-Ins/QuickTime Plugin.plugin:$
+7.7.1:$
+1308549020000:0:1:$
+The QuickTime Plugin allows you to view a wide variety of multimedia content in web pages. For more information, visit the <A HREF=http://www.apple.com/quicktime>QuickTime</A> Web site.:$
+QuickTime Plug-in 7.7.1:$
+59
+0:audio/x-midi:MIDI:mid,midi,smf,kar:$
+1:audio/x-ac3:AC3 audio:ac3:$
+2:video/mp4:MPEG-4 media:mp4:$
+3:video/x-m4v:Video:m4v:$
+4:application/x-sdp:SDP stream descriptor:sdp:$
+5:audio/AMR:AMR audio:AMR:$
+6:application/x-rtsp:RTSP stream descriptor:rtsp,rts:$
+7:image/tiff:TIFF image:tif,tiff:$
+8:video/3gpp2:3GPP2 media:3g2,3gp2:$
+9:image/jpeg2000:JPEG2000 image:jp2:$
+10:audio/mpeg:MPEG audio:mpeg,mpg,m1s,m1a,mp2,mpm,mpa,m2a,mp3,swa:$
+11:image/x-quicktime:QuickTime image:qtif,qti:$
+12:audio/mpeg3:MP3 audio:mp3,swa:$
+13:application/sdp:SDP stream descriptor:sdp:$
+14:application/x-mpeg:AMC media:amc:$
+15:image/x-macpaint:MacPaint image:pntg,pnt,mac:$
+16:video/mpeg:MPEG media:mpeg,mpg,m1s,m1v,m1a,m75,m15,mp2,mpm,mpv,mpa:$
+17:video/x-msvideo:Video For Windows:avi,vfw:$
+18:audio/aac:AAC audio:aac,adts:$
+19:audio/x-gsm:GSM audio:gsm:$
+20:video/sd-video:SD video:sdv:$
+21:audio/x-caf:CAF audio:caf:$
+22:image/x-jpeg2000-image:JPEG2000 image:jp2:$
+23:audio/3gpp:3GPP media:3gp,3gpp:$
+24:audio/mp3:MP3 audio:mp3,swa:$
+25:image/x-targa:TGA image:targa,tga:$
+26:video/avi:Video For Windows:avi,vfw:$
+27:image/png:PNG image:png:$
+28:image/x-tiff:TIFF image:tif,tiff:$
+29:audio/mp4:MPEG-4 media:mp4:$
+30:image/jp2:JPEG2000 image:jp2:$
+31:audio/x-aiff:AIFF audio:aiff,aif,aifc,cdda:$
+32:video/x-mpeg:MPEG media:mpeg,mpg,m1s,m1v,m1a,m75,m15,mp2,mpm,mpv,mpa:$
+33:video/3gpp:3GPP media:3gp,3gpp:$
+34:audio/x-mpeg:MPEG audio:mpeg,mpg,m1s,m1a,mp2,mpm,mpa,m2a,mp3,swa:$
+35:audio/x-aac:AAC audio:aac,adts:$
+36:audio/mid:MIDI:mid,midi,smf,kar:$
+37:audio/3gpp2:3GPP2 media:3g2,3gp2:$
+38:audio/midi:MIDI:mid,midi,smf,kar:$
+39:audio/x-wav:WAVE audio:wav,bwf:$
+40:audio/x-mp3:MP3 audio:mp3,swa:$
+41:video/quicktime:QuickTime Movie:mov,qt,mqv:$
+42:audio/x-mpeg3:MP3 audio:mp3,swa:$
+43:image/x-bmp:BMP image:bmp,dib:$
+44:audio/ac3:AC3 audio:ac3:$
+45:image/pict:PICT image:pict,pic,pct:$
+46:audio/x-m4p:AAC audio:m4p:$
+47:audio/x-m4a:AAC audio:m4a:$
+48:image/x-png:PNG image:png:$
+49:image/x-pict:PICT image:pict,pic,pct:$
+50:image/x-sgi:SGI image:sgi,rgb:$
+51:audio/x-m4b:AAC audio book:m4b:$
+52:video/flc:AutoDesk Animator:flc,fli,cel:$
+53:audio/aiff:AIFF audio:aiff,aif,aifc,cdda:$
+54:video/msvideo:Video For Windows:avi,vfw:$
+55:audio/basic:uLaw/AU audio:au,snd,ulw:$
+56:image/jpeg2000-image:JPEG2000 image:jp2:$
+57:audio/wav:WAVE audio:wav,bwf:$
+58:audio/vnd.qcelp:QUALCOMM PureVoice audio:qcp,qcp:$
+JavaAppletPlugin.plugin:$
+/System/Library/Java/Support/CoreDeploy.bundle/Contents/JavaAppletPlugin.plugin:$
+14.1.0:$
+1308272440000:0:1:$
+Displays Java applet content, or a placeholder if Java is not installed.:$
+Java Applet Plug-in:$
+17
+0:application/x-java-applet;version=1.1.3:Java applet::$
+1:application/x-java-applet:Basic Java Applets:javaapplet:$
+2:application/x-java-applet;version=1.2.2:Java applet::$
+3:application/x-java-applet;version=1.5:Java applet::$
+4:application/x-java-vm:Java applet::$
+5:application/x-java-applet;version=1.3.1:Java applet::$
+6:application/x-java-applet;version=1.3:Java applet::$
+7:application/x-java-applet;version=1.1.2:Java applet::$
+8:application/x-java-applet;version=1.1:Java applet::$
+9:application/x-java-applet;version=1.2.1:Java applet::$
+10:application/x-java-applet;version=1.6:Java applet::$
+11:application/x-java-applet;version=1.4.2:Java applet::$
+12:application/x-java-applet;version=1.4:Java applet::$
+13:application/x-java-applet;version=1.1.1:Java applet::$
+14:application/x-java-applet;version=1.2:Java applet::$
+15:application/x-java-applet;jpi-version=1.6.0_29:Java applet::$
+16:application/x-java-vm-npruntime:::$
+WebEx64.plugin:$
+/Users/agorbatchev/Library/Internet Plug-Ins/WebEx64.plugin:$
+1.0:$
+1307651021000:0:1:$
+WebEx64 General Plugin Container Version 202:$
+WebEx64 General Plugin Container:$
+1
+0:application/webx-gpc-plugin64:gpc::$
+Silverlight.plugin:$
+/Library/Internet Plug-Ins/Silverlight.plugin:$
+4.0.60129.0:$
+1296448496000:0:1:$
+4.0.60129.0:$
+Silverlight Plug-In:$
+2
+0:application/x-silverlight:Microsoft Silverlight:xaml:$
+1:application/x-silverlight-2:Microsoft Silverlight:xaml:$
+DirectorShockwave.plugin:$
+/Library/Internet Plug-Ins/DirectorShockwave.plugin:$
+11.5.7r609:$
+1272547663000:0:1:$
+:$
+:$
+0
+iPhotoPhotocast.plugin:$
+/Library/Internet Plug-Ins/iPhotoPhotocast.plugin:$
+7.0:$
+1258508974000:0:1:$
+iPhoto6:$
+iPhotoPhotocast:$
+1
+0:application/photo:iPhoto 700::$
+OfficeLiveBrowserPlugin.plugin:$
+/Library/Internet Plug-Ins/OfficeLiveBrowserPlugin.plugin:$
+12.2.5:$
+1256000273000:0:1:$
+Office Live Update v1.0:$
+Microsoft Office Live Plug-in:$
+1
+0:application/officelive:Office Live Update v1.0::$
+
+[INVALID]
+/Library/Internet Plug-Ins/Quartz Composer.webplugin:$
+1308270108000:$
+/Library/Internet Plug-Ins/nsIQTScriptablePlugin.xpt:$
+1321292803000:$
+/Library/Internet Plug-Ins/flashplayer.xpt:$
+1304635372000:$
+/Library/Internet Plug-Ins/Disabled Plug-Ins:$
+1274731912000:$
+/Library/Internet Plug-Ins/AdobePDFViewer.plugin:$
+1274910092000:$
