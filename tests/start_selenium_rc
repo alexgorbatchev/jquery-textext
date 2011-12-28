@@ -1,4 +1,4 @@
 #!/bin/bash
-PATH="/Applications/Firefox 9.0.1.app/Contents/MacOS":$PATH
+PATH="/Applications/Firefox 5.0.1.app/Contents/MacOS":$PATH
 java -jar selenium-server-standalone-2.15.0.jar -firefoxProfileTemplate "./firefox_profile"
 
