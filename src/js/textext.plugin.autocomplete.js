@@ -191,6 +191,18 @@
 		 */
 		EVENT_GET_FORM_DATA = 'getFormData',
 
+		/**
+		 * Autocomplete plugin reacts to `toggleDropdown` event and either shows or hides the dropdown
+		 * depending if it's currently hidden or visible.
+		 * 
+		 * @name toggleDropdown
+		 * @author agorbatchev
+		 * @date 2011/12/27
+		 * @id TextExtAutocomplete.events.toggleDropdown
+		 * @version 1.1
+		 */
+		EVENT_TOGGLE_DROPDOWN = 'toggleDropdown',
+
 		POSITION_ABOVE = 'above',
 		POSITION_BELOW = 'below',
 
@@ -241,8 +253,8 @@
 				setSuggestions    : self.onSetSuggestions,
 				showDropdown      : self.onShowDropdown,
 				hideDropdown      : self.onHideDropdown,
+				toggleDropdown    : self.onToggleDropdown,
 				postInvalidate    : self.positionDropdown,
-
 				getFormData       : self.onGetFormData,
 
 				// using keyDown for up/down keys so that repeat events are
@@ -634,9 +646,30 @@
 	};
 
 	/**
+	 * Reacts to the 'toggleDropdown` event and shows or hides the dropdown depending if
+	 * it's currently hidden or visible.
+	 *
+	 * @signature TextExtAutocomplete.onToggleDropdown(e)
+	 *
+	 * @param e {Object} jQuery event.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/12/27
+	 * @id TextExtAutocomplete.onToggleDropdown
+	 * @version 1.1
+	 */
+	p.onToggleDropdown = function(e)
+	{
+		var self = this;
+		self.trigger(self.containerElement().is(':visible') ? EVENT_HIDE_DROPDOWN : EVENT_SHOW_DROPDOWN);
+	};
+
+	/**
 	 * Reacts to the `showDropdown` event and shows the dropdown if it's not already visible.
 	 * It's possible to pass a render callback function which will be called instead of the
 	 * default `TextExtAutocomplete.renderSuggestions()`.
+	 *
+	 * If no suggestion were previously loaded, it will fire `getSuggestions` event and exit.
 	 *
 	 * Here's how another plugin should trigger this event with the optional render callback:
 	 *
@@ -661,9 +694,13 @@
 	 */
 	p.onShowDropdown = function(e, renderCallback)
 	{
-		var self    = this,
-			current = self.selectedSuggestionElement().data(CSS_SUGGESTION)
+		var self        = this,
+			current     = self.selectedSuggestionElement().data(CSS_SUGGESTION),
+			suggestions = self._suggestions
 			;
+
+		if(!suggestions)
+			return self.trigger(EVENT_GET_SUGGESTIONS);
 
 		if($.isFunction(renderCallback))
 		{
