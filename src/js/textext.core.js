@@ -814,6 +814,23 @@
 	};
 
 	/**
+	 * Returns true if specified plugin is was instantiated for the current instance of core.
+	 *
+	 * @signature TextExt.hasPlugin(name)
+	 *
+	 * @param name {String} Name of the plugin to check.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/12/28
+	 * @id TextExt.hasPlugin
+	 * @version 1.1
+	 */
+	p.hasPlugin = function(name)
+	{
+		return !!this._plugins[name];
+	};
+
+	/**
 	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
 	 * 
 	 * @signature TextExt.on(handlers)

@@ -55,7 +55,8 @@ The steps to using TextExt are as follows:
   [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-render) and 
   [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
 * Added [Arrow plugin](http://textextjs.com/manual/plugins/arrow.html).
-* TextExt now works with `<input/>` tags.
+* TextExt core now works with `<input/>` tags.
+* Filter plugin now works without Tags.
 * Switched to MIT license.
 
 #### 1.0.0

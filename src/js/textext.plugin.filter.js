@@ -1,11 +1,14 @@
 (function($)
 {
 	/**
-	 * The Filter plugin introduces ability to limit tags that the Tags plugin
-	 * will accept. The list of allowed tags can be either hardcoded, can come 
-	 * from the Suggestions plugin or be loaded by the Ajax plugin. All these 
-	 * "support" plugins have one thing in common -- they trigger `setSuggestions`
-	 * event which the Filter plugin is expecting.
+	 * The Filter plugin introduces ability to limit input that the text field
+	 * will accept. If the Tags plugin is used, Filter plugin will limit which
+	 * tags it's possible to add.
+	 *
+	 * The list of allowed items can be either specified through the
+	 * options, can come from the Suggestions plugin or be loaded by the Ajax 
+	 * plugin. All these plugins have one thing in common -- they 
+	 * trigger `setSuggestions` event which the Filter plugin is expecting.
 	 * 
 	 * @author agorbatchev
 	 * @date 2011/08/18
@@ -116,6 +119,7 @@
 		self.baseInit(core, DEFAULT_OPTS);
 
 		self.on({
+			getFormData    : self.onGetFormData,
 			isTagAllowed   : self.onIsTagAllowed,
 			setSuggestions : self.onSetSuggestions
 		});
@@ -125,6 +129,75 @@
 
 	//--------------------------------------------------------------------------------
 	// Core functionality
+
+	/**
+	 * Reacts to the [`getFormData`][1] event triggered by the core. Returns data with the
+	 * weight of 200 to be *greater than the Autocomplete plugins* data weights. 
+	 * The weights system is covered in greater detail in the [`getFormData`][1] event 
+	 * documentation.
+	 *
+	 * This method does nothing if Tags tag is also present.
+	 *
+	 * [1]: /manual/textext.html#getformdata
+	 *
+	 * @signature TextExtFilter.onGetFormData(e, data, keyCode)
+	 *
+	 * @param e {Object} jQuery event.
+	 * @param data {Object} Data object to be populated.
+	 * @param keyCode {Number} Key code that triggered the original update request.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/12/28
+	 * @id TextExtFilter.onGetFormData
+	 * @version 1.1
+	 */
+	p.onGetFormData = function(e, data, keyCode)
+	{
+		var self       = this,
+			val        = self.val(),
+			inputValue = val,
+			formValue  = ''
+			;
+
+		if(!self.core().hasPlugin('tags'))
+		{
+			if(self.isValueAllowed(inputValue))
+				formValue = val;
+
+			data[300] = self.formDataObject(inputValue, formValue);
+		}
+	};
+
+	/**
+	 * Checks given value if it's present in `filterItems` or was loaded for the Autocomplete
+	 * or by the Suggestions plugins. `value` is compared to each item using `ItemManager.compareItems`
+	 * method which is currently attached to the core. Returns `true` if value is known or
+	 * Filter plugin is disabled.
+	 *
+	 * @signature TextExtFilter.isValueAllowed(value)
+	 *
+	 * @param value {Object} Value to check.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/12/28
+	 * @id TextExtFilter.isValueAllowed
+	 * @version 1.1
+	 */
+	p.isValueAllowed = function(value)
+	{
+		var self        = this,
+			list        = self.opts('filterItems') || self._suggestions || [],
+			itemManager = self.itemManager(),
+			result      = !self.opts(OPT_ENABLED), // if disabled, should just return true
+			i
+			;
+
+		for(i = 0; i < list.length && !result; i++)
+			if(itemManager.compareItems(value, list[i]))
+				result = true;
+
+		return result;
+	};
 
 	/**
 	 * Handles `isTagAllowed` event dispatched by the Tags plugin. If supplied tag is not
@@ -140,19 +213,7 @@
 	 */
 	p.onIsTagAllowed = function(e, data)
 	{
-		var self = this,
-			list = self.opts('filterItems') || self.suggestions() || [],
-			i
-			;
-
-		if(!self.opts(OPT_ENABLED))
-			return;
-
-		data.result = false;
-
-		for(i = 0; i < list.length; i++)
-			if(self.itemManager().compareItems(data.tag, list[i]))
-				return data.result = true;
+		data.result = this.isValueAllowed(data.tag);
 	};
 
 	/**
@@ -168,22 +229,6 @@
 	 */
 	p.onSetSuggestions = function(e, data)
 	{
-		this.suggestions(data.result);
-	};
-
-	/**
-	 * Gets or sets suggestions list passed through the `setSuggestions` event.
-	 *
-	 * @signature TextExtFilter.suggestions(value)
-	 *
-	 * @param value {Array} If specified, stores the value, otherwise current value is returned.
-	 * @author agorbatchev
-	 * @date 2011/08/18
-	 * @id TextExtFilter.suggestions
-	 */
-	p.suggestions = function(value)
-	{
-		var self = this;
-		return self._suggestion = value || self._suggestion;
+		this._suggestions = data.result;
 	};
 })(jQuery);

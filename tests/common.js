@@ -66,8 +66,12 @@ function assertSuggestionItem(test)
 
 function assertOutput(value)
 {
-	// @TODO add actual value check
 	return function(browser) { browser.assertElementPresent('//pre[@id="output"][contains(text(), \'' + value + '\')]') };
+};
+
+function assertNotOutput(value)
+{
+	return function(browser) { browser.assertElementNotPresent('//pre[@id="output"][contains(text(), \'' + value + '\')]') };
 };
 
 function assertTagPresent(value)
@@ -179,12 +183,11 @@ function testFilterFunctionality()
 
 			.and(typeTag('hello'))
 			.and(assertTagNotPresent('hello'))
+			.and(assertNotOutput('hello'))
+
 			.and(typeTag('world'))
 			.and(assertTagNotPresent('world'))
-
-			.and(typeAndValidateTag('PHP'))
-			.and(typeAndValidateTag('Ruby'))
-			.and(typeAndValidateTag('Go'))
+			.and(assertNotOutput('world'))
 			;
 	};
 };

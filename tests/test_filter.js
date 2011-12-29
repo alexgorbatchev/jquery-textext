@@ -18,11 +18,29 @@ function testFilter(exampleId)
 	};
 };
 
+function testTags()
+{
+	return function(browser)
+	{
+		browser
+			.and(common.typeAndValidateTag('PHP'))
+			.and(common.typeAndValidateTag('Ruby'))
+			.and(common.typeAndValidateTag('Go'))
+			;
+	};
+};
+
 function run(browser)
 {
 	browser
 		.and(testFilter('filter-with-static-list-of-items'))
+		.and(testTags())
+
 		.and(testFilter('filter-using-suggestions'))
+		.and(testTags())
+
+		.and(testFilter('autocomplete-with-filter'))
+		.and(testFilter('filter'))
 	;
 };
 
