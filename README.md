@@ -50,16 +50,21 @@ The steps to using TextExt are as follows:
 
 ## History
 
-#### 1.1.0
+### 1.1.0
+
+#### New Features
 * Added `autocomplete.render` option for custom rendering. See the
   [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-render) and 
   [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
 * Added [Arrow plugin](http://textextjs.com/manual/plugins/arrow.html).
-* TextExt core now works with `<input/>` tags.
-* Filter plugin now works without Tags.
 * Switched to MIT license.
 
-#### 1.0.0
+#### Bug Fixes
+* TextExt core now works with `<input/>` tags.
+* Filter plugin now works without Tags.
+* Fixed clicking on suggestion in autocomplete dropdown.
+
+### 1.0.0
 * Initial release.
 
 ## License

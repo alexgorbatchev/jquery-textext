@@ -299,7 +299,14 @@ function testAutocompleteFunctionality(finalAssert)
 			.assertElementNotPresent(suggestionsXPath(true, 1))
 			.assertVisible(suggestionsXPath(true, 0))
 
+			// test the mouse click
+			.click(suggestionsXPath(true, 0))
+			.waitForNotVisible(dropdown)
+			.assertValue(textarea, 'Basic')
+
+			.and(clearInput)
 			.typeKeys(textarea, 'oca')
+			.waitForVisible(dropdown)
 			.assertVisible(suggestionsXPath(true, 0))
 			.and(enterKey)
 			.assertNotVisible(dropdown)

@@ -243,7 +243,6 @@
 		if(self.opts(OPT_ENABLED) === true)
 		{
 			self.on({
-				click             : self.onClick,
 				blur              : self.onBlur,
 				anyKeyUp          : self.onAnyKeyUp,
 				deleteKeyUp       : self.onAnyKeyUp,
@@ -267,7 +266,8 @@
 			container.insertAfter(input);
 
 			container
-				.mouseover(function(e) { self.onMouseOver(e) })
+				.bind('mouseover', function(e) { self.onMouseOver(e); })
+				.bind('click', function(e) { self.onClick(e); })
 				.addClass('text-position-' + self.opts(OPT_POSITION))
 				;
 
