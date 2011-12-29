@@ -223,7 +223,7 @@
 	};
 
 	/**
-	 * Reacts to the `getFormData` event triggered by the core. Returns data with the
+	 * Reacts to the [`getFormData`][1] event triggered by the core. Returns data with the
 	 * weight of 200 to be *greater than the Autocomplete plugin* data weight. The weights 
 	 * system is covered in greater detail in the [`getFormData`][1] event documentation.
 	 *
