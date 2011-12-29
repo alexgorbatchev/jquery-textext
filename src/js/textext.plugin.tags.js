@@ -242,7 +242,7 @@
 	p.onGetFormData = function(e, data, keyCode)
 	{
 		var self       = this,
-			inputValue = keyCode == 13 ? '' : self.val(),
+			inputValue = keyCode === 13 ? '' : self.val(),
 			formValue  = self._formData
 			;
 

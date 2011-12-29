@@ -792,7 +792,7 @@
 			if(plugin)
 			{
 				self._plugins[name] = plugin = new plugin();
-				initList.push(plugin)
+				initList.push(plugin);
 				$.extend(true, plugin, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.' + name));
 			}
 		}
@@ -803,7 +803,7 @@
 			p1 = p1.initPriority();
 			p2 = p2.initPriority();
 
-			return p1 == p2
+			return p1 === p2
 				? 0
 				: p1 < p2 ? 1 : -1
 				;
