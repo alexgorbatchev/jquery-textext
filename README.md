@@ -54,9 +54,12 @@ The steps to using TextExt are as follows:
 
 #### New Features
 * Added `autocomplete.render` option for custom rendering. See the
-  [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-render) and 
-  [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
-* Added [Arrow plugin](http://textextjs.com/manual/plugins/arrow.html).
+  [manual](/manual/plugins/autocomplete.html#autocomplete-render) and 
+  [example](/manual/examples/autocomplete-with-custom-render.html).
+* Added `autocomplete.dropdown.maxHeight` option for setting height of the dropdown. See
+  [manual](/manual/plugins/autocomplete.html#autocomplete-dropdown-maxheight) and 
+  [example](/manual/examples/autocomplete-with-custom-render.html).
+* Added [Arrow plugin](/manual/plugins/arrow.html).
 * Switched to MIT license.
 
 #### Bug Fixes
@@ -73,6 +76,6 @@ The TextExt component is released under the open source MIT. This means that you
 can use it any way you want, but I would very much appreciate if you take a minute
 and support the project through a [donation].
 
-[manual]: http://textextjs.com/manual/index.html
+[manual]: /manual/index.html
 [donation]: http://textextjs.com/donate.html
 

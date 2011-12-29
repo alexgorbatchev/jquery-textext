@@ -63,6 +63,19 @@
 		OPT_POSITION = 'autocomplete.dropdown.position',
 
 		/**
+		 * This option allows to specify maximum height of the dropdown. Value is taken directly, so
+		 * if desired height is 200 pixels, value must be `200px`.
+		 *
+		 * @name autocomplete.dropdown.maxHeight
+		 * @default "100px"
+		 * @author agorbatchev
+		 * @date 2011/12/29
+		 * @id TextExtAutocomplete.options.autocomplete.dropdown.maxHeight
+		 * @version 1.1
+		 */
+		OPT_MAX_HEIGHT = 'autocomplete.dropdown.maxHeight',
+
+		/**
 		 * This option allows to override how a suggestion item is rendered. The value should be
 		 * a function, the first argument of which is suggestion to be rendered and `this` context
 		 * is the current instance of `TextExtAutocomplete`. 
@@ -208,8 +221,11 @@
 
 		DEFAULT_OPTS = {
 			autocomplete : {
-				enabled          : true,
-				dropdownPosition : POSITION_BELOW
+				enabled : true,
+				dropdown : {
+					position : POSITION_BELOW,
+					maxHeight : '100px'
+				}
 			},
 
 			html : {
@@ -270,7 +286,10 @@
 				click     : self.onClick
 			});
 
-			container.addClass('text-position-' + self.opts(OPT_POSITION));
+			container
+				.css('maxHeight', self.opts(OPT_MAX_HEIGHT))
+				.addClass('text-position-' + self.opts(OPT_POSITION))
+				;
 
 			$(self).data('container', container);
 
