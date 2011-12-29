@@ -164,14 +164,14 @@
 				getFormData      : self.onGetFormData
 			});
 
-			container
-				.click(function(e) { self.onClick(e) })
-				.mousemove(function(e) { self.onContainerMouseMove(e) })
-				;
+			self.on(container, {
+				click     : self.onClick,
+				mousemove : self.onContainerMouseMove
+			});
 
-			input
-				.mousemove(function(e) { self.onInputMouseMove(e) })
-				;
+			self.on(input, {
+				mousemove : self.onInputMouseMove
+			});
 		}
 
 		self._originalPadding = { 

@@ -500,22 +500,27 @@
 	 * @author agorbatchev
 	 * @date 2011/08/09
 	 */
-	function hookupEvents(args)
+	function hookupEvents()
 	{
-		var self = this,
+		var args   = slice.apply(arguments),
+			self   = this,
+			target = args.length === 1 ? self : args.shift(),
 			event
 			;
 
-		function bind(self, event, handler)
+		args = args[0] || {};
+
+		function bind(event, handler)
 		{
-			self.bind(event, function()
+			target.bind(event, function()
 			{
+				// apply handler to our PLUGIN object, not the target
 				return handler.apply(self, arguments);
 			});
 		}
 
 		for(event in args)
-			bind(self, event, args[event]);
+			bind(event, args[event]);
 	};
 
 	function formDataObject(input, form)
@@ -833,8 +838,10 @@
 	/**
 	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
 	 * 
-	 * @signature TextExt.on(handlers)
+	 * @signature TextExt.on([target], handlers)
 	 *
+	 * @param target {Object} **Optional**. Target object which has traditional `bind(event, handler)` method.
+	 *                        Handler function will still be executed in the current object's scope.
 	 * @param handlers {Object} Key/value pairs of event names and handlers, eg `{ event: handler }`.
 	 *
 	 * @author agorbatchev
@@ -1215,8 +1222,10 @@
 	/**
 	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
 	 * 
-	 * @signature TextExtPlugin.on(handlers)
+	 * @signature TextExt.on([target], handlers)
 	 *
+	 * @param target {Object} **Optional**. Target object which has traditional `bind(event, handler)` method.
+	 *                        Handler function will still be executed in the current object's scope.
 	 * @param handlers {Object} Key/value pairs of event names and handlers, eg `{ event: handler }`.
 	 *
 	 * @author agorbatchev

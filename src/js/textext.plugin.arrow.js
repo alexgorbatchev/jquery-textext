@@ -68,7 +68,8 @@
 
 		self.baseInit(core, DEFAULT_OPTS);
 
-		self.core().wrapElement().append(self._arrow = arrow = $(self.opts(OPT_HTML_ARROW)));
+		self._arrow = arrow = $(self.opts(OPT_HTML_ARROW));
+		self.core().wrapElement().append(arrow);
 		arrow.bind('click', function(e) { self.onArrowClick(e); });
 	};
 

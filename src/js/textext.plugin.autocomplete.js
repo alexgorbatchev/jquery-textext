@@ -265,11 +265,12 @@
 			container = $(self.opts(OPT_HTML_DROPDOWN));
 			container.insertAfter(input);
 
-			container
-				.bind('mouseover', function(e) { self.onMouseOver(e); })
-				.bind('click', function(e) { self.onClick(e); })
-				.addClass('text-position-' + self.opts(OPT_POSITION))
-				;
+			self.on(container, {
+				mouseover : self.onMouseOver,
+				click     : self.onClick
+			});
+
+			container.addClass('text-position-' + self.opts(OPT_POSITION));
 
 			$(self).data('container', container);
 
