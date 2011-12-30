@@ -1039,7 +1039,10 @@
 			;
 
 		if(suggestion)
+		{
 			self.val(self.itemManager().itemToString(suggestion));
+			self.core().getFormData();
+		}
 
 		self.trigger(EVENT_HIDE_DROPDOWN);
 	};
