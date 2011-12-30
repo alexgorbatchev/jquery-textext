@@ -174,6 +174,31 @@ function testAjaxFunctionality()
 	}
 };
 
+function testArrowFunctionality()
+{
+	var arrow = prefix + '.text-arrow';
+
+	return function(browser)
+	{
+		browser
+			// open/close test
+			.click(arrow)
+			.waitForVisible(dropdown)
+			.click(arrow)
+			.waitForNotVisible(dropdown)
+
+			// open and click on item
+			.click(arrow)
+			.waitForVisible(dropdown)
+			.click(suggestionsXPath(false, 0))
+			.waitForNotVisible(dropdown)
+			.and(assertOutput('Basic'))
+			.assertValue(textarea, 'Basic')
+			.assertNotVisible(prompt)
+			;
+	};
+};
+
 function testFilterFunctionality()
 {
 	return function(browser)
@@ -266,13 +291,17 @@ function testAutocompleteFunctionality(finalAssert)
 {
 	finalAssert = finalAssert || function(browser)
 	{
-		browser.assertValue(textarea, 'OCAML');
+		browser
+			.assertValue(textarea, 'OCAML')
+			.and(assertOutput('OCAML'))
+			;
 	};
  
 	return function(browser)
 	{
 		browser
 			.click(textarea)
+			.and(clearInput)
 			
 			// activate the dropdown
 			.and(keyPress(DOWN))
@@ -303,6 +332,7 @@ function testAutocompleteFunctionality(finalAssert)
 			.click(suggestionsXPath(true, 0))
 			.waitForNotVisible(dropdown)
 			.assertValue(textarea, 'Basic')
+			.and(assertOutput('Basic'))
 
 			.and(clearInput)
 			.typeKeys(textarea, 'oca')
@@ -375,6 +405,7 @@ module.exports = {
 	testAutocompleteFunctionality : testAutocompleteFunctionality,
 	testPlainInputFunctionality   : testPlainInputFunctionality,
 	testAjaxFunctionality         : testAjaxFunctionality,
+	testArrowFunctionality        : testArrowFunctionality,
 
 	css : {
 		focus    : focus,

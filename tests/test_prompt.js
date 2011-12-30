@@ -22,7 +22,13 @@ function run(browser)
 {
 	browser
 		.and(testPrompt('prompt', common.testPlainInputFunctionality()))
-		.and(testPrompt('prompt-with-autocomplete', common.testAutocompleteFunctionality()))
+		.and(testPrompt('prompt-with-autocomplete-and-arrow', function(browser)
+		{
+			browser
+				.and(common.testArrowFunctionality())
+				.and(common.testAutocompleteFunctionality())
+				;
+		}))
 		.and(testPrompt('prompt-with-tags', common.testTagFunctionality()))
 	;
 };
