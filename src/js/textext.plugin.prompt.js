@@ -122,15 +122,13 @@
 			postInvalidate : self.onPostInvalidate,
 			postInit       : self.onPostInit
 		});
-
-		self._timeoutId = 0;
 	};
 
 	//--------------------------------------------------------------------------------
 	// Event handlers
 	
 	/**
-	 * Reacts to the `postInit` and configured the plugin for initial display.
+	 * Reacts to the `postInit` and configures the plugin for initial display.
 	 *
 	 * @signature TextExtPrompt.onPostInit(e)
 	 *
@@ -186,6 +184,8 @@
 	 * Reacts to the `blur` event and shows the prompt effect with a slight delay which 
 	 * allows quick refocusing without effect blinking in and out.
 	 *
+	 * The prompt is restored if the text box has no value.
+	 *
 	 * @signature TextExtPrompt.onBlur(e)
 	 *
 	 * @param e {Object} jQuery event.
@@ -198,16 +198,11 @@
 	{
 		var self = this;
 
-		clearTimeout(self._timeoutId);
-
-		if(self.val().length == 0)
-			self._timeoutId = setTimeout(
-				function()
-				{
-					self.showPrompt();
-				},
-				100
-			);
+		self.startTimer('prompt', 0.1, function()
+		{
+			if(self.val().length === 0)
+				self.showPrompt();
+		});
 	};
 
 	/**
@@ -235,6 +230,7 @@
 	 */
 	p.hidePrompt = function()
 	{
+		this.stopTimer('prompt');
 		this.containerElement().addClass(CSS_HIDE_PROMPT);
 	};
 
@@ -250,10 +246,7 @@
 	 */
 	p.onFocus = function(e)
 	{
-		var self = this;
-
-		clearTimeout(self._timeoutId);
-		self.hidePrompt();
+		this.hidePrompt();
 	};
 	
 	//--------------------------------------------------------------------------------
