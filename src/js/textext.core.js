@@ -2,11 +2,9 @@
  * jQuery TextExt Plugin
  * http://alexgorbatchev.com/textext
  *
- * TextExt is NOT free. You must purchase a commercial license to use this plugin anywhere except for
- * demonstration or development purposes.
- *
- * @version 1.0
+ * @version 1.1.0
  * @copyright Copyright (C) 2011 Alex Gorbatchev. All rights reserved.
+ * @license MIT License
  */
 (function($, undefined)
 {

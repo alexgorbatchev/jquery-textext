@@ -1,3 +1,11 @@
+/**
+ * jQuery TextExt Plugin
+ * http://alexgorbatchev.com/textext
+ *
+ * @version 1.1.0
+ * @copyright Copyright (C) 2011 Alex Gorbatchev. All rights reserved.
+ * @license MIT License
+ */
 (function($)
 {
 	/**
