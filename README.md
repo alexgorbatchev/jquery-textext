@@ -8,11 +8,11 @@ piece of functionality is separated from the main core and can act individually
 or together with other plugins.
 
 TextExt's modular design allows you easily turn a standard HTML text input into a 
-wide range of modern, taylored to your needs input field without bloating your 
+wide range of modern, tailored to your needs input field without bloating your 
 source code and slowing down your site with the code that you aren't using.
 
 A wide number of plugins are available including Tags, Autocomplete, Filter, Ajax
-as well as a few which are purely asthetical like Focus.
+as well as a few which are purely aesthetic like Focus.
 
 Please refer to the [manual] for the full API documentation and examples.
 
