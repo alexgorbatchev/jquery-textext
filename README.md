@@ -30,7 +30,7 @@ Please refer to the [manual] for the full API documentation and examples.
     <script type="text/javascript">
         $('#textarea').textext({
             plugins : 'tags prompt focus autocomplete ajax arrow',
-            tagsItems : [ 'jquery', 'plugin', 'tags', 'autocomplete' ],
+            tagsItems : [ 'Basic', 'JavaScript', 'PHP', 'Scala' ],
             prompt : 'Add one...',
             ajax : {
                 url : '/manual/examples/data.json',
@@ -50,16 +50,21 @@ The steps to using TextExt are as follows:
 
 ## History
 
+### 1.2.0
+* Added ability to get instances of plugins to call methods on them directy 
+  ([issue #6](https://github.com/alexgorbatchev/jquery-textext/issues/6)).
+  See the [example](http://textextjs.com/manual/examples/tags-adding.html).
+
 ### 1.1.0
 
 #### New Features
 * Added `autocomplete.render` option for custom rendering. See the
-  [manual](/manual/plugins/autocomplete.html#autocomplete-render) and 
-  [example](/manual/examples/autocomplete-with-custom-render.html).
+  [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-render) and 
+  [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
 * Added `autocomplete.dropdown.maxHeight` option for setting height of the dropdown. See
-  [manual](/manual/plugins/autocomplete.html#autocomplete-dropdown-maxheight) and 
-  [example](/manual/examples/autocomplete-with-custom-render.html).
-* Added [Arrow plugin](/manual/plugins/arrow.html).
+  [manual](http://textextjs.com/manual/plugins/autocomplete.html#autocomplete-dropdown-maxheight) and 
+  [example](http://textextjs.com/manual/examples/autocomplete-with-custom-render.html).
+* Added [Arrow plugin](http://textextjs.com/manual/plugins/arrow.html).
 * Switched to MIT license.
 
 #### Bug Fixes
