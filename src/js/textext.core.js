@@ -56,6 +56,13 @@
 	 * function will create a new instance of the plugin. *Without registering, the core won't
 	 * be able to see the plugin.*
 	 *
+	 * <span class="new label version">new in 1.2.0</span> You can get instance of each plugin from the core 
+	 * via associated function with the same name as the plugin. For example:
+	 *
+	 *     $('#input').textext()[0].tags()
+	 *     $('#input').textext()[0].autocomplete()
+	 *     ...
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
 	 * @id TextExtPlugin
@@ -795,6 +802,7 @@
 			if(plugin)
 			{
 				self._plugins[name] = plugin = new plugin();
+				self[name] = function() { return plugin; };
 				initList.push(plugin);
 				$.extend(true, plugin, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.' + name));
 			}
