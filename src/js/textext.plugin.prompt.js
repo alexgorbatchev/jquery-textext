@@ -110,7 +110,8 @@
 	p.init = function(core)
 	{
 		var self = this,
-			container
+			container,
+			prompt
 			;
 
 		self.baseInit(core, DEFAULT_OPTS);
@@ -121,6 +122,14 @@
 		self.core().wrapElement().append(container);
 		self.setPrompt(self.opts(OPT_PROMPT));
 		
+		prompt = self.opts(OPT_PROMPT);
+
+		if(!prompt)
+			prompt = core.input().attr('placeholder');
+
+		if(prompt)
+			self.setPrompt(prompt);
+
 		if($.trim(self.val()).length > 0)
 			self.hidePrompt();
 
@@ -227,7 +236,7 @@
 			input    = self.input()
 			;
 		
-		if($.trim(self.val()).length === 0 && !input.is(":focus"))
+		if($.trim(self.val()).length === 0 && !input.is(':focus'))
 			self.containerElement().removeClass(CSS_HIDE_PROMPT);
 	};
 
