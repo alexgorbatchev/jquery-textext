@@ -113,14 +113,22 @@
 			container
 			;
 
+		var userPrompt = core.opts('prompt');
+		var placeHolder = core.input().attr('placeholder');
+
 		self.baseInit(core, DEFAULT_OPTS);
 		
 		container = $(self.opts(OPT_HTML_PROMPT));
 		$(self).data('container', container);
 
 		self.core().wrapElement().append(container);
-		self.setPrompt(self.opts(OPT_PROMPT));
-		
+		if ( (typeof(userPrompt) === 'undefined' || userPrompt == '' ) &&
+				(!(typeof(placeHolder) === 'undefined') && placeHolder != '') ) {
+			self.setPrompt(placeHolder);
+		} else {
+			self.setPrompt(self.opts(OPT_PROMPT));
+		}
+
 		if(self.val().length > 0)
 			self.hidePrompt();
 
