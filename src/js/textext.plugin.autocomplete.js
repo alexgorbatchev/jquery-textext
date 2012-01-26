@@ -29,6 +29,8 @@
 		CSS_DOT_SELECTED   = CSS_DOT + CSS_SELECTED,
 		CSS_SUGGESTION     = 'text-suggestion',
 		CSS_DOT_SUGGESTION = CSS_DOT + CSS_SUGGESTION,
+		CSS_LABEL          = 'text-label',
+		CSS_DOT_LABEL      = CSS_DOT + CSS_LABEL,
 
 		/**
 		 * Autocomplete plugin options are grouped under `autocomplete` when passed to the 
@@ -363,8 +365,11 @@
 			target = $(e.target)
 			;
 
-		if(target.is(CSS_DOT_SUGGESTION))
-			self.selectFromDropdown();
+		if(target.is(CSS_DOT_SUGGESTION) || target.is(CSS_DOT_LABEL))
+			self.trigger('enterKeyPress');
+		
+		if (self.core().hasPlugin('tags'))
+			self.val('');
 	};
 
 	/**
