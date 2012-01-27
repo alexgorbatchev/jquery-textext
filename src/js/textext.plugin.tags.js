@@ -382,9 +382,7 @@
 		var self   = this,
 			source = $(e.target),
 			focus  = 0,
-			newData,
-			tag
-			;
+			tag	;
 
 		if(source.is(CSS_DOT_TAGS))
 		{
@@ -399,10 +397,10 @@
 		{
 			tag = source.parents(CSS_DOT_TAG + ':first');
 
-			if (self.trigger('tagClick', tag.data(CSS_TAG), tag) !== false)
-			{
-				tag.find('.text-label').text(self.itemManager().itemToString(tag.data(CSS_TAG)));
-			}
+			// Store an reference so that when calling the tagUpdate(), we know which tag was clicked originally
+			self.currentTag = tag;
+
+			self.trigger('tagClick', tag.data(CSS_TAG), tag, self);
 
 			/*
 			// Get the current date info
@@ -414,11 +412,6 @@
 			// Update label
 			tag.find('.text-label').text(self.itemManager().itemToString(Data));
 			*/
-
-			self.core().getFormData();
-			self.core().invalidateBounds();
-
-			focus = 1;
 		}
 
 		if(focus)
@@ -428,19 +421,47 @@
 	/**
 	 * Reacts to the `tagClick` event.
 	 *
-	 * @signature TextExtTags.onTagClick(e, Data, tag)
+	 * @signature TextExtTags.onTagClick(e, data, tag, self)
 	 *
 	 * @param e {Object} jQuery event.
-	 * @param Data {Object} object that the current `ItemManager` can understand.
+	 * @param data {Object} object that the current `ItemManager` can understand.
 	 * Default is `String`.
 	 * @param tag {Object} object reference of the tag element
+	 * @param self {Object} object reference of self
 	 *
 	 * @author s.stok
 	 * @date 2011/01/23
 	 * @id TextExtTags.onTagClick
 	 */
-	p.onTagClick = function(e, Data, tag)
+	p.onTagClick = function(e, data, tag, self)
 	{
+	};
+
+	/**
+	 * Update the FormData cache.
+	 * This would normally be called somewhere in the tagClick event.
+	 *
+	 * @signature TextExtTags.triggerUpdate(Tag, focus)
+	 *
+	 * @param focus {Boolean} force focus on the input-field.
+	 * @param currentTag {Object} tag reference (optional)
+	 *
+	 * @author s.stok
+	 * @date 2011/01/5
+	 * @id TextExtTags.triggerUpdate
+	 */
+	p.tagUpdate = function (focus, currentTag)
+	{
+		var self = this;
+
+		currentTag = currentTag || self.currentTag;
+		currentTag.find('.text-label').text(self.itemManager().itemToString(currentTag.data(CSS_TAG)));
+
+		self.core().getFormData();
+		self.core().invalidateBounds();
+
+		if(focus)
+			self.core().focusInput();
 	};
 
 	/**
