@@ -338,8 +338,11 @@
 		var self   = this,
 			target = $(e.target)
 			;
+			
+	  if(!target.is(CSS_DOT_SUGGESTION))
+		  target = target.parents(CSS_DOT_SUGGESTION)[0];
 
-		if(target.is(CSS_DOT_SUGGESTION))
+		if(target)
 		{
 			self.clearSelected();
 			target.addClass(CSS_SELECTED);
@@ -363,7 +366,10 @@
 			target = $(e.target)
 			;
 
-		if(target.is(CSS_DOT_SUGGESTION))
+		if(!target.is(CSS_DOT_SUGGESTION))
+		  target = target.parents(CSS_DOT_SUGGESTION)[0];
+		
+		if (target)
 			self.selectFromDropdown();
 	};
 
