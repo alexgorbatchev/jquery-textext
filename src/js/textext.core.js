@@ -802,7 +802,9 @@
 			if(plugin)
 			{
 				self._plugins[name] = plugin = new plugin();
-				self[name] = function() { return plugin; };
+				self[name] = (function(plugin) { 
+				  return function(){ return plugin; } 
+				})(plugin);
 				initList.push(plugin);
 				$.extend(true, plugin, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.' + name));
 			}
