@@ -1078,7 +1078,7 @@
 	p.getFormData = function(keyCode)
 	{
 		var self = this,
-			data = self.getWeightedEventResponse(EVENT_GET_FORM_DATA, keyCode)
+			data = self.getWeightedEventResponse(EVENT_GET_FORM_DATA, keyCode || 0)
 			;
 
 		self.trigger(EVENT_SET_FORM_DATA  , data['form']);

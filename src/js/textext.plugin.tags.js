@@ -32,6 +32,10 @@
 		CSS_DOT_TAG         = CSS_DOT + CSS_TAG,
 		CSS_TAGS            = 'text-tags',
 		CSS_DOT_TAGS        = CSS_DOT + CSS_TAGS,
+		CSS_LABEL           = 'text-label',
+		CSS_DOT_LABEL       = CSS_DOT + CSS_LABEL,
+		CSS_REMOVE          = 'text-remove',
+		CSS_DOT_REMOVE      = CSS_DOT + CSS_REMOVE,
 
 		/**
 		 * Tags plugin options are grouped under `tags` when passed to the
@@ -124,6 +128,35 @@
 		 */
 		EVENT_IS_TAG_ALLOWED = 'isTagAllowed',
 
+		/**
+		 * Tags plugin triggers the `tagClick` event when user clicks on one of the tags. This allows to process
+		 * the click and potentially change the value of the tag (for example in case of user feedback).
+		 *
+		 *     $('textarea').textext({...}).bind('tagClick', function(e, tag, value, callback)
+		 *     {
+		 *         var newValue = window.prompt('New value', value);
+
+		 *         if(newValue)
+		 *             callback(newValue, true);
+		 *     })
+		 *
+		 *  Callback argument has the following signature:
+		 *
+		 *     function(newValue, refocus)
+		 *     {
+		 *         ...
+		 *     }
+		 *
+		 * Please check out [example](/manual/examples/tags-changing.html).
+		 *
+		 * @name tagClick
+		 * @version 1.3.0
+		 * @author s.stok
+		 * @date 2011/01/23
+		 * @id TextExtTags.events.tagClick
+		 */
+		EVENT_TAG_CLICK = 'tagClick',
+
 		DEFAULT_OPTS = {
 			tags : {
 				enabled : true,
@@ -169,7 +202,6 @@
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				preInvalidate    : self.onPreInvalidate,
 				postInit         : self.onPostInit,
-				tagClick         : self.onTagClick,
 				getFormData      : self.onGetFormData
 			});
 
@@ -380,88 +412,42 @@
 	p.onClick = function(e)
 	{
 		var self   = this,
+			core   = self.core(),
 			source = $(e.target),
 			focus  = 0,
-			tag	;
+			tag
+			;
 
 		if(source.is(CSS_DOT_TAGS))
 		{
 			focus = 1;
 		}
-		else if(source.is('.text-remove'))
+		else if(source.is(CSS_DOT_REMOVE))
 		{
 			self.removeTag(source.parents(CSS_DOT_TAG + ':first'));
 			focus = 1;
 		}
-		else if(source.is('.text-label'))
+		else if(source.is(CSS_DOT_LABEL))
 		{
 			tag = source.parents(CSS_DOT_TAG + ':first');
+			self.trigger(EVENT_TAG_CLICK, tag, tag.data(CSS_TAG), tagClickCallback);
+		}
 
-			// Store an reference so that when calling the tagUpdate(), we know which tag was clicked originally
-			self.currentTag = tag;
+		function tagClickCallback(newValue, refocus)
+		{
+			tag.data(CSS_TAG, newValue);
+			tag.find(CSS_DOT_LABEL).text(self.itemManager().itemToString(newValue));
 
-			self.trigger('tagClick', tag.data(CSS_TAG), tag, self);
+			self.updateFormCache();
+			core.getFormData();
+			core.invalidateBounds();
 
-			/*
-			// Get the current date info
-			var Data = tag.data(CSS_TAG);
-
-			// Update the label, normally this would by is done using an callback
-			Data.name = 'testing123';
-
-			// Update label
-			tag.find('.text-label').text(self.itemManager().itemToString(Data));
-			*/
+			if(refocus)
+				core.focusInput();
 		}
 
 		if(focus)
-			self.core().focusInput();
-	};
-
-	/**
-	 * Reacts to the `tagClick` event.
-	 *
-	 * @signature TextExtTags.onTagClick(e, data, tag, self)
-	 *
-	 * @param e {Object} jQuery event.
-	 * @param data {Object} object that the current `ItemManager` can understand.
-	 * Default is `String`.
-	 * @param tag {Object} object reference of the tag element
-	 * @param self {Object} object reference of self
-	 *
-	 * @author s.stok
-	 * @date 2011/01/23
-	 * @id TextExtTags.onTagClick
-	 */
-	p.onTagClick = function(e, data, tag, self)
-	{
-	};
-
-	/**
-	 * Update the FormData cache.
-	 * This would normally be called somewhere in the tagClick event.
-	 *
-	 * @signature TextExtTags.triggerUpdate(Tag, focus)
-	 *
-	 * @param focus {Boolean} force focus on the input-field.
-	 * @param currentTag {Object} tag reference (optional)
-	 *
-	 * @author s.stok
-	 * @date 2011/01/5
-	 * @id TextExtTags.triggerUpdate
-	 */
-	p.tagUpdate = function (focus, currentTag)
-	{
-		var self = this;
-
-		currentTag = currentTag || self.currentTag;
-		currentTag.find('.text-label').text(self.itemManager().itemToString(currentTag.data(CSS_TAG)));
-
-		self.core().getFormData();
-		self.core().invalidateBounds();
-
-		if(focus)
-			self.core().focusInput();
+			core.focusInput();
 	};
 
 	/**

@@ -720,7 +720,7 @@
 	 * @author agorbatchev
 	 * @date 2011/12/27
 	 * @id TextExtAutocomplete.onToggleDropdown
-	 * @version 1.1
+	 * @version 1.1.0
 	 */
 	p.onToggleDropdown = function(e)
 	{
@@ -1099,6 +1099,7 @@
 	 * @param element {HTMLElement} element to check if contained by wrap element
 	 *
 	 * @author adamayres
+	 * @version 1.3.0
 	 * @date 2012/01/15
 	 * @id TextExtAutocomplete.withinWrapElement
 	 */
