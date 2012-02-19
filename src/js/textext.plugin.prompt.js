@@ -109,7 +109,8 @@
 	 */
 	p.init = function(core)
 	{
-		var self = this,
+		var self           = this,
+			placeholderKey = 'placeholder',
 			container,
 			prompt
 			;
@@ -122,10 +123,13 @@
 		self.core().wrapElement().append(container);
 		self.setPrompt(self.opts(OPT_PROMPT));
 		
-		prompt = self.opts(OPT_PROMPT);
+		prompt = core.input().attr(placeholderKey);
 
 		if(!prompt)
-			prompt = core.input().attr('placeholder');
+			prompt = self.opts(OPT_PROMPT);
+
+		// clear placeholder attribute if set
+		core.input().attr(placeholderKey, '');
 
 		if(prompt)
 			self.setPrompt(prompt);
