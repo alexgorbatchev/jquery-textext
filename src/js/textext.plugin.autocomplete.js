@@ -229,7 +229,7 @@
 		POSITION_ABOVE = 'above',
 		POSITION_BELOW = 'below',
 		
-		DATA_MOUSEDOWN_ON_AUTOCOMPLETE = "mousedownOnAutocomplete",
+		DATA_MOUSEDOWN_ON_AUTOCOMPLETE = 'mousedownOnAutocomplete',
 
 		DEFAULT_OPTS = {
 			autocomplete : {
