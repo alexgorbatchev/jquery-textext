@@ -22,6 +22,8 @@ Please refer to the [manual] for the full API documentation and examples.
 * Autocomplete
 * AJAX loading
 * Placeholder text
+* Arrow
+* ... and much more!
 
 ## Example
 
