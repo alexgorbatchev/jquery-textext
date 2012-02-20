@@ -61,18 +61,19 @@ The steps to using TextExt are as follows:
 * Prompt plugin now checks `placeholder` attribute
   ([issue #8](https://github.com/alexgorbatchev/jquery-textext/pull/8)).
   See the [example](http://textextjs.com/manual/examples/prompt-from-placeholder.html).
+* Clicking on item in autocomplete will automatically add that item to tags
+  [#2](https://github.com/alexgorbatchev/jquery-textext/issues/2).
 
 #### Bug Fixes
 * Fixes getter methods created when plugins are initialized.
   ([issue #20](https://github.com/alexgorbatchev/jquery-textext/pull/20)).
 * Fixed issues 
-  [#2](https://github.com/alexgorbatchev/jquery-textext/issues/2),
   [#4](https://github.com/alexgorbatchev/jquery-textext/issues/4),
   [#4](https://github.com/alexgorbatchev/jquery-textext/issues/5) and
   [#10](https://github.com/alexgorbatchev/jquery-textext/issues/5)
   related to the mouse issues in the autocomplete dropdown.
 * Fixed `textext.[pluginName]()`
-  ([issue #20](https://github.com/alexgorbatchev/jquery-textext/pull/20).
+  ([issue #20](https://github.com/alexgorbatchev/jquery-textext/pull/20)).
 
 ### 1.2.0
 * Added ability to get instances of plugins to call methods on them directy 
