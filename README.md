@@ -50,6 +50,28 @@ The steps to using TextExt are as follows:
 
 ## History
 
+### 1.3.0
+
+#### New Features
+* Added `tagClick` event to the tags plugin 
+  ([issue #13](https://github.com/alexgorbatchev/jquery-textext/pull/13)).
+  See the [example](http://textextjs.com/manual/examples/tags-click.html).
+* Prompt plugin now checks `placeholder` attribute
+  ([issue #8](https://github.com/alexgorbatchev/jquery-textext/pull/8)).
+  See the [example](http://textextjs.com/manual/examples/prompt-from-placeholder.html).
+
+#### Bug Fixes
+* Fixes getter methods created when plugins are initialized.
+  ([issue #20](https://github.com/alexgorbatchev/jquery-textext/pull/20)).
+* Fixed issues 
+  [#2](https://github.com/alexgorbatchev/jquery-textext/issues/2),
+  [#4](https://github.com/alexgorbatchev/jquery-textext/issues/4),
+  [#4](https://github.com/alexgorbatchev/jquery-textext/issues/5) and
+  [#10](https://github.com/alexgorbatchev/jquery-textext/issues/5)
+  related to the mouse issues in the autocomplete dropdown.
+* Fixed `textext.[pluginName]()`
+  ([issue #20](https://github.com/alexgorbatchev/jquery-textext/pull/20).
+
 ### 1.2.0
 * Added ability to get instances of plugins to call methods on them directy 
   ([issue #6](https://github.com/alexgorbatchev/jquery-textext/issues/6)).
@@ -79,8 +101,18 @@ The steps to using TextExt are as follows:
 
 The TextExt component is released under the open source MIT. This means that you
 can use it any way you want, but I would very much appreciate if you take a minute
-and support the project through a [donation].
+and support the project through a donation.
 
-[manual]: /manual/index.html
-[donation]: http://textextjs.com/donate.html
+## Contributors
+
+Alphabetically:
+
+* adamayres (Adam Ayres)
+* alexyoung (Alex Young)
+* cmer (Carl Mercier)
+* deefour (Jason Daly)
+* KoernerWS (Florian Koerner)
+* sstok (Sebastiaan Stok)
+
+[manual]: http://textextjs.com/manual/index.html
 
