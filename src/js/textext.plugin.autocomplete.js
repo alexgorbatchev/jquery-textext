@@ -9,7 +9,7 @@
 (function($)
 {
 	/**
-	 * Autocomplete plugin brings the classic autocomplete functionality to the TextExt echosystem.
+	 * Autocomplete plugin brings the classic autocomplete functionality to the TextExt ecosystem.
 	 * The gist of functionality is when user starts typing in, for example a term or a tag, a
 	 * dropdown would be presented with possible suggestions to complete the input quicker.
 	 *
