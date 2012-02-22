@@ -157,6 +157,24 @@
 		 */
 		EVENT_TAG_CLICK = 'tagClick',
 
+		/**
+		 * Tags plugin triggers the `tagChange` event after adding tags to or removing tags from the tag list.
+		 * This provides an opportunity to take action based on the data provided in the context object.
+     *
+		 *
+		 *     $('textarea').textext({...}).bind('tagChange', function(e, context) {
+     *       console.log(context.is, context.changes)
+		 *     })
+		 *
+		 * The `context` argument has the following format: `{is: '{String}', diff: {Array}, result: {Array}};`.
+		 *
+		 * @name tagChange
+		 * @author wilmoore
+		 * @date 2012/02/21
+		 * @id TextExtTags.events.tagChange
+		 */
+		EVENT_TAG_CHANGE = 'tagChange',
+
 		DEFAULT_OPTS = {
 			tags : {
 				enabled : true,
@@ -583,7 +601,7 @@
 	 * @date 2011/08/19
 	 * @id TextExtTags.addTags
 	 */
-	p.addTags = function(tags)
+	p.addTags = function(tags, suppressEvents)
 	{
 		if(!tags || tags.length == 0)
 			return;
@@ -603,7 +621,13 @@
 		}
 
 		self.updateFormCache();
-		core.getFormData();
+		
+    // trigger tag change event including context info
+    if (!suppressEvents) {
+      var context = {is: 'add', diff: tags, result: core.getFormData().form};
+      self.trigger(EVENT_TAG_CHANGE, context);
+    }
+
 		core.invalidateBounds();
 	};
 
@@ -643,7 +667,7 @@
 	 * @date 2011/08/19
 	 * @id TextExtTags.removeTag
 	 */
-	p.removeTag = function(tag)
+	p.removeTag = function(tag, suppressEvents)
 	{
 		var self = this,
 			core = self.core(),
@@ -662,7 +686,13 @@
 
 		element.remove();
 		self.updateFormCache();
-		core.getFormData();
+
+    // trigger tag change event including context info
+    if (!suppressEvents) {
+      var context = {is: 'remove', diff: [tag], result: core.getFormData().form};
+      self.trigger(EVENT_TAG_CHANGE, context);
+    }
+
 		core.invalidateBounds();
 	};
 
