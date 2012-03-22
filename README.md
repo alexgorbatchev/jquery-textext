@@ -110,12 +110,12 @@ and support the project through a donation.
 
 Alphabetically:
 
-* adamayres (Adam Ayres)
-* alexyoung (Alex Young)
-* cmer (Carl Mercier)
-* deefour (Jason Daly)
-* KoernerWS (Florian Koerner)
-* sstok (Sebastiaan Stok)
+* [adamayres](http://github.com/adamayres) (Adam Ayres)
+* [alexyoung](http://github.com/alexyoung) (Alex Young)
+* [cmer](http://github.com/cmer) (Carl Mercier)
+* [deefour](http://github.com/deefour) (Jason Daly)
+* [KoernerWS](http://github.com/KoernerWS) (Florian Koerner)
+* [sstok](http://github.com/sstok) (Sebastiaan Stok)
 
 [manual]: http://textextjs.com/manual/index.html
 
