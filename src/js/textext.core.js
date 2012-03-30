@@ -71,7 +71,7 @@
 
 	var stringify = (JSON || {}).stringify,
 		slice     = Array.prototype.slice,
-
+             	p,
 		UNDEFINED = 'undefined',
 
 		/**
