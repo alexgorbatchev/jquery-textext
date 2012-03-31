@@ -387,7 +387,7 @@
 	p.onClick = function(e)
 	{
 		var self   = this,
-			target = $(e.target)
+			target = $(e.target).closest('.text-label')
 			;
 
 		if(target.is(CSS_DOT_SUGGESTION) || target.is(CSS_DOT_LABEL))
