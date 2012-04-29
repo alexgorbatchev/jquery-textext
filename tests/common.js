@@ -4,7 +4,8 @@ var prefix   = 'css=.text-core > .text-wrap > ',
 	focus    = prefix + '.text-focus',
 	textarea = prefix + 'textarea',
 	dropdown = prefix + '.text-dropdown',
-	prompt   = prefix + '.text-prompt'
+	prompt   = prefix + '.text-prompt',
+	arrow    = prefix + '.text-arrow'
 	;
 
 var DOWN  = 40,
@@ -61,7 +62,7 @@ function suggestionsXPath(selected, index)
 
 function assertSuggestionItem(test)
 {
-	return function(browser) { browser.assertVisible(suggestionsXPath() + '//span[text()="Basic"]') };
+	return function(browser) { browser.assertVisible(suggestionsXPath() + '//span[text()="' + test + '"]') };
 };
 
 function assertOutput(value)
@@ -176,8 +177,6 @@ function testAjaxFunctionality()
 
 function testArrowFunctionality()
 {
-	var arrow = prefix + '.text-arrow';
-
 	return function(browser)
 	{
 		browser
@@ -194,7 +193,6 @@ function testArrowFunctionality()
 			.waitForNotVisible(dropdown)
 			.and(assertOutput('Basic'))
 			.assertValue(textarea, 'Basic')
-			.assertNotVisible(prompt)
 			;
 	};
 };
@@ -410,7 +408,8 @@ module.exports = {
 	css : {
 		focus    : focus,
 		textarea : textarea,
-		dropdown : dropdown
+		dropdown : dropdown,
+		arrow    : arrow
 	}
 };
 
