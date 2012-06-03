@@ -229,6 +229,7 @@
 		});
 
 		self._suggestions = null;
+        self._gettingSuggestions = false;
 	};
 
 	/**
@@ -260,6 +261,7 @@
 		);
 
 		$.ajax(opts);
+        self._gettingSuggestions = true;
 	};
 
 	/**
@@ -284,6 +286,7 @@
             result      = parseData(data)
 			;
 
+        self._gettingSuggestions = false;
 		self.dontShowLoading();
 
 		// If results are expected to be cached, then we store the original
@@ -328,20 +331,31 @@
 	{
 		var self = this;
 
-		self.dontShowLoading();
-		self.startTimer(
-			TIMER_LOADING,
-			self.opts(OPT_LOADING_DELAY),
-			function()
-			{
-				self.trigger(EVENT_SHOW_DROPDOWN, function(autocomplete)
-				{
-					autocomplete.clearItems();
-					var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
-					node.addClass('text-loading');
-				});
-			}
-		);
+        /**
+         * If we are still getting the data from an ajax call, let set _suggestions to an empty array so we get the loading message
+         *
+         * @author ryanzec
+         * @date 2012/06/03
+         */
+        if(self._gettingSuggestions)
+        {
+            self.trigger(EVENT_SET_SUGGESTION, { result : new Array()});
+        }
+
+        self.dontShowLoading();
+        self.startTimer(
+            TIMER_LOADING,
+            self.opts(OPT_LOADING_DELAY),
+            function()
+            {
+                self.trigger(EVENT_SHOW_DROPDOWN, function(autocomplete)
+                {
+                    autocomplete.clearItems();
+                    var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
+                    node.addClass('text-loading');
+                });
+            }
+        );
 	};
 
 	/**
@@ -368,15 +382,24 @@
 
 		if(suggestions && self.opts(OPT_CACHE_RESULTS) === true)
 			return self.onComplete(suggestions, query);
-		
-		self.startTimer(
-			'ajax',
-			self.opts(OPT_TYPE_DELAY),
-			function()
-			{
-				self.showLoading();
-				self.load(query);
-			}
-		);
+
+        /**
+         * We other need to set this timer if we are already not in the process and getting the suggestions
+         *
+         * @author ryanzec
+         * @date 2012/06/03
+         */
+        if(!self._gettingSuggestions)
+        {
+            self.startTimer(
+                'ajax',
+                self.opts(OPT_TYPE_DELAY),
+                function()
+                {
+                    self.load(query);
+                    self.showLoading();
+                }
+            );
+        }
 	};
 })(jQuery);
