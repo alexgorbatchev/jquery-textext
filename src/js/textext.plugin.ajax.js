@@ -70,6 +70,32 @@
 		 * @id TextExtAjax.options.data.callback
 		 */
 		OPT_DATA_CALLBACK = 'ajax.data.callback',
+
+		/**
+		 * By default, the response of an ajax request is expected to be in a certain format.
+		 *
+		 * If the ajax request you are making is returned in a different format that is expected then you can
+         * set this parameter.  For example:
+		 *
+		 *     'dataParse' : function(response)
+		 *     {
+         *         var data = new Array();
+         *
+         *         $.each(response.data.objects, function(key, item)
+         *         {
+         *             data.push(item.title);
+         *         });
+         *
+         *         return data;
+		 *     }
+		 *
+		 * @name ajax.data.parse
+		 * @default null
+		 * @author ryanzec
+		 * @date 2012/06/03
+		 * @id TextExtAjax.options.data.parse
+		 */
+        OPT_DATA_PARSE = 'ajax.data.parse',
 		
 		/**
 		 * By default, the server end point is constantly being reloaded whenever user changes the value
@@ -175,7 +201,8 @@
 				loadingMessage : 'Loading...',
 				loadingDelay   : 0.5,
 				cacheResults   : false,
-				dataCallback   : null
+				dataCallback   : null,
+                dataParse      : null
 			}
 		}
 		;
@@ -252,10 +279,11 @@
 	 */
 	p.onComplete = function(data, query)
 	{
-		var self   = this,
-			result = data
+		var self        = this,
+			parseData   = self.opts(OPT_DATA_PARSE) || function(response) { return response },
+            result      = parseData(data)
 			;
-		
+
 		self.dontShowLoading();
 
 		// If results are expected to be cached, then we store the original
