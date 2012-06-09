@@ -40,6 +40,37 @@
 	 *         itemManager : CustomItemManager
 	 *     })
 	 *
+	 * New in <span class="label version">1.4</span> is ability to inline `ItemManager` as an object 
+	 * instead of a constructor. Here's an example:
+	 *
+	 *     $('#input').textext({
+	 *         itemManager : {
+	 *             init : function(core)
+	 *             {
+	 *             },
+	 *     
+	 *             filter : function(list, query)
+	 *             {
+	 *             },
+	 *     
+	 *             itemContains : function(item, needle)
+	 *             {
+	 *             },
+	 *     
+	 *             stringToItem : function(str)
+	 *             {
+	 *             },
+	 *     
+	 *             itemToString : function(item)
+	 *             {
+	 *             },
+	 *     
+	 *             compareItems : function(item1, item2)
+	 *             {
+	 *             }
+	 *         }
+	 *     })
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
 	 * @id ItemManager
@@ -683,7 +714,8 @@
 		self._defaults    = $.extend({}, DEFAULT_OPTS);
 		self._opts        = opts || {};
 		self._plugins     = {};
-		self._itemManager = itemManager = new (self.opts(OPT_ITEM_MANAGER))();
+		itemManager       = self.opts(OPT_ITEM_MANAGER);
+		self._itemManager = $.isFunction(itemManager) ? new itemManager() : itemManager;
 		input             = $(input);
 		container         = $(self.opts(OPT_HTML_WRAP));
 		hiddenInput       = $(self.opts(OPT_HTML_HIDDEN));

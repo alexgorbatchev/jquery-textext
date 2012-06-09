@@ -52,6 +52,11 @@ The steps to using TextExt are as follows:
 
 ## History
 
+### 1.4.0
+
+#### New Features
+* `ItemManager` can now be inlined. See the [manual](http://textextjs.com/manual/itemmanager.html).
+
 ### 1.3.0
 
 #### New Features
