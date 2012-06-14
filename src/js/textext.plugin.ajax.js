@@ -252,8 +252,9 @@
 	 */
 	p.onComplete = function(data, query)
 	{
-		var self   = this,
-			result = data
+		var self        = this,
+			result      = data,
+			itemManager = self.itemManager()
 			;
 		
 		self.dontShowLoading();
@@ -265,7 +266,8 @@
 		if(self.opts(OPT_CACHE_RESULTS) == true)
 		{
 			self._suggestions = data;
-			result = self.itemManager().filter(data, query);
+			itemManager.setData(data);
+			result = itemManager.filter(query);
 		}
 
 		self.trigger(EVENT_SET_SUGGESTION, { result : result });
