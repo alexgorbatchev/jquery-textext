@@ -1,6 +1,12 @@
+PATH := "/Applications/Firefox.app/Contents/MacOS":$(PATH)
+
+selenium:
+	@echo "Starting Selenium RC server"
+	@cd tests && java -jar selenium-server-standalone-2.15.0.jar -firefoxProfileTemplate "./firefox_profile"
+
 download-selenium:
 	@echo "Downloading Selenium RC"
-	@curl -O "http://selenium.googlecode.com/files/selenium-server-standalone-2.15.0.jar"
+	@cd tests && curl -O "http://selenium.googlecode.com/files/selenium-server-standalone-2.15.0.jar"
 
 install-textext:
 	@echo "Installing TextExt.js dependencies"

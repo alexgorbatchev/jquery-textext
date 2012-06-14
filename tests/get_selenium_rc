@@ -1,4 +1,0 @@
-#!/bin/bash
-
-curl -O "http://selenium.googlecode.com/files/selenium-server-standalone-2.15.0.jar"
-
