@@ -736,7 +736,7 @@
 		self._opts        = opts || {};
 		self._plugins     = {};
 		itemManager       = self.opts(OPT_ITEM_MANAGER);
-		self._itemManager = $.isFunction(itemManager) ? new itemManager() : itemManager;
+		self._itemManager = itemManager = $.extend(new ItemManager(), $.isFunction(itemManager) ? new itemManager() : itemManager);
 		input             = $(input);
 		container         = $(self.opts(OPT_HTML_WRAP));
 		hiddenInput       = $(self.opts(OPT_HTML_HIDDEN));
