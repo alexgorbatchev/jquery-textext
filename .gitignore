@@ -2,3 +2,4 @@
 /src/css/_common.css
 tests/*.png
 tests/*.jar
+*.jar
