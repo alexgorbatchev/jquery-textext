@@ -585,28 +585,49 @@
 	};
 
 	/**
+	 * Stores current dataset in the `ItemManager` instance for further use.
+	 *
+	 * @signature ItemManager.setData(data)
+	 *
+	 * @param data {Array} List of items. Default implementation works with strings.
+	 *
+	 * @author agorbatchev
+	 * @date 2012/06/13
+	 * @id ItemManager.setData
+	 * @version 1.4
+	 */
+	p.setData = function(data)
+	{
+		this._data = data;
+	};
+
+	/**
 	 * Filters out items from the list that don't match the query and returns remaining items. Default 
-	 * implementation checks if the item starts with the query.
+	 * implementation checks if the string item starts with the query. Should be using the data that
+	 * is passed to the `setData` method.
 	 *
-	 * @signature ItemManager.filter(list, query)
+	 * @signature ItemManager.filter(query)
 	 *
-	 * @param list {Array} List of items. Default implementation works with strings.
 	 * @param query {String} Query string.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
 	 * @id ItemManager.filter
 	 */
-	p.filter = function(list, query)
+	p.filter = function(query)
 	{
-		var result = [],
-			i, item
+		var self   = this,
+			result = [],
+			data   = self._data,
+			item,
+			i
 			;
 
-		for(i = 0; i < list.length; i++)
+		for(i = 0; i < data.length; i++)
 		{
-			item = list[i];
-			if(this.itemContains(item, query))
+			item = data[i];
+
+			if(self.itemContains(item, query))
 				result.push(item);
 		}
 
