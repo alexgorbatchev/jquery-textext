@@ -673,7 +673,7 @@
 		var self       = this,
 			val        = self.val(),
 			inputValue = val,
-			formValue  = val
+			formValue  = self.itemManager().stringToItem(val)
 			;
 		data[100] = self.formDataObject(inputValue, formValue);
 	};
@@ -1085,7 +1085,7 @@
 		if(suggestion)
 		{
 			self.val(self.itemManager().itemToString(suggestion));
-			self.core().getFormData();	
+			self.core().getFormData();
 		}
 
 		self.trigger(EVENT_HIDE_DROPDOWN);
