@@ -623,13 +623,14 @@
 			i
 			;
 
-		for(i = 0; i < data.length; i++)
-		{
-			item = data[i];
+		if(data)
+			for(i = 0; i < data.length; i++)
+			{
+				item = data[i];
 
-			if(self.itemContains(item, query))
-				result.push(item);
-		}
+				if(self.itemContains(item, query))
+					result.push(item);
+			}
 
 		return result;
 	};
