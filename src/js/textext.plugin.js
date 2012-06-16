@@ -31,9 +31,11 @@
 	 */
 	function TextExtPlugin() {};
 	
-	$.fn.textext.TextExtPlugin = TextExtPlugin;
+	var textext = $.fn.textext,
+		p       = TextExtPlugin.prototype
+		;
 
-	var p = TextExtPlugin.prototype;
+	textext.TextExtPlugin = TextExtPlugin;
 
 	/**
 	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
@@ -48,7 +50,7 @@
 	 * @date 2011/08/19
 	 * @id TextExtPlugin.on
 	 */
-	p.on = $.fn.textext.TextExt.prototype.on;
+	p.on = textext.TextExt.prototype.on;
 
 	/**
 	 * Returns the hash object that `getFormData` triggered by the core expects.
@@ -63,7 +65,7 @@
 	 * @date 2011/08/22
 	 * @id TextExtPlugin.formDataObject
 	 */
-	p.formDataObject = $.fn.textext.TextExt.prototype.formDataObject;
+	p.formDataObject = textext.TextExt.prototype.formDataObject;
 
 	/**
 	 * Initialization method called by the core during plugin instantiation. This method must be implemented

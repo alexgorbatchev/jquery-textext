@@ -255,6 +255,11 @@
 			itemManager = self.itemManager()
 			;
 		
+		function next(err, result)
+		{
+			self.trigger(EVENT_SET_SUGGESTION, { result : result });
+		}
+
 		self.dontShowLoading();
 
 		// If results are expected to be cached, then we store the original
@@ -264,10 +269,12 @@
 		if(self.opts(OPT_CACHE_RESULTS) == true)
 		{
 			itemManager.setSuggestions(data);
-			result = itemManager.filter(query);
+			itemManager.filter(query, next);
 		}
-
-		self.trigger(EVENT_SET_SUGGESTION, { result : result });
+		else
+		{
+			next(null, result);
+		}
 	};
 
 	/**
@@ -332,22 +339,24 @@
 	 */
 	p.onGetSuggestions = function(e, data)
 	{
-		var self        = this,
-			suggestions = self.itemManager().getSuggestions(),
-			query       = (data || {}).query || ''
+		var self  = this,
+			query = (data || {}).query || ''
 			;
 
-		if(suggestions && self.opts(OPT_CACHE_RESULTS) === true)
-			return self.onComplete(suggestions, query);
-		
-		self.startTimer(
-			'ajax',
-			self.opts(OPT_TYPE_DELAY),
-			function()
-			{
-				self.showLoading();
-				self.load(query);
-			}
-		);
+		self.itemManager().getSuggestions(function(err, suggestions)
+		{
+			if(suggestions && self.opts(OPT_CACHE_RESULTS) === true)
+				return self.onComplete(suggestions, query);
+			
+			self.startTimer(
+				'ajax',
+				self.opts(OPT_TYPE_DELAY),
+				function()
+				{
+					self.showLoading();
+					self.load(query);
+				}
+			);
+		});
 	};
 })(jQuery);

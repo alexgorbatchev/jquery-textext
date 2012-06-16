@@ -521,10 +521,7 @@
 		if(typeof(itemManager) === 'string')
 			itemManager = textext.itemManagers[itemManager];
 
-		if($.isFunction(itemManager))
-			itemManager = new itemManager();
-
-		self._itemManager = itemManager;
+		self._itemManager = new itemManager(self);
 
 		input
 			.wrap(container)

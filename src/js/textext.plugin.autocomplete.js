@@ -144,66 +144,6 @@
 		 */
 	
 		/**
-		 * Autocomplete plugin triggers and reacts to the `hideDropdown` to hide the dropdown if it's 
-		 * already visible.
-		 *
-		 * @name hideDropdown
-		 * @author agorbatchev
-		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.events.hideDropdown
-		 */
-		EVENT_HIDE_DROPDOWN = 'hideDropdown',
-
-		/**
-		 * Autocomplete plugin triggers and reacts to the `showDropdown` to show the dropdown if it's 
-		 * not already visible.
-		 *
-		 * It's possible to pass a render callback function which will be called instead of the
-		 * default `TextExtAutocomplete.renderSuggestions()`. 
-		 *
-		 * Here's how another plugin should trigger this event with the optional render callback:
-		 *
-		 *     this.trigger('showDropdown', function(autocomplete)
-		 *     {
-		 *         autocomplete.clearItems();
-		 *         var node = autocomplete.addDropdownItem('<b>Item</b>');
-		 *         node.addClass('new-look');
-		 *     });
-		 *
-		 * @name showDropdown
-		 * @author agorbatchev
-		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.events.showDropdown
-		 */
-		EVENT_SHOW_DROPDOWN = 'showDropdown',
-
-		/**
-		 * Autocomplete plugin reacts to the `setSuggestions` event triggered by other plugins which
-		 * wish to populate the suggestion items. Suggestions should be passed as event argument in the 
-		 * following format: `{ data : [ ... ] }`. 
-		 *
-		 * Here's how another plugin should trigger this event:
-		 *
-		 *     this.trigger('setSuggestions', { data : [ "item1", "item2" ] });
-		 *
-		 * @name setSuggestions
-		 * @author agorbatchev
-		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.events.setSuggestions
-		 */
-
-		/**
-		 * Autocomplete plugin triggers the `getSuggestions` event and expects to get results by listening for
-		 * the `setSuggestions` event.
-		 *
-		 * @name getSuggestions
-		 * @author agorbatchev
-		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.events.getSuggestions
-		 */
-		EVENT_GET_SUGGESTIONS = 'getSuggestions',
-
-		/**
 		 * Autocomplete plugin triggers `getFormData` event with the current suggestion so that the the core
 		 * will be updated with serialized data to be submitted with the HTML form.
 		 * 
@@ -277,10 +217,6 @@
 				backspaceKeyPress : self.onBackspaceKeyPress,
 				enterKeyPress     : self.onEnterKeyPress,
 				escapeKeyPress    : self.onEscapeKeyPress,
-				setSuggestions    : self.onSetSuggestions,
-				showDropdown      : self.onShowDropdown,
-				hideDropdown      : self.onHideDropdown,
-				toggleDropdown    : self.onToggleDropdown,
 				postInvalidate    : self.positionDropdown,
 				getFormData       : self.onGetFormData,
 
@@ -309,7 +245,7 @@
 			$(document.body).click(function(e) 
 			{
 				if (self.isDropdownVisible() && !self.withinWrapElement(e.target))
-					self.trigger(EVENT_HIDE_DROPDOWN);
+					self.hideDropdown();
 			});
 
 			self.positionDropdown();
@@ -419,8 +355,8 @@
 		// not triggered by a mousedown event on the autocomplete
 		// otherwise set focus back back on the input
 		if(self.isDropdownVisible())
-			isBlurByMousedown ? self.core().focusInput() : self.trigger(EVENT_HIDE_DROPDOWN);
-				
+			isBlurByMousedown ? self.core().focusInput() : self.hideDropdown();
+		
 		container.removeData(DATA_MOUSEDOWN_ON_AUTOCOMPLETE);
 	};
 
@@ -442,7 +378,7 @@
 			;
 
 		if(isEmpty || self.isDropdownVisible())
-			self.getSuggestions();
+			self.renderSuggestions();
 	};
 
 	/**
@@ -463,7 +399,7 @@
 			;
 
 		if(self.val().length > 0 && !isFunctionKey)
-			self.getSuggestions();
+			self.renderSuggestions();
 	};
 
 	/**
@@ -481,10 +417,10 @@
 	{
 		var self = this;
 
-		self.isDropdownVisible()
-			? self.toggleNextSuggestion() 
-			: self.getSuggestions()
-			;
+		if(self.isDropdownVisible())
+			self.toggleNextSuggestion();
+		else
+			self.showDropdown();
 	};
 
 	/**
@@ -539,7 +475,7 @@
 		var self = this;
 
 		if(self.isDropdownVisible())
-			self.trigger(EVENT_HIDE_DROPDOWN);
+			self.hideDropdown();
 	};
 
 	//--------------------------------------------------------------------------------
@@ -693,149 +629,9 @@
 		return 200;
 	};
 
-	/**
-	 * Reacts to the `hideDropdown` event and hides the dropdown if it's already visible.
-	 *
-	 * @signature TextExtAutocomplete.onHideDropdown(e)
-	 *
-	 * @param e {Object} jQuery event.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onHideDropdown
-	 */
-	p.onHideDropdown = function(e)
+	p.dropdownItems = function()
 	{
-		this.hideDropdown();
-	};
-
-	/**
-	 * Reacts to the 'toggleDropdown` event and shows or hides the dropdown depending if
-	 * it's currently hidden or visible.
-	 *
-	 * @signature TextExtAutocomplete.onToggleDropdown(e)
-	 *
-	 * @param e {Object} jQuery event.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/12/27
-	 * @id TextExtAutocomplete.onToggleDropdown
-	 * @version 1.1.0
-	 */
-	p.onToggleDropdown = function(e)
-	{
-		var self = this;
-		self.trigger(self.containerElement().is(':visible') ? EVENT_HIDE_DROPDOWN : EVENT_SHOW_DROPDOWN);
-	};
-
-	/**
-	 * Reacts to the `showDropdown` event and shows the dropdown if it's not already visible.
-	 * It's possible to pass a render callback function which will be called instead of the
-	 * default `TextExtAutocomplete.renderSuggestions()`.
-	 *
-	 * If no suggestion were previously loaded, it will fire `getSuggestions` event and exit.
-	 *
-	 * Here's how another plugin should trigger this event with the optional render callback:
-	 *
-	 *     this.trigger('showDropdown', function(autocomplete)
-	 *     {
-	 *         autocomplete.clearItems();
-	 *         var node = autocomplete.addDropdownItem('<b>Item</b>');
-	 *         node.addClass('new-look');
-	 *     });
-	 *
-	 * @signature TextExtAutocomplete.onShowDropdown(e, renderCallback)
-	 *
-	 * @param e {Object} jQuery event.
-	 * @param renderCallback {Function} Optional callback function which would be used to 
-	 * render dropdown items. As a first argument, reference to the current instance of 
-	 * Autocomplete plugin will be supplied. It's assumed, that if this callback is provided
-	 * rendering will be handled completely manually.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onShowDropdown
-	 */
-	p.onShowDropdown = function(e, renderCallback)
-	{
-		var self        = this,
-			current     = self.selectedSuggestionElement().data(CSS_SUGGESTION),
-			suggestions = self._suggestions
-			;
-
-		if(!suggestions)
-			return self.trigger(EVENT_GET_SUGGESTIONS);
-
-		if($.isFunction(renderCallback))
-		{
-			renderCallback(self);
-		}
-		else
-		{
-			self.renderSuggestions(self._suggestions);
-			self.toggleNextSuggestion();
-		}
-		
-		self.showDropdown(self.containerElement());
-		self.setSelectedSuggestion(current);
-	};
-
-	/**
-	 * Reacts to the `setSuggestions` event. Expects to recieve the payload as the second argument
-	 * in the following structure:
-	 *
-	 *     {
-	 *         result : [ "item1", "item2" ],
-	 *         showHideDropdown : false
-	 *     }
-	 *
-	 * Notice the optional `showHideDropdown` option. By default, ie without the `showHideDropdown` 
-	 * value the method will trigger either `showDropdown` or `hideDropdown` depending if there are
-	 * suggestions. If set to `false`, no event is triggered.
-	 *
-	 * @signature TextExtAutocomplete.onSetSuggestions(e, data)
-	 *
-	 * @param data {Object} Data payload.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onSetSuggestions
-	 */
-	p.onSetSuggestions = function(e, data)
-	{
-		var self        = this,
-			suggestions = self._suggestions = data.result
-			;
-
-		if(data.showHideDropdown !== false)
-			self.trigger(suggestions === null || suggestions.length === 0 ? EVENT_HIDE_DROPDOWN : EVENT_SHOW_DROPDOWN);
-	};
-
-	/**
-	 * Prepears for and triggers the `getSuggestions` event with the `{ query : {String} }` as second
-	 * argument.
-	 *
-	 * @signature TextExtAutocomplete.getSuggestions()
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.getSuggestions
-	 */
-	p.getSuggestions = function()
-	{
-		var self = this,
-			val  = self.val()
-			;
-
-		if(self._previousInputValue == val)
-			return;
-
-		// if user clears input, then we want to select first suggestion instead of the last one
-		if(val == '')
-			current = null;
-
-		self._previousInputValue = val;
-		self.trigger(EVENT_GET_SUGGESTIONS, { query : val });
+		return this.containerElement().find('.text-list').children();
 	};
 
 	/**
@@ -849,7 +645,7 @@
 	 */
 	p.clearItems = function()
 	{
-		this.containerElement().find('.text-list').children().remove();
+		this.dropdownItems().remove();
 	};
 
 	/**
@@ -857,22 +653,39 @@
 	 *
 	 * @signature TextExtAutocomplete.renderSuggestions(suggestions)
 	 *
-	 * @param suggestions {Array} List of suggestions to render.
-	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
 	 * @id TextExtAutocomplete.renderSuggestions
 	 */
-	p.renderSuggestions = function(suggestions)
+	p.renderSuggestions = function()
 	{
-		var self = this;
+		var self   = this,
+			filter = self.val()
+			;
 
-		self.clearItems();
-
-		$.each(suggestions || [], function(index, item)
+		if(self._lastFilter !== filter)
 		{
-			self.addSuggestion(item);
-		});
+			// if user clears input, then we want to select first suggestion instead of the last one
+			if(filter === '')
+				current = null;
+
+			self._lastFilter = filter;
+
+			self.itemManager().getSuggestions(filter, function(err, suggestions)
+			{
+				self.clearItems();
+
+				$.each(suggestions, function(index, item)
+				{
+					self.addSuggestion(item);
+				});
+
+				if(suggestions.length > 0)
+					self.showDropdown();
+				else
+					self.hideDropdown();
+			});
+		}
 	};
 
 	/**
@@ -886,7 +699,16 @@
 	 */
 	p.showDropdown = function()
 	{
-		this.containerElement().show();
+		var self    = this,
+			current = self.selectedSuggestionElement().data(CSS_SUGGESTION)
+			;
+
+		self.containerElement().show();
+
+		if(current)
+			self.setSelectedSuggestion(current);
+		else
+			self.toggleNextSuggestion();
 	};
 
 	/**
@@ -900,12 +722,10 @@
 	 */
 	p.hideDropdown = function()
 	{
-		var self     = this,
-			dropdown = self.containerElement()
-			;
+		var self = this;
 
-		self._previousInputValue = null;
-		dropdown.hide();
+		self._lastFilter = null;
+		self.containerElement().hide();
 	};
 
 	/**
@@ -1087,7 +907,7 @@
 			self.core().getFormData();
 		}
 
-		self.trigger(EVENT_HIDE_DROPDOWN);
+		self.hideDropdown();
 	};
 	
 	/**

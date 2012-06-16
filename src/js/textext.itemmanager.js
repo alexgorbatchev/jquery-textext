@@ -63,48 +63,21 @@
 	 * @date 2011/08/19
 	 * @id ItemManager
 	 */
-	function ItemManager() {};
+	function ItemManager(core)
+	{
+		this._core = core;
+	};
 
-	var plugin = $.fn.textext,
-		p      = ItemManager.prototype
+	var textext = $.fn.textext,
+		p       = ItemManager.prototype
 		;
 
-	plugin.addItemManager('default', ItemManager);
+	textext.addItemManager('default', ItemManager);
 
 	/**
-	 * Initialization method called by the core during instantiation.
-	 *
-	 * @signature ItemManager.init(core)
-	 *
-	 * @param core {TextExt} Instance of the TextExt core class.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/19
-	 * @id ItemManager.init
-	 */
-	p.init = function(core)
-	{
-	};
-
-	/**
-	 * Stores current dataset in the `ItemManager` instance for further use.
-	 *
-	 * @signature ItemManager.setSuggestions(suggestions)
-	 *
-	 * @param suggestions {Array} List of items. Default implementation works with array of strings.
-	 *
-	 * @author agorbatchev
-	 * @date 2012/06/13
-	 * @id ItemManager.setSuggestions
-	 * @version 1.4
-	 */
-	p.setSuggestions = function(suggestions)
-	{
-		this._suggestions = suggestions;
-	};
-
-	/**
-	 * Returns stored suggestions.
+	 * Filters out items from the list that don't match the query and returns remaining items. Default 
+	 * implementation checks if the string item starts with the query. Should be using the data that
+	 * is passed to the `setSuggestions` method.
 	 *
 	 * @signature ItemManager.getSuggestions()
 	 *
@@ -113,43 +86,30 @@
 	 * @id ItemManager.getSuggestions
 	 * @version 1.4
 	 */
-	p.getSuggestions = function(callback)
-	{
-		return this._suggestions;
-	};
-
-	/**
-	 * Filters out items from the list that don't match the query and returns remaining items. Default 
-	 * implementation checks if the string item starts with the query. Should be using the data that
-	 * is passed to the `setSuggestions` method.
-	 *
-	 * @signature ItemManager.filter(query)
-	 *
-	 * @param query {String} Query string.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/19
-	 * @id ItemManager.filter
-	 */
-	p.filter = function(query)
+	p.getSuggestions = function(filter, callback)
 	{
 		var self   = this,
-			result = [],
-			data   = self._suggestions,
-			item,
+			result = []
+			;
+
+		self.each(function(item)
+		{
+			if(self.itemContains(item, filter))
+				result.push(item);
+		});
+
+		callback(null, result);
+	};
+
+	p.each = function(callback)
+	{
+		var suggestions = this._core.opts('suggestions'),
 			i
 			;
 
-		if(data)
-			for(i = 0; i < data.length; i++)
-			{
-				item = data[i];
-
-				if(self.itemContains(item, query))
-					result.push(item);
-			}
-
-		return result;
+		if(suggestions)
+			for(i = 0; i < suggestions.length; i++)
+				callback(suggestions[i], i);
 	};
 
 	/**
