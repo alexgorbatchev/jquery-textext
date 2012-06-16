@@ -200,8 +200,6 @@
 		self.on({
 			getSuggestions : self.onGetSuggestions
 		});
-
-		self._suggestions = null;
 	};
 
 	/**
@@ -265,8 +263,7 @@
 		// server side.
 		if(self.opts(OPT_CACHE_RESULTS) == true)
 		{
-			self._suggestions = data;
-			itemManager.setData(data);
+			itemManager.setSuggestions(data);
 			result = itemManager.filter(query);
 		}
 
@@ -336,7 +333,7 @@
 	p.onGetSuggestions = function(e, data)
 	{
 		var self        = this,
-			suggestions = self._suggestions,
+			suggestions = self.itemManager().getSuggestions(),
 			query       = (data || {}).query || ''
 			;
 

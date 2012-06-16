@@ -830,8 +830,7 @@
 		if(self._previousInputValue == val)
 			return;
 
-		// if user clears input, then we want to select first suggestion
-		// instead of the last one
+		// if user clears input, then we want to select first suggestion instead of the last one
 		if(val == '')
 			current = null;
 

@@ -587,24 +587,39 @@
 	/**
 	 * Stores current dataset in the `ItemManager` instance for further use.
 	 *
-	 * @signature ItemManager.setData(data)
+	 * @signature ItemManager.setSuggestions(suggestions)
 	 *
-	 * @param data {Array} List of items. Default implementation works with strings.
+	 * @param suggestions {Array} List of items. Default implementation works with array of strings.
 	 *
 	 * @author agorbatchev
 	 * @date 2012/06/13
-	 * @id ItemManager.setData
+	 * @id ItemManager.setSuggestions
 	 * @version 1.4
 	 */
-	p.setData = function(data)
+	p.setSuggestions = function(suggestions)
 	{
-		this._data = data;
+		this._suggestions = suggestions;
+	};
+
+	/**
+	 * Returns stored suggestions.
+	 *
+	 * @signature ItemManager.getSuggestions()
+	 *
+	 * @author agorbatchev
+	 * @date 2012/06/16
+	 * @id ItemManager.getSuggestions
+	 * @version 1.4
+	 */
+	p.getSuggestions = function(callback)
+	{
+		return this._suggestions;
 	};
 
 	/**
 	 * Filters out items from the list that don't match the query and returns remaining items. Default 
 	 * implementation checks if the string item starts with the query. Should be using the data that
-	 * is passed to the `setData` method.
+	 * is passed to the `setSuggestions` method.
 	 *
 	 * @signature ItemManager.filter(query)
 	 *
@@ -618,7 +633,7 @@
 	{
 		var self   = this,
 			result = [],
-			data   = self._data,
+			data   = self._suggestions,
 			item,
 			i
 			;
@@ -737,7 +752,7 @@
 		self._opts        = opts || {};
 		self._plugins     = {};
 		itemManager       = self.opts(OPT_ITEM_MANAGER);
-		self._itemManager = itemManager = $.extend(new ItemManager(), $.isFunction(itemManager) ? new itemManager() : itemManager);
+		self._itemManager = itemManager = $.extend({}, ItemManager.prototype, $.isFunction(itemManager) ? new itemManager() : itemManager);
 		input             = $(input);
 		container         = $(self.opts(OPT_HTML_WRAP));
 		hiddenInput       = $(self.opts(OPT_HTML_HIDDEN));
