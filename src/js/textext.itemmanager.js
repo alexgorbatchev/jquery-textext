@@ -68,11 +68,34 @@
 		this._core = core;
 	};
 
-	var textext = $.fn.textext,
-		p       = ItemManager.prototype
+	var textext   = $.fn.textext,
+		p         = ItemManager.prototype,
+		stringify = (JSON || {}).stringify
 		;
+		
+	// Freak out if there's no JSON.stringify function found
+	if(!stringify)
+		throw new Error('JSON.stringify() not found');
 
 	textext.addItemManager('default', ItemManager);
+
+	/**
+	 * Serializes data for to be set into the hidden input field and which will be submitted 
+	 * with the HTML form.
+	 *
+	 * By default simple JSON serialization is used. It's expected that `JSON.stringify`
+	 * method would be available either through built in class in most modern browsers
+	 * or through JSON2 library.
+	 *
+	 * @signature TextExt.serializeData(data)
+	 *
+	 * @param data {Object} Data to serialize.
+	 *
+	 * @author agorbatchev
+	 * @date 2011/08/09
+	 * @id TextExt.serializeData
+	 */
+	p.serialize = stringify;
 
 	/**
 	 * Filters out items from the list that don't match the query and returns remaining items. Default 

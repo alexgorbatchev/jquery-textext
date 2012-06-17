@@ -53,21 +53,6 @@
 	p.on = textext.TextExt.prototype.on;
 
 	/**
-	 * Returns the hash object that `getFormData` triggered by the core expects.
-	 *
-	 * @signature TextExtPlugin.formDataObject(input, form)
-	 *
-	 * @param input {String} Value that will go into the text input that user is interacting with.
-	 * @param form {Object} Value that will be serialized and put into the hidden that will be submitted
-	 * with the HTML form.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/22
-	 * @id TextExtPlugin.formDataObject
-	 */
-	p.formDataObject = textext.TextExt.prototype.formDataObject;
-
-	/**
 	 * Initialization method called by the core during plugin instantiation. This method must be implemented
 	 * by each plugin individually.
 	 *

@@ -20,10 +20,9 @@
 	 */
 	function TextExt() {};
 
-	var stringify = (JSON || {}).stringify,
-		slice     = Array.prototype.slice,
-		p,
+	var slice     = Array.prototype.slice,
 		UNDEFINED = 'undefined',
+		p,
 
 		/**
 		 * TextExt provides a way to pass in the options to configure the core as well as
@@ -113,6 +112,8 @@
 		 */
 		OPT_PLUGINS = 'plugins',
 		
+		OPT_DATA_SOURCE = 'dataSource',
+
 		/**
 		 * TextExt allows for overriding of virtually any method that the core or any of its plugins
 		 * use. This could be accomplished through the use of the `ext` option.
@@ -259,70 +260,6 @@
 		EVENT_POST_INVALIDATE = 'postInvalidate',
 		
 		/**
-		 * Core triggers `getFormData` on every key press to collect data that will be populated
-		 * into the hidden input that will be submitted with the HTML form and data that will
-		 * be displayed in the input field that user is currently interacting with.
-		 *
-		 * All plugins that wish to affect how the data is presented or sent must react to 
-		 * `getFormData` and populate the data in the following format:
-		 *
-		 *     {
-		 *         input : {String},
-		 *         form  : {Object}
-		 *     }
-		 *
-		 * The data key must be a numeric weight which will be used to determine which data
-		 * ends up being used. Data with the highest numerical weight gets the priority. This
-		 * allows plugins to set the final data regardless of their initialization order, which
-		 * otherwise would be impossible.
-		 *
-		 * For example, the Tags and Autocomplete plugins have to work side by side and Tags
-		 * plugin must get priority on setting the data. Therefore the Tags plugin sets data
-		 * with the weight 200 where as the Autocomplete plugin sets data with the weight 100.
-		 *
-		 * Here's an example of a typical `getFormData` handler:
-		 * 
-		 *     TextExtPlugin.prototype.onGetFormData = function(e, data, keyCode)
-		 *     {
-		 *         data[100] = self.formDataObject('input value', 'form value');
-		 *     };
-		 *
-		 * Core also reacts to the `getFormData` and updates hidden input with data which will be
-		 * submitted with the HTML form.
-		 *
-		 * @name getFormData
-		 * @author agorbatchev
-		 * @date 2011/08/19
-		 * @id TextExt.events.getFormData
-		 */
-		EVENT_GET_FORM_DATA = 'getFormData',
-
-		/**
-		 * Core triggers and reacts to the `setFormData` event to update the actual value in the
-		 * hidden input that will be submitted with the HTML form. Second argument can be value
-		 * of any type and by default it will be JSON serialized with `TextExt.serializeData()`
-		 * function.
-		 *
-		 * @name setFormData
-		 * @author agorbatchev
-		 * @date 2011/08/22
-		 * @id TextExt.events.setFormData
-		 */
-		EVENT_SET_FORM_DATA = 'setFormData',
-
-		/**
-		 * Core triggers and reacts to the `setInputData` event to update the actual value in the
-		 * text input that user is interacting with. Second argument must be of a `String` type
-		 * the value of which will be set into the text input.
-		 *
-		 * @name setInputData
-		 * @author agorbatchev
-		 * @date 2011/08/22
-		 * @id TextExt.events.setInputData
-		 */
-		EVENT_SET_INPUT_DATA = 'setInputData',
-		
-		/**
 		 * Core triggers `postInit` event to let plugins run code after all plugins have been 
 		 * created and initialized. This is a good place to set some kind of global values before 
 		 * somebody gets to use them. This is not the right place to expect all plugins to finish
@@ -346,6 +283,9 @@
 		 * @id TextExt.events.ready
 		 */
 		EVENT_READY = 'ready',
+
+		EVENT_INPUT_DATA_CHANGE = 'inputDataChange',
+		EVENT_FORM_DATA_CHANGE = 'formDataChange',
 
 		/**
 		 * Core triggers `anyKeyUp` event for every key up event triggered within the component.
@@ -397,9 +337,9 @@
 
 		DEFAULT_OPTS = {
 			itemManager : null,
-
-			plugins : [],
-			ext : {},
+			plugins     : [],
+			dataSource  : null,
+			ext         : {},
 
 			html : {
 				wrap   : '<div class="text-core"><div class="text-wrap"/></div>',
@@ -420,10 +360,6 @@
 			}
 		}
 		;
-
-	// Freak out if there's no JSON.stringify function found
-	if(!stringify)
-		throw new Error('JSON.stringify() not found');
 
 	/**
 	 * Returns object property by name where name is dot-separated and object is multiple levels deep.
@@ -484,11 +420,6 @@
 
 	p = TextExt.prototype;
 		
-	p.formDataObject = function(input, form)
-	{
-		return { 'input' : input, 'form' : form };
-	};
-
 	/**
 	 * Initializes current component instance with work with the supplied text input and options.
 	 *
@@ -512,10 +443,10 @@
 		self._defaults    = $.extend({}, DEFAULT_OPTS);
 		self._opts        = opts || {};
 		self._plugins     = {};
+		self._dataSource  = self.opts(OPT_DATA_SOURCE);
 		input             = $(input);
 		container         = $(self.opts(OPT_HTML_WRAP));
 		hiddenInput       = $(self.opts(OPT_HTML_HIDDEN));
-
 		itemManager       = self.opts(OPT_ITEM_MANAGER) || 'default';
 
 		if(typeof(itemManager) === 'string')
@@ -532,9 +463,9 @@
 
 		// keep references to html elements using jQuery.data() to avoid circular references
 		$(self).data({
-			'hiddenInput'   : hiddenInput,
+			'hiddenInput' : hiddenInput,
 			'wrapElement' : input.parents('.text-wrap').first(),
-			'input'         : input
+			'input'       : input
 		});
 
 		// set the name of the hidden input to the text input's name
@@ -555,16 +486,15 @@
 		self.initPlugins(self.opts(OPT_PLUGINS), $.fn.textext.plugins);
 
 		self.on({
-			setFormData  : self.onSetFormData,
-			getFormData  : self.onGetFormData,
-			setInputData : self.onSetInputData,
-			anyKeyUp     : self.onAnyKeyUp
+			anyKeyUp : self.onAnyKeyUp
 		});
 
-		self.trigger(EVENT_POST_INIT);
-		self.trigger(EVENT_READY);
-
-		self.getFormData(0);
+		setTimeout(function()
+		{
+			self.trigger(EVENT_POST_INIT);
+			self.trigger(EVENT_READY);
+			self.invalidateData();
+		}, 1);
 	};
 
 	/**
@@ -620,26 +550,50 @@
 	 */
 	p.initPlugins = function(plugins, source)
 	{
-		var self = this,
-			ext, name, plugin, initList = [], i
+		var self     = this,
+			initList = [],
+			ext, 
+			name, 
+			plugin, 
+			i
 			;
 
 		if(typeof(plugins) == 'string')
 			plugins = plugins.split(/\s*,\s*|\s+/g);
 
+		function createGetter(name, plugin)
+		{
+			self[name] = function()
+			{
+				return plugin;
+			};
+		}
+
 		for(i = 0; i < plugins.length; i++)
 		{
-			name   = plugins[i];
+			name = plugins[i];
+
+			// support little trick allowing users to add ~ in front of plugin name
+			// which will make specified plugin to be `dataSource`
+			if(!self._dataSource && name.charAt(0) === '~')
+				name = self._dataSource = name.substr(1);
+
 			plugin = source[name];
 
 			if(plugin)
 			{
 				self._plugins[name] = plugin = new plugin();
-				self[name] = (function(plugin) { 
-				  return function(){ return plugin; } 
-				})(plugin);
+
 				initList.push(plugin);
 				$.extend(true, plugin, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.' + name));
+
+				// Create a function on the current instance to get this plugin instance
+				// For example for `autocomplete` plugin we will have `textext.autocomplete()`
+				// function returning this isntance.
+				createGetter(name, plugin);
+
+				if(!self._dataSource && plugin.getFormData)
+					self._dataSource = plugin;
 			}
 		}
 
@@ -833,24 +787,6 @@
 	};
 
 	/**
-	 * Serializes data for to be set into the hidden input field and which will be submitted 
-	 * with the HTML form.
-	 *
-	 * By default simple JSON serialization is used. It's expected that `JSON.stringify`
-	 * method would be available either through built in class in most modern browsers
-	 * or through JSON2 library.
-	 *
-	 * @signature TextExt.serializeData(data)
-	 *
-	 * @param data {Object} Data to serialize.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/09
-	 * @id TextExt.serializeData
-	 */
-	p.serializeData = stringify;
-
-	/**
 	 * Returns the hidden input HTML element which will be submitted with the HTML form.
 	 *
 	 * @signature TextExt.hiddenInput()
@@ -865,39 +801,11 @@
 	};
 
 	/**
-	 * Abstracted functionality to trigger an event and get the data with maximum weight set by all
-	 * the event handlers. This functionality is used for the `getFormData` event.
-	 *
-	 * @signature TextExt.getWeightedEventResponse(event, args)
-	 *
-	 * @param event {String} Event name.
-	 * @param args {Object} Argument to be passed with the event.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/22
-	 * @id TextExt.getWeightedEventResponse
-	 */
-	p.getWeightedEventResponse = function(event, args)
-	{
-		var self      = this,
-			data      = {},
-			maxWeight = 0
-			;
-
-		self.trigger(event, data, args);
-
-		for(var weight in data)
-			maxWeight = Math.max(maxWeight, weight);
-
-		return data[maxWeight];
-	};
-
-	/**
 	 * Triggers the `getFormData` event to get all the plugins to return their data.
 	 *
 	 * After the data is returned, triggers `setFormData` and `setInputData` to update appopriate values.
 	 *
-	 * @signature TextExt.getFormData(keyCode)
+	 * @signature TextExt.invalidateData(keyCode)
 	 *
 	 * @param keyCode {Number} Key code number which has triggered this update. It's impotant to pass
 	 * this value to the plugins because they might return different values based on the key that was 
@@ -906,16 +814,30 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExt.getFormData
+	 * @id TextExt.invalidateData
 	 */
-	p.getFormData = function(keyCode)
+	p.invalidateData = function(keyCode)
 	{
-		var self = this,
-			data = self.getWeightedEventResponse(EVENT_GET_FORM_DATA, keyCode || 0)
+		var self       = this,
+			dataSource = self._dataSource,
+			plugin     = typeof(dataSource) === 'string' ? self[dataSource] : dataSource,
+			prefix     = 'TextExt.js: specified `dataSource` plugin'
 			;
+		
+		if(!dataSource)
+			throw new Error('TextExt.js: no `dataSource` set and no plugin supports `getFormData`');
 
-		self.trigger(EVENT_SET_FORM_DATA  , data['form']);
-		self.trigger(EVENT_SET_INPUT_DATA , data['input']);
+		if(!plugin)
+			throw new Error(prefix + ' not found: ' + dataSource);
+
+		if(!plugin.getFormData)
+			throw new Error(prefix + ' does not have `getFormData` function: ' + dataSource);
+
+		plugin.getFormData(keyCode, function(err, form, input)
+		{
+			self.setInputData(input);
+			self.setFormData(form);
+		});
 	};
 
 	//--------------------------------------------------------------------------------
@@ -936,7 +858,7 @@
 	 */
 	p.onAnyKeyUp = function(e, keyCode)
 	{
-		this.getFormData(keyCode);
+		this.invalidateData(keyCode);
 	};
 
 	/**
@@ -952,9 +874,17 @@
 	 * @date 2011/08/22
 	 * @id TextExt.onSetInputData
 	 */
-	p.onSetInputData = function(e, data)
+	p.setInputData = function(data)
 	{
-		this.input().val(data);
+		var self  = this,
+			input = this.input()
+			;
+
+		if(input.val() != data)
+		{
+			input.val(data);
+			self.trigger(EVENT_INPUT_DATA_CHANGE, data);
+		}
 	};
 
 	/**
@@ -970,29 +900,17 @@
 	 * @date 2011/08/22
 	 * @id TextExt.onSetFormData
 	 */
-	p.onSetFormData = function(e, data)
+	p.setFormData = function(data)
 	{
-		var self = this;
-		self.hiddenInput().val(self.serializeData(data));
-	};
+		var self  = this,
+			input = this.hiddenInput()
+			;
 
-	/**
-	 * Reacts to `getFormData` event triggered by the core. At the bare minimum the core will tell
-	 * itself to use the current value in the text input as the data to be submitted with the HTML
-	 * form.
-	 *
-	 * @signature TextExt.onGetFormData(e, data)
-	 *
-	 * @param e {Event} jQuery event.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/09
-	 * @id TextExt.onGetFormData
-	 */
-	p.onGetFormData = function(e, data)
-	{
-		var val = this.input().val();
-		data[0] = this.formDataObject(val, val);
+		if(input.val() != data)
+		{
+			input.val(data);
+			self.trigger(EVENT_FORM_DATA_CHANGE, data);
+		}
 	};
 
 	//--------------------------------------------------------------------------------

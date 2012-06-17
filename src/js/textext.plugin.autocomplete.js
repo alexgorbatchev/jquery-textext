@@ -154,18 +154,6 @@
 		 */
 		EVENT_GET_FORM_DATA = 'getFormData',
 
-		/**
-		 * Autocomplete plugin reacts to `toggleDropdown` event and either shows or hides the dropdown
-		 * depending if it's currently hidden or visible.
-		 * 
-		 * @name toggleDropdown
-		 * @author agorbatchev
-		 * @date 2011/12/27
-		 * @id TextExtAutocomplete.events.toggleDropdown
-		 * @version 1.1
-		 */
-		EVENT_TOGGLE_DROPDOWN = 'toggleDropdown',
-
 		POSITION_ABOVE = 'above',
 		POSITION_BELOW = 'below',
 		
@@ -218,7 +206,6 @@
 				enterKeyPress     : self.onEnterKeyPress,
 				escapeKeyPress    : self.onEscapeKeyPress,
 				postInvalidate    : self.positionDropdown,
-				getFormData       : self.onGetFormData,
 
 				// using keyDown for up/down keys so that repeat events are
 				// captured and user can scroll up/down by holding the keys
@@ -420,7 +407,7 @@
 		if(self.isDropdownVisible())
 			self.toggleNextSuggestion();
 		else
-			self.showDropdown();
+			self.renderSuggestions();
 	};
 
 	/**
@@ -518,7 +505,6 @@
 		return this.containerElement().find(CSS_DOT_SUGGESTION);
 	};
 
-
 	/**
 	 * Highlights specified suggestion as selected in the dropdown.
 	 *
@@ -604,29 +590,14 @@
 	 * @date 2011/08/22
 	 * @id TextExtAutocomplete.onGetFormData
 	 */
-	p.onGetFormData = function(e, data, keyCode)
+	p.getFormData = function(keyCode, callback)
 	{
-		var self       = this,
-			val        = self.val(),
-			inputValue = val,
-			formValue  = self.itemManager().stringToItem(val)
+		var self        = this,
+			itemManager = self.itemManager(),
+			val         = self.val()
 			;
-		data[100] = self.formDataObject(inputValue, formValue);
-	};
 
-	/**
-	 * Returns initialization priority of the Autocomplete plugin which is expected to be
-	 * *greater than the Tags plugin* because of the dependencies. The value is 200.
-	 *
-	 * @signature TextExtAutocomplete.initPriority()
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/22
-	 * @id TextExtAutocomplete.initPriority
-	 */
-	p.initPriority = function()
-	{
-		return 200;
+		callback(null, itemManager.serialize(itemManager.stringToItem(val)), val);
 	};
 
 	p.dropdownItems = function()
@@ -904,7 +875,7 @@
 		if(suggestion)
 		{
 			self.val(self.itemManager().itemToString(suggestion));
-			self.core().getFormData();
+			self.core().invalidateData();
 		}
 
 		self.hideDropdown();
