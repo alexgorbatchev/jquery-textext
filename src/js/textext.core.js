@@ -8,6 +8,10 @@
  */
 (function($, undefined)
 {
+	// Freak out if there's no JSON.stringify function found
+	if(!JSON.stringify)
+		throw new Error('TextExt.js: `JSON.stringify()` not found');
+
 	/**
 	 * TextExt is the main core class which by itself doesn't provide any functionality
 	 * that is user facing, however it has the underlying mechanics to bring all the
@@ -571,13 +575,7 @@
 
 		for(i = 0; i < plugins.length; i++)
 		{
-			name = plugins[i];
-
-			// support little trick allowing users to add ~ in front of plugin name
-			// which will make specified plugin to be `dataSource`
-			if(!self._dataSource && name.charAt(0) === '~')
-				name = self._dataSource = name.substr(1);
-
+			name   = plugins[i];
 			plugin = source[name];
 
 			if(plugin)
@@ -591,9 +589,6 @@
 				// For example for `autocomplete` plugin we will have `textext.autocomplete()`
 				// function returning this isntance.
 				createGetter(name, plugin);
-
-				if(!self._dataSource && plugin.getFormData)
-					self._dataSource = plugin;
 			}
 		}
 
@@ -610,7 +605,12 @@
 		});
 
 		for(i = 0; i < initList.length; i++)
+		{
+			if(!self._dataSource && plugin.getFormData)
+				self._dataSource = plugin;
+
 			initList[i].init(self);
+		}
 	};
 
 	/**
@@ -820,20 +820,33 @@
 	{
 		var self       = this,
 			dataSource = self._dataSource,
-			plugin     = typeof(dataSource) === 'string' ? self[dataSource] : dataSource,
-			prefix     = 'TextExt.js: specified `dataSource` plugin'
+			plugin
 			;
 		
 		if(!dataSource)
 			throw new Error('TextExt.js: no `dataSource` set and no plugin supports `getFormData`');
 
-		if(!plugin)
-			throw new Error(prefix + ' not found: ' + dataSource);
+		if(!$.isFunction(dataSource) && typeof(dataSource) === 'string')
+		{
+			plugin = self[dataSource];
+			
+			if(!plugin)
+				throw new Error('TextExt.js: specified `dataSource` plugin not found: ' + dataSource);
+			
+			plugin = plugin();
 
-		if(!plugin.getFormData)
-			throw new Error(prefix + ' does not have `getFormData` function: ' + dataSource);
+			// need to insure `dataSource` below is executing with plugin as plugin scop and
+			// if we just reference the `getFormData` function it will be in the window scope.
+			dataSource = function()
+			{
+				plugin.getFormData.apply(plugin, arguments);
+			};
+		}
 
-		plugin.getFormData(keyCode, function(err, form, input)
+		if(!dataSource)
+			throw new Error('TextExt.js: specified `dataSource` plugin does not have `getFormData` function: ' + dataSource);
+
+		dataSource(keyCode, function(err, form, input)
 		{
 			self.setInputData(input);
 			self.setFormData(form);

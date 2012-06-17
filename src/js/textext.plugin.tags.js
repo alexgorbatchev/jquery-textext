@@ -201,8 +201,7 @@
 				enterKeyPress    : self.onEnterKeyPress,
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				preInvalidate    : self.onPreInvalidate,
-				postInit         : self.onPostInit,
-				getFormData      : self.onGetFormData
+				postInit         : self.onPostInit
 			});
 
 			self.on(container, {
@@ -263,6 +262,8 @@
 		self.addTags(self.opts(OPT_ITEMS));
 	};
 
+	p.serialize = JSON.stringify;
+
 	/**
 	 * Reacts to the [`getFormData`][1] event triggered by the core. Returns data with the
 	 * weight of 200 to be *greater than the Autocomplete plugin* data weight. The weights
@@ -280,30 +281,14 @@
 	 * @date 2011/08/22
 	 * @id TextExtTags.onGetFormData
 	 */
-	p.onGetFormData = function(e, data, keyCode)
+	p.getFormData = function(keyCode, callback)
 	{
 		var self       = this,
 			inputValue = keyCode === 13 ? '' : self.val(),
-			formValue  = self._formData
+			formValue  = self.serialize(self._formData)
 			;
 
-		data[200] = self.formDataObject(inputValue, formValue);
-	};
-
-	/**
-	 * Returns initialization priority of the Tags plugin which is expected to be
-	 * *less than the Autocomplete plugin* because of the dependencies. The value is
-	 * 100.
-	 *
-	 * @signature TextExtTags.initPriority()
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/22
-	 * @id TextExtTags.initPriority
-	 */
-	p.initPriority = function()
-	{
-		return 100;
+		callback(null, formValue, inputValue);
 	};
 
 	/**
@@ -439,7 +424,7 @@
 			tag.find(CSS_DOT_LABEL).text(self.itemManager().itemToString(newValue));
 
 			self.updateFormCache();
-			core.getFormData();
+			core.invalidateData();
 			core.invalidateBounds();
 
 			if(refocus)
@@ -603,7 +588,7 @@
 		}
 
 		self.updateFormCache();
-		core.getFormData();
+		core.invalidateData();
 		core.invalidateBounds();
 	};
 
@@ -662,7 +647,7 @@
 
 		element.remove();
 		self.updateFormCache();
-		core.getFormData();
+		core.invalidateData();
 		core.invalidateBounds();
 	};
 

@@ -68,15 +68,10 @@
 		this._core = core;
 	};
 
-	var textext   = $.fn.textext,
-		p         = ItemManager.prototype,
-		stringify = (JSON || {}).stringify
+	var textext = $.fn.textext,
+		p       = ItemManager.prototype
 		;
 		
-	// Freak out if there's no JSON.stringify function found
-	if(!stringify)
-		throw new Error('JSON.stringify() not found');
-
 	textext.addItemManager('default', ItemManager);
 
 	/**
@@ -95,7 +90,7 @@
 	 * @date 2011/08/09
 	 * @id TextExt.serializeData
 	 */
-	p.serialize = stringify;
+	p.serialize = JSON.stringify;
 
 	/**
 	 * Filters out items from the list that don't match the query and returns remaining items. Default 
