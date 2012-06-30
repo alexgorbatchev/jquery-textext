@@ -830,29 +830,35 @@
 	{
 		var self       = this,
 			dataSource = self._dataSource,
-			plugin
+			plugin     = dataSource
 			;
 		
-		if(!dataSource)
-			throw new Error('TextExt.js: no `dataSource` set and no plugin supports `getFormData`');
+		function error(msg)
+		{
+			throw new Error('TextExt.js: ' + msg);
+		}
 
-		if(!$.isFunction(dataSource) && typeof(dataSource) === 'string')
+		if(!dataSource)
+			error('no `dataSource` set and no plugin supports `getFormData`');
+
+		if(typeof(dataSource) === 'string')
 		{
 			plugin = self._plugins[dataSource];
 			
 			if(!plugin)
-				throw new Error('TextExt.js: specified `dataSource` plugin not found: ' + dataSource);
-			
+				error('`dataSource` plugin not found: ' + dataSource);
+		}
+
+		if(plugin.getFormData)
 			// need to insure `dataSource` below is executing with plugin as plugin scop and
 			// if we just reference the `getFormData` function it will be in the window scope.
 			dataSource = function()
 			{
 				plugin.getFormData.apply(plugin, arguments);
 			};
-		}
 
 		if(!dataSource)
-			throw new Error('TextExt.js: specified `dataSource` plugin does not have `getFormData` function: ' + dataSource);
+			error('specified `dataSource` plugin does not have `getFormData` function: ' + dataSource);
 
 		dataSource(keyCode, function(err, form, input)
 		{
