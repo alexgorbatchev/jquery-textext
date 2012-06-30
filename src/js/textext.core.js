@@ -562,8 +562,8 @@
 			i
 			;
 
-		if(typeof(plugins) == 'string')
-			plugins = plugins.split(/\s*,\s*|\s+/g);
+		if(typeof(plugins) === 'string')
+			plugins = plugins.split(/\s*[,>]\s*|\s+/g);
 
 		function createGetter(name, plugin)
 		{
@@ -575,7 +575,11 @@
 
 		for(i = 0; i < plugins.length; i++)
 		{
-			name   = plugins[i];
+			name = plugins[i];
+
+			if(name.charAt(name.length - 1) === '*')
+				self._dataSource = name = name.substr(0, name.length - 1);
+
 			plugin = source[name];
 
 			if(plugin)
@@ -589,6 +593,10 @@
 				// For example for `autocomplete` plugin we will have `textext.autocomplete()`
 				// function returning this isntance.
 				createGetter(name, plugin);
+			}
+			else
+			{
+				throw new Error('TextExt.js: unknown plugin: ' + name);
 			}
 		}
 
@@ -606,10 +614,12 @@
 
 		for(i = 0; i < initList.length; i++)
 		{
+			plugin = initList[i];
+
 			if(!self._dataSource && plugin.getFormData)
 				self._dataSource = plugin;
 
-			initList[i].init(self);
+			plugin.init(self);
 		}
 	};
 
@@ -828,13 +838,11 @@
 
 		if(!$.isFunction(dataSource) && typeof(dataSource) === 'string')
 		{
-			plugin = self[dataSource];
+			plugin = self._plugins[dataSource];
 			
 			if(!plugin)
 				throw new Error('TextExt.js: specified `dataSource` plugin not found: ' + dataSource);
 			
-			plugin = plugin();
-
 			// need to insure `dataSource` below is executing with plugin as plugin scop and
 			// if we just reference the `getFormData` function it will be in the window scope.
 			dataSource = function()
