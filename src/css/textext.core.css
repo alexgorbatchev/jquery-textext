@@ -2,8 +2,8 @@
   position: relative;
 }
 .text-core .text-wrap {
-  background: #fff;
   position: absolute;
+  background: #fff;
 }
 .text-core .text-wrap textarea,
 .text-core .text-wrap input {

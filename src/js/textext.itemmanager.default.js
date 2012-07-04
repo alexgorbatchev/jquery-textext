@@ -12,6 +12,15 @@
 	{
 	};
 
-	$.fn.textext.addItemManager('default', ItemManager);
+	var textext = $.fn.textext,
+		p       = ItemManager.prototype
+		;
+
+	textext.addItemManager('default', ItemManager);
+
+	p.init = function(core)
+	{
+		this.baseInit(core, {});
+	};
 })(jQuery);
 

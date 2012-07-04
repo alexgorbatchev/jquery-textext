@@ -64,7 +64,10 @@
 	 * @date 2011/08/19
 	 * @id TextExtPlugin.init
 	 */
-	p.init = function(core) {};
+	p.init = function(core)
+	{
+		throw new Error('Plugin must implement init() method');
+	};
 
 	/**
 	 * Initialization method wich should be called by the plugin during the `init()` call.

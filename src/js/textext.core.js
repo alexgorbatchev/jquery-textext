@@ -500,8 +500,6 @@
 			self.invalidateData();
 		}, 1);
 
-		itemManager.baseInit(self);
-		// to keep compatability with `Plugin` base methods
 		itemManager.init(self);
 	};
 
@@ -1105,9 +1103,9 @@
 		constructor.prototype      = new textext.ItemManager();
 	};
 
-	textext.TextExt       = TextExt;
-	textext.plugins       = {};
-	textext.patches       = {};
-	textext.itemManagers  = {};
+	textext.TextExt      = TextExt;
+	textext.plugins      = {};
+	textext.patches      = {};
+	textext.itemManagers = {};
 })(jQuery);
 

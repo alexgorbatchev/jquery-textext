@@ -72,7 +72,7 @@
 		;
 		
 	textext.ItemManager = ItemManager;
-
+	
 	/**
 	 * Serializes data for to be set into the hidden input field and which will be submitted 
 	 * with the HTML form.
