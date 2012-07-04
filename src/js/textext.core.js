@@ -456,7 +456,7 @@
 		if(typeof(itemManager) === 'string')
 			itemManager = textext.itemManagers[itemManager];
 
-		self._itemManager = new itemManager(self);
+		itemManager = self._itemManager = new itemManager();
 
 		input
 			.wrap(container)
@@ -499,6 +499,10 @@
 			self.trigger(EVENT_READY);
 			self.invalidateData();
 		}, 1);
+
+		itemManager.baseInit(self);
+		// to keep compatability with `Plugin` base methods
+		itemManager.init(self);
 	};
 
 	/**
@@ -1095,9 +1099,10 @@
 		constructor.prototype = new textext.TextExtPlugin();
 	};
 
-	textext.addItemManager = function(name, manager)
+	textext.addItemManager = function(name, constructor)
 	{
-		textext.itemManagers[name] = manager;
+		textext.itemManagers[name] = constructor;
+		constructor.prototype      = new textext.ItemManager();
 	};
 
 	textext.TextExt       = TextExt;

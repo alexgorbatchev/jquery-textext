@@ -63,16 +63,15 @@
 	 * @date 2011/08/19
 	 * @id ItemManager
 	 */
-	function ItemManager(core)
+	function ItemManager()
 	{
-		this._core = core;
 	};
 
 	var textext = $.fn.textext,
-		p       = ItemManager.prototype
+		p       = ItemManager.prototype = new textext.TextExtPlugin()
 		;
 		
-	textext.addItemManager('default', ItemManager);
+	textext.ItemManager = ItemManager;
 
 	/**
 	 * Serializes data for to be set into the hidden input field and which will be submitted 
