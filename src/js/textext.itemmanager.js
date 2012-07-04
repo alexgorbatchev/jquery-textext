@@ -105,11 +105,16 @@
 	 */
 	p.getSuggestions = function(filter, callback)
 	{
+		this.filter(this._core.opts('suggestions'), filter, callback);
+	};
+
+	p.filter = function(items, filter, callback)
+	{
 		var self   = this,
 			result = []
 			;
 
-		self.each(function(item)
+		self.each(items, function(err, item)
 		{
 			if(self.itemContains(item, filter))
 				result.push(item);
@@ -118,15 +123,11 @@
 		callback(null, result);
 	};
 
-	p.each = function(callback)
+	p.each = function(items, callback)
 	{
-		var suggestions = this._core.opts('suggestions'),
-			i
-			;
-
-		if(suggestions)
-			for(i = 0; i < suggestions.length; i++)
-				callback(suggestions[i], i);
+		if(items)
+			for(var i = 0; i < items.length; i++)
+				callback(null, items[i], i);
 	};
 
 	/**

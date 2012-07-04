@@ -12,6 +12,7 @@
 	{
 	};
 
+	$.fn.textext.ItemManagerAjax = ItemManagerAjax;
 	$.fn.textext.addItemManager('ajax', ItemManagerAjax);
 
 	var p = ItemManagerAjax.prototype,
@@ -170,7 +171,10 @@
 			;
 
 		if(self._cached && self.opts(OPT_CACHE_RESULTS))
-			return callback(null, self.suggestions);
+		{
+			self.stopLoading();
+			return self.filter(self.suggestions, filter, callback);
+		}
 
 		opts = $.extend(true,
 			{
@@ -201,7 +205,7 @@
 			self._cached     = true;
 		}
 
-		callback(null, data);
+		self.filter(data, filter, callback);
 	};
 
 	p.onError = function(jqXHR, message, filter, callback)

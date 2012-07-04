@@ -630,8 +630,10 @@
 	 */
 	p.renderSuggestions = function()
 	{
-		var self   = this,
-			filter = self.val()
+		var self        = this,
+			filter      = self.val(),
+			itemManager = self.itemManager(),
+			i
 			;
 
 		if(self._lastFilter !== filter)
@@ -642,11 +644,11 @@
 
 			self._lastFilter = filter;
 
-			self.itemManager().getSuggestions(filter, function(err, suggestions)
+			itemManager.getSuggestions(filter, function(err, suggestions)
 			{
 				self.clearItems();
 
-				$.each(suggestions, function(index, item)
+				itemManager.each(suggestions, function(err, item)
 				{
 					self.addSuggestion(item);
 				});
