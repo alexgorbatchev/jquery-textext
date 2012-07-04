@@ -2,7 +2,8 @@
 	"name"          : "app_name",
 	"version"       : "0.0.0",
 	"dependencies"  : {
-		"soda"      : ">= 0.2.x"
+		"soda"   : ">= 0.2.x",
+		"stylus" : ">= 0.27.x"
 	}
 }
 
