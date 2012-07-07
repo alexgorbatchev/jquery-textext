@@ -173,12 +173,12 @@
 		if(self._cached && self.opts(OPT_CACHE_RESULTS))
 		{
 			self.stopLoading();
-			return self.filter(self.suggestions, filter, callback);
+			return self.filter(self.data, filter, callback);
 		}
 
 		opts = $.extend(true,
 			{
-				data    : dataCallback ? dataCallback(filter) : self.getData(filter),
+				data    : dataCallback ? dataCallback(filter) : self.getAjaxData(filter),
 				success : function(data) { self.onSuccess(data, filter, callback); },
 				error   : function(jqXHR, message) { self.onError(jqXHR, message, filter, callback); }
 			}, 
@@ -188,9 +188,14 @@
 		$.ajax(opts);
 	};
 
-	p.getData = function(filter)
+	p.getAjaxData = function(filter)
 	{
 		return { q : filter };
+	};
+
+	p.getItemsFromAjax = function(data)
+	{
+		return data;
 	};
 
 	p.onSuccess = function(data, filter, callback)
@@ -199,11 +204,10 @@
 
 		self.stopLoading();
 
+		data = self.data = self.getItemsFromAjax(data);
+
 		if(self.opts(OPT_CACHE_RESULTS))
-		{
-			self.suggestions = data;
-			self._cached     = true;
-		}
+			self._cached = 1;
 
 		self.filter(data, filter, callback);
 	};
