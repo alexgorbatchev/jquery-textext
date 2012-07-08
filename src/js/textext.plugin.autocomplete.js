@@ -636,27 +636,31 @@
 			i
 			;
 
-		if(self._lastFilter !== filter)
+		if(self._lastValue !== filter)
 		{
 			// if user clears input, then we want to select first suggestion instead of the last one
 			if(filter === '')
 				current = null;
 
-			self._lastFilter = filter;
+			self._lastValue = filter;
 
 			itemManager.getSuggestions(filter, function(err, suggestions)
 			{
 				self.clearItems();
 
-				itemManager.each(suggestions, function(err, item)
-				{
-					self.addSuggestion(item);
-				});
-
 				if(suggestions.length > 0)
+				{
+					itemManager.each(suggestions, function(err, item)
+					{
+						self.addSuggestion(item);
+					});
+
 					self.showDropdown();
+				}
 				else
+				{
 					self.hideDropdown();
+				}
 			});
 		}
 	};
@@ -697,7 +701,7 @@
 	{
 		var self = this;
 
-		self._lastFilter = null;
+		self._lastValue = null;
 		self.containerElement().hide();
 	};
 
