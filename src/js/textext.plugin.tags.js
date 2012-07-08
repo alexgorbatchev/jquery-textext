@@ -16,14 +16,14 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags
+	 * @id tags
 	 */
-	function TextExtTags() {};
+	function PluginTags() {};
 
-	$.fn.textext.TextExtTags = TextExtTags;
-	$.fn.textext.addPlugin('tags', TextExtTags);
+	$.fn.textext.PluginTags = PluginTags;
+	$.fn.textext.addPlugin('tags', PluginTags);
 
-	var p = TextExtTags.prototype,
+	var p = PluginTags.prototype,
 
 		CSS_DOT             = '.',
 		CSS_TAGS_ON_TOP     = 'text-tags-on-top',
@@ -50,7 +50,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.options
+		 * @id options
 		 */
 
 		/**
@@ -61,7 +61,7 @@
 		 * @default true
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.options.tags.enabled
+		 * @id options.tags.enabled
 		 */
 		OPT_ENABLED = 'tags.enabled',
 
@@ -74,7 +74,7 @@
 		 * @default null
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.options.tags.items
+		 * @id options.tags.items
 		 */
 		OPT_ITEMS = 'tags.items',
 
@@ -85,7 +85,7 @@
 		 * @default '<div class="text-tags"/>'
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.options.html.tag
+		 * @id options.html.tag
 		 */
 		OPT_HTML_TAG  = 'html.tag',
 
@@ -96,7 +96,7 @@
 		 * @default '<div class="text-tag"><div class="text-button"><span class="text-label"/><a class="text-remove"/></div></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.options.html.tags
+		 * @id options.html.tags
 		 */
 		OPT_HTML_TAGS = 'html.tags',
 
@@ -105,7 +105,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtTags.events
+		 * @id events
 		 */
 
 		/**
@@ -124,7 +124,7 @@
 		 * @name isTagAllowed
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExtTags.events.isTagAllowed
+		 * @id events.isTagAllowed
 		 */
 		EVENT_IS_TAG_ALLOWED = 'isTagAllowed',
 
@@ -153,7 +153,7 @@
 		 * @version 1.3.0
 		 * @author s.stok
 		 * @date 2011/01/23
-		 * @id TextExtTags.events.tagClick
+		 * @id events.tagClick
 		 */
 		EVENT_TAG_CLICK = 'tagClick',
 
@@ -173,13 +173,13 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtTags.init(core)
+	 * @signature PluginTags.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.init
+	 * @id init
 	 */
 	p.init = function(core)
 	{
@@ -230,11 +230,11 @@
 	/**
 	 * Returns HTML element in which all tag HTML elements are residing.
 	 *
-	 * @signature TextExtTags.containerElement()
+	 * @signature PluginTags.containerElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id TextExtTags.containerElement
+	 * @id containerElement
 	 */
 	p.containerElement = function()
 	{
@@ -248,13 +248,13 @@
 	 * Reacts to the `postInit` event triggered by the core and sets default tags
 	 * if any were specified.
 	 *
-	 * @signature TextExtTags.onPostInit(e)
+	 * @signature PluginTags.onPostInit(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExtTags.onPostInit
+	 * @id onPostInit
 	 */
 	p.onPostInit = function(e)
 	{
@@ -271,7 +271,7 @@
 	 *
 	 * [1]: /manual/textext.html#getformdata
 	 *
-	 * @signature TextExtTags.onGetFormData(e, data, keyCode)
+	 * @signature PluginTags.onGetFormData(e, data, keyCode)
 	 *
 	 * @param e {Object} jQuery event.
 	 * @param data {Object} Data object to be populated.
@@ -279,7 +279,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExtTags.onGetFormData
+	 * @id onGetFormData
 	 */
 	p.getFormData = function(keyCode, callback)
 	{
@@ -297,13 +297,13 @@
 	 * tags, the tags container is flipped to be on top of the text area which
 	 * makes all tags functional with the mouse.
 	 *
-	 * @signature TextExtTags.onInputMouseMove(e)
+	 * @signature PluginTags.onInputMouseMove(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtTags.onInputMouseMove
+	 * @id onInputMouseMove
 	 */
 	p.onInputMouseMove = function(e)
 	{
@@ -316,13 +316,13 @@
 	 * the tags container is sent back under the text area which allows user
 	 * to interact with the text using mouse cursor as expected.
 	 *
-	 * @signature TextExtTags.onContainerMouseMove(e)
+	 * @signature PluginTags.onContainerMouseMove(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtTags.onContainerMouseMove
+	 * @id onContainerMouseMove
 	 */
 	p.onContainerMouseMove = function(e)
 	{
@@ -333,13 +333,13 @@
 	 * Reacts to the `backspaceKeyDown` event. When backspace key is pressed in an empty text field,
 	 * deletes last tag from the list.
 	 *
-	 * @signature TextExtTags.onBackspaceKeyDown(e)
+	 * @signature PluginTags.onBackspaceKeyDown(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id TextExtTags.onBackspaceKeyDown
+	 * @id onBackspaceKeyDown
 	 */
 	p.onBackspaceKeyDown = function(e)
 	{
@@ -355,13 +355,13 @@
 	 * Reacts to the `preInvalidate` event and updates the input box to look like the tags are
 	 * positioned inside it.
 	 *
-	 * @signature TextExtTags.onPreInvalidate(e)
+	 * @signature PluginTags.onPreInvalidate(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.onPreInvalidate
+	 * @id onPreInvalidate
 	 */
 	p.onPreInvalidate = function(e)
 	{
@@ -386,13 +386,13 @@
 	/**
 	 * Reacts to the mouse `click` event.
 	 *
-	 * @signature TextExtTags.onClick(e)
+	 * @signature PluginTags.onClick(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.onClick
+	 * @id onClick
 	 */
 	p.onClick = function(e)
 	{
@@ -439,13 +439,13 @@
 	 * Reacts to the `enterKeyPress` event and adds whatever is currently in the text input
 	 * as a new tag. Triggers `isTagAllowed` to check if the tag could be added first.
 	 *
-	 * @signature TextExtTags.onEnterKeyPress(e)
+	 * @signature PluginTags.onEnterKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.onEnterKeyPress
+	 * @id onEnterKeyPress
 	 */
 	p.onEnterKeyPress = function(e)
 	{
@@ -469,11 +469,11 @@
 	 * Creates a cache object with all the tags currently added which will be returned
 	 * in the `onGetFormData` handler.
 	 *
-	 * @signature TextExtTags.updateFormCache()
+	 * @signature PluginTags.updateFormCache()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExtTags.updateFormCache
+	 * @id updateFormCache
 	 */
 	p.updateFormCache = function()
 	{
@@ -497,13 +497,13 @@
 	 * is over any of the tags, the tag container is brought to be over the text
 	 * area.
 	 *
-	 * @signature TextExtTags.toggleZIndex(e)
+	 * @signature PluginTags.toggleZIndex(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtTags.toggleZIndex
+	 * @id toggleZIndex
 	 */
 	p.toggleZIndex = function(e)
 	{
@@ -524,11 +524,11 @@
 	/**
 	 * Returns all tag HTML elements.
 	 *
-	 * @signature TextExtTags.tagElements()
+	 * @signature PluginTags.tagElements()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.tagElements
+	 * @id tagElements
 	 */
 	p.tagElements = function()
 	{
@@ -539,14 +539,14 @@
 	 * Wrapper around the `isTagAllowed` event which triggers it and returns `true`
 	 * if `result` property of the second argument remains `true`.
 	 *
-	 * @signature TextExtTags.isTagAllowed(tag)
+	 * @signature PluginTags.isTagAllowed(tag)
 	 *
 	 * @param tag {Object} Tag object that the current `ItemManager` can understand.
 	 * Default is `String`.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.isTagAllowed
+	 * @id isTagAllowed
 	 */
 	p.isTagAllowed = function(tag)
 	{
@@ -559,14 +559,14 @@
 	 * Adds specified tags to the tag list. Triggers `isTagAllowed` event for each tag
 	 * to insure that it could be added. Calls `TextExt.getFormData()` to refresh the data.
 	 *
-	 * @signature TextExtTags.addTags(tags)
+	 * @signature PluginTags.addTags(tags)
 	 *
 	 * @param tags {Array} List of tags that current `ItemManager` can understand. Default
 	 * is `String`.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.addTags
+	 * @id addTags
 	 */
 	p.addTags = function(tags)
 	{
@@ -595,14 +595,14 @@
 	/**
 	 * Returns HTML element for the specified tag.
 	 *
-	 * @signature TextExtTags.getTagElement(tag)
+	 * @signature PluginTags.getTagElement(tag)
 	 *
 	 * @param tag {Object} Tag object in the format that current `ItemManager` can understand.
 	 * Default is `String`.
 
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.getTagElement
+	 * @id getTagElement
 	 */
 	p.getTagElement = function(tag)
 	{
@@ -619,14 +619,14 @@
 	/**
 	 * Removes specified tag from the list. Calls `TextExt.getFormData()` to refresh the data.
 	 *
-	 * @signature TextExtTags.removeTag(tag)
+	 * @signature PluginTags.removeTag(tag)
 	 *
 	 * @param tag {Object} Tag object in the format that current `ItemManager` can understand.
 	 * Default is `String`.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.removeTag
+	 * @id removeTag
 	 */
 	p.removeTag = function(tag)
 	{
@@ -654,14 +654,14 @@
 	/**
 	 * Creates and returns new HTML element from the source code specified in the `html.tag` option.
 	 *
-	 * @signature TextExtTags.renderTag(tag)
+	 * @signature PluginTags.renderTag(tag)
 	 *
 	 * @param tag {Object} Tag object in the format that current `ItemManager` can understand.
 	 * Default is `String`.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtTags.renderTag
+	 * @id renderTag
 	 */
 	p.renderTag = function(tag)
 	{

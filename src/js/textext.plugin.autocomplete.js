@@ -15,14 +15,14 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete
+	 * @id 
 	 */
-	function TextExtAutocomplete() {};
+	function PluginAutocomplete() {};
 
-	$.fn.textext.TextExtAutocomplete = TextExtAutocomplete;
-	$.fn.textext.addPlugin('autocomplete', TextExtAutocomplete);
+	$.fn.textext.PluginAutocomplete = PluginAutocomplete;
+	$.fn.textext.addPlugin('autocomplete', PluginAutocomplete);
 
-	var p = TextExtAutocomplete.prototype,
+	var p = PluginAutocomplete.prototype,
 		
 		CSS_DOT            = '.',
 		CSS_SELECTED       = 'text-selected',
@@ -45,7 +45,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.options
+		 * @id options
 		 */
 
 		/**
@@ -56,7 +56,7 @@
 		 * @default true
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.options.autocomplete.enabled
+		 * @id options.autocomplete.enabled
 		 */
 		OPT_ENABLED = 'autocomplete.enabled',
 
@@ -68,7 +68,7 @@
 		 * @default "below"
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.options.autocomplete.dropdown.position
+		 * @id options.autocomplete.dropdown.position
 		 */
 		OPT_POSITION = 'autocomplete.dropdown.position',
 
@@ -80,7 +80,7 @@
 		 * @default "100px"
 		 * @author agorbatchev
 		 * @date 2011/12/29
-		 * @id TextExtAutocomplete.options.autocomplete.dropdown.maxHeight
+		 * @id options.autocomplete.dropdown.maxHeight
 		 * @version 1.1
 		 */
 		OPT_MAX_HEIGHT = 'autocomplete.dropdown.maxHeight',
@@ -88,7 +88,7 @@
 		/**
 		 * This option allows to override how a suggestion item is rendered. The value should be
 		 * a function, the first argument of which is suggestion to be rendered and `this` context
-		 * is the current instance of `TextExtAutocomplete`. 
+		 * is the current instance of `PluginAutocomplete`. 
 		 *
 		 * [Click here](/manual/examples/autocomplete-with-custom-render.html) to see a demo.
 		 *
@@ -108,7 +108,7 @@
 		 * @default null
 		 * @author agorbatchev
 		 * @date 2011/12/23
-		 * @id TextExtAutocomplete.options.autocomplete.render
+		 * @id options.autocomplete.render
 		 * @version 1.1
 		 */
 		OPT_RENDER = 'autocomplete.render',
@@ -120,7 +120,7 @@
 		 * @default '<div class="text-dropdown"><div class="text-list"/></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.options.html.dropdown
+		 * @id options.html.dropdown
 		 */
 		OPT_HTML_DROPDOWN = 'html.dropdown',
 
@@ -131,7 +131,7 @@
 		 * @default '<div class="text-suggestion"><span class="text-label"/></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.options.html.suggestion
+		 * @id options.html.suggestion
 		 */
 		OPT_HTML_SUGGESTION = 'html.suggestion',
 
@@ -140,7 +140,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtAutocomplete.events
+		 * @id events
 		 */
 	
 		/**
@@ -150,7 +150,7 @@
 		 * @name getFormData
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtAutocomplete.events.getFormData
+		 * @id events.getFormData
 		 */
 		EVENT_GET_FORM_DATA = 'getFormData',
 
@@ -178,13 +178,13 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtAutocomplete.init(core)
+	 * @signature PluginAutocomplete.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.init
+	 * @id init
 	 */
 	p.init = function(core)
 	{
@@ -242,11 +242,11 @@
 	/**
 	 * Returns top level dropdown container HTML element.
 	 * 
-	 * @signature TextExtAutocomplete.containerElement()
+	 * @signature PluginAutocomplete.containerElement()
 	 * 
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id TextExtAutocomplete.containerElement
+	 * @id containerElement
 	 */
 	p.containerElement = function()
 	{
@@ -259,13 +259,13 @@
 	/**
 	 * Reacts to the `mouseOver` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onMouseOver(e)
+	 * @signature PluginAutocomplete.onMouseOver(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onMouseOver
+	 * @id onMouseOver
 	 */
 	p.onMouseOver = function(e)
 	{
@@ -283,13 +283,13 @@
 	/**
 	 * Reacts to the `mouseDown` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onMouseDown(e)
+	 * @signature PluginAutocomplete.onMouseDown(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author adamayres
 	 * @date 2012/01/13
-	 * @id TextExtAutocomplete.onMouseDown
+	 * @id onMouseDown
 	 */
 	p.onMouseDown = function(e)
 	{
@@ -299,13 +299,13 @@
 	/**
 	 * Reacts to the `click` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onClick(e)
+	 * @signature PluginAutocomplete.onClick(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onClick
+	 * @id onClick
 	 */
 	p.onClick = function(e)
 	{
@@ -323,13 +323,13 @@
 	/**
 	 * Reacts to the `blur` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onBlur(e)
+	 * @signature PluginAutocomplete.onBlur(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onBlur
+	 * @id onBlur
 	 */
 	p.onBlur = function(e)
 	{
@@ -350,13 +350,13 @@
 	/**
 	 * Reacts to the `backspaceKeyPress` event triggered by the TextExt core. 
 	 *
-	 * @signature TextExtAutocomplete.onBackspaceKeyPress(e)
+	 * @signature PluginAutocomplete.onBackspaceKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onBackspaceKeyPress
+	 * @id onBackspaceKeyPress
 	 */
 	p.onBackspaceKeyPress = function(e)
 	{
@@ -371,13 +371,13 @@
 	/**
 	 * Reacts to the `anyKeyUp` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onAnyKeyUp(e)
+	 * @signature PluginAutocomplete.onAnyKeyUp(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onAnyKeyUp
+	 * @id onAnyKeyUp
 	 */
 	p.onAnyKeyUp = function(e, keyCode)
 	{
@@ -392,13 +392,13 @@
 	/**
 	 * Reacts to the `downKeyDown` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onDownKeyDown(e)
+	 * @signature PluginAutocomplete.onDownKeyDown(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onDownKeyDown
+	 * @id onDownKeyDown
 	 */
 	p.onDownKeyDown = function(e)
 	{
@@ -413,13 +413,13 @@
 	/**
 	 * Reacts to the `upKeyDown` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onUpKeyDown(e)
+	 * @signature PluginAutocomplete.onUpKeyDown(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onUpKeyDown
+	 * @id onUpKeyDown
 	 */
 	p.onUpKeyDown = function(e)
 	{
@@ -429,13 +429,13 @@
 	/**
 	 * Reacts to the `enterKeyPress` event triggered by the TextExt core.
 	 *
-	 * @signature TextExtAutocomplete.onEnterKeyPress(e)
+	 * @signature PluginAutocomplete.onEnterKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onEnterKeyPress
+	 * @id onEnterKeyPress
 	 */
 	p.onEnterKeyPress = function(e)
 	{
@@ -449,13 +449,13 @@
 	 * Reacts to the `escapeKeyPress` event triggered by the TextExt core. Hides the dropdown
 	 * if it's currently visible.
 	 *
-	 * @signature TextExtAutocomplete.onEscapeKeyPress(e)
+	 * @signature PluginAutocomplete.onEscapeKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.onEscapeKeyPress
+	 * @id onEscapeKeyPress
 	 */
 	p.onEscapeKeyPress = function(e)
 	{
@@ -472,11 +472,11 @@
 	 * Positions dropdown either below or above the input based on the `autocomplete.dropdown.position`
 	 * option specified, which could be either `above` or `below`.
 	 *
-	 * @signature TextExtAutocomplete.positionDropdown()
+	 * @signature PluginAutocomplete.positionDropdown()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id TextExtAutocomplete.positionDropdown
+	 * @id positionDropdown
 	 */
 	p.positionDropdown = function()
 	{
@@ -494,11 +494,11 @@
 	/**
 	 * Returns list of all the suggestion HTML elements in the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.suggestionElements()
+	 * @signature PluginAutocomplete.suggestionElements()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.suggestionElements
+	 * @id suggestionElements
 	 */
 	p.suggestionElements = function()
 	{
@@ -508,14 +508,14 @@
 	/**
 	 * Highlights specified suggestion as selected in the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.setSelectedSuggestion(suggestion)
+	 * @signature PluginAutocomplete.setSelectedSuggestion(suggestion)
 	 *
 	 * @param suggestion {Object} Suggestion object. With the default `ItemManager` this
 	 * is expected to be a string, anything else with custom implementations.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.setSelectedSuggestion
+	 * @id setSelectedSuggestion
 	 */
 	p.setSelectedSuggestion = function(suggestion)
 	{
@@ -548,11 +548,11 @@
 	/**
 	 * Returns the first suggestion HTML element from the dropdown that is highlighted as selected.
 	 *
-	 * @signature TextExtAutocomplete.selectedSuggestionElement()
+	 * @signature PluginAutocomplete.selectedSuggestionElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.selectedSuggestionElement
+	 * @id selectedSuggestionElement
 	 */
 	p.selectedSuggestionElement = function()
 	{
@@ -562,11 +562,11 @@
 	/**
 	 * Returns `true` if dropdown is currently visible, `false` otherwise.
 	 *
-	 * @signature TextExtAutocomplete.isDropdownVisible()
+	 * @signature PluginAutocomplete.isDropdownVisible()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.isDropdownVisible
+	 * @id isDropdownVisible
 	 */
 	p.isDropdownVisible = function()
 	{
@@ -580,7 +580,7 @@
 	 *
 	 * [1]: /manual/textext.html#getformdata
 	 *
-	 * @signature TextExtAutocomplete.onGetFormData(e, data, keyCode)
+	 * @signature PluginAutocomplete.onGetFormData(e, data, keyCode)
 	 *
 	 * @param e {Object} jQuery event.
 	 * @param data {Object} Data object to be populated.
@@ -588,7 +588,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExtAutocomplete.onGetFormData
+	 * @id onGetFormData
 	 */
 	p.getFormData = function(keyCode, callback)
 	{
@@ -608,11 +608,11 @@
 	/**
 	 * Removes all HTML suggestion items from the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.clearItems()
+	 * @signature PluginAutocomplete.clearItems()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.clearItems
+	 * @id clearItems
 	 */
 	p.clearItems = function()
 	{
@@ -622,11 +622,11 @@
 	/**
 	 * Clears all and renders passed suggestions.
 	 *
-	 * @signature TextExtAutocomplete.renderSuggestions(suggestions)
+	 * @signature PluginAutocomplete.renderSuggestions(suggestions)
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.renderSuggestions
+	 * @id renderSuggestions
 	 */
 	p.renderSuggestions = function()
 	{
@@ -668,11 +668,11 @@
 	/**
 	 * Shows the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.showDropdown()
+	 * @signature PluginAutocomplete.showDropdown()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.showDropdown
+	 * @id showDropdown
 	 */
 	p.showDropdown = function()
 	{
@@ -691,11 +691,11 @@
 	/**
 	 * Hides the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.hideDropdown()
+	 * @signature PluginAutocomplete.hideDropdown()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.hideDropdown
+	 * @id hideDropdown
 	 */
 	p.hideDropdown = function()
 	{
@@ -709,13 +709,13 @@
 	 * Adds single suggestion to the bottom of the dropdown. Uses `ItemManager.itemToString()` to
 	 * serialize provided suggestion to string.
 	 *
-	 * @signature TextExtAutocomplete.addSuggestion(suggestion)
+	 * @signature PluginAutocomplete.addSuggestion(suggestion)
 	 *
 	 * @param suggestion {Object} Suggestion item. By default expected to be a string.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.addSuggestion
+	 * @id addSuggestion
 	 */
 	p.addSuggestion = function(suggestion)
 	{
@@ -730,13 +730,13 @@
 	/**
 	 * Adds and returns HTML node to the bottom of the dropdown.
 	 *
-	 * @signature TextExtAutocomplete.addDropdownItem(html)
+	 * @signature PluginAutocomplete.addDropdownItem(html)
 	 *
 	 * @param html {String} HTML to be inserted into the item.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.addDropdownItem
+	 * @id addDropdownItem
 	 */
 	p.addDropdownItem = function(html)
 	{
@@ -753,11 +753,11 @@
 	/**
 	 * Removes selection highlight from all suggestion elements.
 	 *
-	 * @signature TextExtAutocomplete.clearSelected()
+	 * @signature PluginAutocomplete.clearSelected()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id TextExtAutocomplete.clearSelected
+	 * @id clearSelected
 	 */
 	p.clearSelected = function()
 	{
@@ -769,11 +769,11 @@
 	 * currently selected suggestion, it will select the first one. Selected
 	 * suggestion will always be scrolled into view.
 	 *
-	 * @signature TextExtAutocomplete.toggleNextSuggestion()
+	 * @signature PluginAutocomplete.toggleNextSuggestion()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id TextExtAutocomplete.toggleNextSuggestion
+	 * @id toggleNextSuggestion
 	 */
 	p.toggleNextSuggestion = function()
 	{
@@ -802,11 +802,11 @@
 	 * Selects previous suggestion relative to the current one. Selected
 	 * suggestion will always be scrolled into view.
 	 *
-	 * @signature TextExtAutocomplete.togglePreviousSuggestion()
+	 * @signature PluginAutocomplete.togglePreviousSuggestion()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id TextExtAutocomplete.togglePreviousSuggestion
+	 * @id togglePreviousSuggestion
 	 */
 	p.togglePreviousSuggestion = function()
 	{
@@ -826,14 +826,14 @@
 	/**
 	 * Scrolls specified HTML suggestion element into the view.
 	 *
-	 * @signature TextExtAutocomplete.scrollSuggestionIntoView(item)
+	 * @signature PluginAutocomplete.scrollSuggestionIntoView(item)
 	 *
 	 * @param item {HTMLElement} jQuery HTML suggestion element which needs to
 	 * scrolled into view.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.scrollSuggestionIntoView
+	 * @id scrollSuggestionIntoView
 	 */
 	p.scrollSuggestionIntoView = function(item)
 	{
@@ -866,11 +866,11 @@
 	 * suggestion from the dropdown will be used to complete the action. Triggers `hideDropdown`
 	 * event.
 	 *
-	 * @signature TextExtAutocomplete.selectFromDropdown()
+	 * @signature PluginAutocomplete.selectFromDropdown()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id TextExtAutocomplete.selectFromDropdown
+	 * @id selectFromDropdown
 	 */
 	p.selectFromDropdown = function()
 	{
@@ -890,14 +890,14 @@
 	/**
 	 * Determines if the specified HTML element is within the TextExt core wrap HTML element.
 	 *
-	 * @signature TextExtAutocomplete.withinWrapElement(element)
+	 * @signature PluginAutocomplete.withinWrapElement(element)
 	 *
 	 * @param element {HTMLElement} element to check if contained by wrap element
 	 *
 	 * @author adamayres
 	 * @version 1.3.0
 	 * @date 2012/01/15
-	 * @id TextExtAutocomplete.withinWrapElement
+	 * @id withinWrapElement
 	 */
 	p.withinWrapElement = function(element) 
 	{
