@@ -68,7 +68,7 @@
 	};
 
 	var textext = $.fn.textext,
-		p       = ItemManager.prototype = new textext.TextExtPlugin()
+		p       = ItemManager.prototype = new textext.Plugin()
 		;
 		
 	textext.ItemManager = ItemManager;
@@ -81,13 +81,13 @@
 	 * method would be available either through built in class in most modern browsers
 	 * or through JSON2 library.
 	 *
-	 * @signature TextExt.serializeData(data)
+	 * @signature ItemManager.serialize(data)
 	 *
 	 * @param data {Object} Data to serialize.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExt.serializeData
+	 * @id serializeData
 	 */
 	p.serialize = JSON.stringify;
 

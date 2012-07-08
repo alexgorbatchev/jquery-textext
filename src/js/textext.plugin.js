@@ -9,7 +9,7 @@
 (function($, undefined)
 {
 	/**
-	 * TextExtPlugin is a base class for all plugins. It provides common methods which are reused
+	 * Plugin is a base class for all plugins. It provides common methods which are reused
 	 * by majority of plugins.
 	 *
 	 * All plugins must register themselves by calling the `$.fn.textext.addPlugin(name, constructor)`
@@ -27,15 +27,15 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin
+	 * @id Plugin
 	 */
-	function TextExtPlugin() {};
+	function Plugin() {};
 	
 	var textext = $.fn.textext,
-		p       = TextExtPlugin.prototype
+		p       = Plugin.prototype
 		;
 
-	textext.TextExtPlugin = TextExtPlugin;
+	textext.Plugin = Plugin;
 
 	/**
 	 * Allows to add multiple event handlers which will be execued in the scope of the current object.
@@ -48,7 +48,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.on
+	 * @id on
 	 */
 	p.on = textext.TextExt.prototype.on;
 
@@ -56,13 +56,13 @@
 	 * Initialization method called by the core during plugin instantiation. This method must be implemented
 	 * by each plugin individually.
 	 *
-	 * @signature TextExtPlugin.init(core)
+	 * @signature Plugin.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.init
+	 * @id init
 	 */
 	p.init = function(core)
 	{
@@ -72,7 +72,7 @@
 	/**
 	 * Initialization method wich should be called by the plugin during the `init()` call.
 	 *
-	 * @signature TextExtPlugin.baseInit(core, defaults)
+	 * @signature Plugin.baseInit(core, defaults)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 * @param defaults {Object} Default plugin options. These will be checked if desired value wasn't
@@ -80,15 +80,15 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.baseInit
+	 * @id baseInit
 	 */
 	p.baseInit = function(core, defaults)
 	{
 		var self = this;
 
-		core._defaults = $.extend(true, core._defaults, defaults);
-		self._core     = core;
-		self._timers   = {};
+		self._core          = core;
+		core.defaultOptions = $.extend(true, core.defaultOptions, defaults);
+		self.timers         = {};
 	};
 
 	/**
@@ -97,7 +97,7 @@
 	 * to occur only after a certain period of inactivity. For example, making an AJAX call after 
 	 * user stoped typing for 1 second.
 	 *
-	 * @signature TextExtPlugin.startTimer(name, delay, callback)
+	 * @signature Plugin.startTimer(name, delay, callback)
 	 *
 	 * @param name {String} Timer name.
 	 * @param delay {Number} Delay in seconds.
@@ -105,7 +105,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/25
-	 * @id TextExtPlugin.startTimer
+	 * @id startTimer
 	 */
 	p.startTimer = function(name, delay, callback)
 	{
@@ -113,10 +113,10 @@
 
 		self.stopTimer(name);
 
-		self._timers[name] = setTimeout(
+		self.timers[name] = setTimeout(
 			function()
 			{
-				delete self._timers[name];
+				delete self.timers[name];
 				callback.apply(self);
 			},
 			delay * 1000
@@ -126,27 +126,27 @@
 	/**
 	 * Stops the timer by name without resetting it.
 	 *
-	 * @signature TextExtPlugin.stopTimer(name)
+	 * @signature Plugin.stopTimer(name)
 	 *
 	 * @param name {String} Timer name.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/25
-	 * @id TextExtPlugin.stopTimer
+	 * @id stopTimer
 	 */
 	p.stopTimer = function(name)
 	{
-		clearTimeout(this._timers[name]);
+		clearTimeout(this.timers[name]);
 	};
 
 	/**
 	 * Returns instance of the `TextExt` to which current instance of the plugin is attached to.
 	 *
-	 * @signature TextExtPlugin.core()
+	 * @signature Plugin.core()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.core
+	 * @id core
 	 */
 	p.core = function()
 	{
@@ -156,13 +156,13 @@
 	/**
 	 * Shortcut to the core's `opts()` method. Returns option value.
 	 *
-	 * @signature TextExtPlugin.opts(name)
+	 * @signature Plugin.opts(name)
 	 * 
 	 * @param name {String} Option name as described in the options.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.opts
+	 * @id opts
 	 */
 	p.opts = function(name)
 	{
@@ -173,11 +173,11 @@
 	 * Shortcut to the core's `itemManager()` method. Returns instance of the `ItemManger` that is
 	 * currently in use.
 	 *
-	 * @signature TextExtPlugin.itemManager()
+	 * @signature Plugin.itemManager()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.itemManager
+	 * @id itemManager
 	 */
 	p.itemManager = function()
 	{
@@ -188,11 +188,11 @@
 	 * Shortcut to the core's `input()` method. Returns instance of the HTML element that represents
 	 * current text input.
 	 *
-	 * @signature TextExtPlugin.input()
+	 * @signature Plugin.input()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.input
+	 * @id input
 	 */
 	p.input = function()
 	{
@@ -202,14 +202,14 @@
 	/**
 	 * Shortcut to the commonly used `this.input().val()` call to get or set value of the text input.
 	 *
-	 * @signature TextExtPlugin.val(value)
+	 * @signature Plugin.val(value)
 	 *
 	 * @param value {String} Optional value. If specified, the value will be set, otherwise it will be
 	 * returned.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/20
-	 * @id TextExtPlugin.val
+	 * @id val
 	 */
 	p.val = function(value)
 	{
@@ -225,14 +225,14 @@
 	 * Shortcut to the core's `trigger()` method. Triggers specified event with arguments on the
 	 * component core.
 	 *
-	 * @signature TextExtPlugin.trigger(event, ...args)
+	 * @signature Plugin.trigger(event, ...args)
 	 *
 	 * @param event {String} Name of the event to trigger.
 	 * @param ...args All remaining arguments will be passed to the event handler.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExtPlugin.trigger
+	 * @id trigger
 	 */
 	p.trigger = function()
 	{
@@ -243,14 +243,14 @@
 	/**
 	 * Shortcut to the core's `bind()` method. Binds specified handler to the event.
 	 *
-	 * @signature TextExtPlugin.bind(event, handler)
+	 * @signature Plugin.bind(event, handler)
 	 *
 	 * @param event {String} Event name.
 	 * @param handler {Function} Event handler.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/20
-	 * @id TextExtPlugin.bind
+	 * @id bind
 	 */
 	p.bind = function(event, handler)
 	{
@@ -264,11 +264,11 @@
 	 *
 	 * Default initialization priority is `0`.
 	 *
-	 * @signature TextExtPlugin.initPriority()
+	 * @signature Plugin.initPriority()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExtPlugin.initPriority
+	 * @id initPriority
 	 */
 	p.initPriority = function()
 	{

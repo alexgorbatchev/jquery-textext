@@ -341,8 +341,8 @@
 
 		DEFAULT_OPTS = {
 			itemManager : null,
-			plugins     : [],
 			dataSource  : null,
+			plugins     : [],
 			ext         : {},
 
 			html : {
@@ -444,14 +444,14 @@
 			container
 			;
 
-		self._defaults    = $.extend({}, DEFAULT_OPTS);
-		self._opts        = opts || {};
-		self._plugins     = {};
-		self._dataSource  = self.opts(OPT_DATA_SOURCE);
-		input             = $(input);
-		container         = $(self.opts(OPT_HTML_WRAP));
-		hiddenInput       = $(self.opts(OPT_HTML_HIDDEN));
-		itemManager       = self.opts(OPT_ITEM_MANAGER) || 'default';
+		self.defaultOptions = $.extend({}, DEFAULT_OPTS);
+		self.userOptions    = opts || {};
+		self.plugins        = {};
+		self.dataSource     = self.opts(OPT_DATA_SOURCE);
+		input               = $(input);
+		container           = $(self.opts(OPT_HTML_WRAP));
+		hiddenInput         = $(self.opts(OPT_HTML_HIDDEN));
+		itemManager         = self.opts(OPT_ITEM_MANAGER) || 'default';
 
 		if(typeof(itemManager) === 'string')
 			itemManager = textext.itemManagers[itemManager];
@@ -580,13 +580,13 @@
 			name = plugins[i];
 
 			if(name.charAt(name.length - 1) === '*')
-				self._dataSource = name = name.substr(0, name.length - 1);
+				self.dataSource = name = name.substr(0, name.length - 1);
 
 			plugin = source[name];
 
 			if(plugin)
 			{
-				self._plugins[name] = plugin = new plugin();
+				self.plugins[name] = plugin = new plugin();
 
 				initList.push(plugin);
 				$.extend(true, plugin, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.' + name));
@@ -618,8 +618,8 @@
 		{
 			plugin = initList[i];
 
-			if(!self._dataSource && plugin.getFormData)
-				self._dataSource = plugin;
+			if(!self.dataSource && plugin.getFormData)
+				self.dataSource = plugin;
 
 			plugin.init(self);
 		}
@@ -639,7 +639,7 @@
 	 */
 	p.hasPlugin = function(name)
 	{
-		return !!this._plugins[name];
+		return !!this.plugins[name];
 	};
 
 	/**
@@ -734,8 +734,8 @@
 	 */
 	p.opts = function(name)
 	{
-		var result = getProperty(this._opts, name);
-		return typeof(result) == 'undefined' ? getProperty(this._defaults, name) : result;
+		var result = getProperty(this.userOptions, name);
+		return typeof(result) == 'undefined' ? getProperty(this.defaultOptions, name) : result;
 	};
 
 	/**
@@ -831,7 +831,7 @@
 	p.invalidateData = function(keyCode)
 	{
 		var self       = this,
-			dataSource = self._dataSource,
+			dataSource = self.dataSource,
 			plugin     = dataSource
 			;
 		
@@ -845,7 +845,7 @@
 
 		if(typeof(dataSource) === 'string')
 		{
-			plugin = self._plugins[dataSource];
+			plugin = self.plugins[dataSource];
 			
 			if(!plugin)
 				error('`dataSource` plugin not found: ' + dataSource);
@@ -1020,7 +1020,7 @@
 	 * The following properties are also exposed through the jQuery `$.fn.textext`:
 	 *
 	 * * `TextExt` -- `TextExt` class.
-	 * * `TextExtPlugin` -- `TextExtPlugin` class.
+	 * * `Plugin` -- `Plugin` class.
 	 * * `ItemManager` -- `ItemManager` class.
 	 * * `plugins` -- Key/value table of all registered plugins.
 	 * * `addPlugin(name, constructor)` -- All plugins should register themselves using this function.
@@ -1075,7 +1075,7 @@
 	textext.addPlugin = function(name, constructor)
 	{
 		textext.plugins[name] = constructor;
-		constructor.prototype = new textext.TextExtPlugin();
+		constructor.prototype = new textext.Plugin();
 	};
 
 	/**
@@ -1094,7 +1094,7 @@
 	textext.addPatch = function(name, constructor)
 	{
 		textext.patches[name] = constructor;
-		constructor.prototype = new textext.TextExtPlugin();
+		constructor.prototype = new textext.Plugin();
 	};
 
 	textext.addItemManager = function(name, constructor)
