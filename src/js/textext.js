@@ -90,7 +90,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExt.options
+		 * @id options
 		 */
 
 		/**
@@ -100,9 +100,11 @@
 		 * @default ItemManager
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.options.item.manager
+		 * @id options.item.manager
 		 */
 		OPT_ITEM_MANAGER = 'item.manager',
+
+		OPT_ITEM_VALIDATOR = 'item.validator',
 		
 		/**
 		 * List of plugins that should be used with the current instance of TextExt. The list could be
@@ -112,7 +114,7 @@
 		 * @default []
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.options.plugins
+		 * @id options.plugins
 		 */
 		OPT_PLUGINS = 'plugins',
 		
@@ -173,7 +175,7 @@
 		 * @default {}
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.options.ext
+		 * @id options.ext
 		 */
 		OPT_EXT = 'ext',
 		
@@ -185,7 +187,7 @@
 		 * @default '<div class="text-core"><div class="text-wrap"/></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.options.html.wrap
+		 * @id options.html.wrap
 		 */
 		OPT_HTML_WRAP = 'html.wrap',
 
@@ -197,10 +199,10 @@
 		 * @default '<input type="hidden" />'
 		 * @author agorbatchev
 		 * @date 2011/08/20
-		 * @id TextExt.options.html.hidden
+		 * @id options.html.hidden
 		 */
 		OPT_HTML_HIDDEN = 'html.hidden',
-		
+
 		/**
 		 * Hash table of key codes and key names for which special events will be created
 		 * by the core. For each entry a `[name]KeyDown`, `[name]KeyUp` and `[name]KeyPress` events 
@@ -229,7 +231,7 @@
 		 * @default { ... }
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.options.keys
+		 * @id options.keys
 		 */
 		OPT_KEYS = 'keys',
 
@@ -238,7 +240,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExt.events
+		 * @id events
 		 */
 
 		/**
@@ -248,7 +250,7 @@
 		 * @name preInvalidate
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.preInvalidate
+		 * @id events.preInvalidate
 		 */
 		EVENT_PRE_INVALIDATE = 'preInvalidate',
 
@@ -259,7 +261,7 @@
 		 * @name postInvalidate
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.postInvalidate
+		 * @id events.postInvalidate
 		 */
 		EVENT_POST_INVALIDATE = 'postInvalidate',
 		
@@ -272,7 +274,7 @@
 		 * @name postInit
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.postInit
+		 * @id events.postInit
 		 */
 		EVENT_POST_INIT = 'postInit',
 
@@ -284,7 +286,7 @@
 		 * @name ready
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.ready
+		 * @id events.ready
 		 */
 		EVENT_READY = 'ready',
 
@@ -297,7 +299,7 @@
 		 * @name anyKeyUp
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.anyKeyUp
+		 * @id events.anyKeyUp
 		 */
 
 		/**
@@ -306,7 +308,7 @@
 		 * @name anyKeyDown
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.anyKeyDown
+		 * @id events.anyKeyDown
 		 */
 
 		/**
@@ -316,7 +318,7 @@
 		 * @name [name]KeyUp
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.[name]KeyUp
+		 * @id events.[name]KeyUp
 		 */
 
 		/**
@@ -326,7 +328,7 @@
 		 * @name [name]KeyDown
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.[name]KeyDown
+		 * @id events.[name]KeyDown
 		 */
 
 		/**
@@ -336,14 +338,15 @@
 		 * @name [name]KeyPress
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id TextExt.events.[name]KeyPress
+		 * @id events.[name]KeyPress
 		 */
 
 		DEFAULT_OPTS = {
-			itemManager : null,
-			dataSource  : null,
-			plugins     : [],
-			ext         : {},
+			itemManager   : 'default',
+			itemValidator : 'default',
+			dataSource    : null,
+			plugins       : [],
+			ext           : {},
 
 			html : {
 				wrap   : '<div class="text-core"><div class="text-wrap"/></div>',
@@ -365,6 +368,11 @@
 		}
 		;
 
+	function isString(val)
+	{
+		return typeof(val) === 'string';
+	}
+
 	/**
 	 * Returns object property by name where name is dot-separated and object is multiple levels deep.
 	 * @param target Object Source object.
@@ -373,7 +381,7 @@
 	 */
 	function getProperty(source, name)
 	{
-		if(typeof(name) === 'string')
+		if(isString(name))
 			name = name.split('.');
 
 		var fullCamelCaseName = name.join('.').replace(/\.(\w)/g, function(match, letter) { return letter.toUpperCase() }),
@@ -434,13 +442,12 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.init
+	 * @id init
 	 */
 	p.init = function(input, opts)
 	{
 		var self = this,
 			hiddenInput,
-			itemManager,
 			container
 			;
 
@@ -451,12 +458,9 @@
 		input               = $(input);
 		container           = $(self.opts(OPT_HTML_WRAP));
 		hiddenInput         = $(self.opts(OPT_HTML_HIDDEN));
-		itemManager         = self.opts(OPT_ITEM_MANAGER) || 'default';
 
-		if(typeof(itemManager) === 'string')
-			itemManager = textext.itemManagers[itemManager];
-
-		itemManager = self._itemManager = new itemManager();
+		if(isString(self.selectionKey))
+			self.selectionKey = self.selectionKey.charCodeAt(0);
 
 		input
 			.wrap(container)
@@ -479,19 +483,15 @@
 		// add hidden input to the DOM
 		hiddenInput.insertAfter(input);
 
-		$.extend(true, itemManager, self.opts(OPT_EXT + '.item.manager'));
 		$.extend(true, self, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.core'));
 		
 		self.originalWidth = input.outerWidth();
 
-		self.invalidateBounds();
-
 		self.initPatches();
+		self.initTooling();
 		self.initPlugins(self.opts(OPT_PLUGINS), $.fn.textext.plugins);
 
-		self.on({
-			anyKeyUp : self.onAnyKeyUp
-		});
+		self.invalidateBounds();
 
 		setTimeout(function()
 		{
@@ -499,8 +499,6 @@
 			self.trigger(EVENT_READY);
 			self.invalidateData();
 		}, 1);
-
-		itemManager.init(self);
 	};
 
 	/**
@@ -519,7 +517,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/10/11
-	 * @id TextExt.initPatches
+	 * @id initPatches
 	 */
 	p.initPatches = function()
 	{
@@ -532,6 +530,31 @@
 			list.push(name);
 
 		this.initPlugins(list, source);
+	};
+
+	p.initTooling = function()
+	{
+		var self          = this,
+			itemManager   = self.opts(OPT_ITEM_MANAGER),
+			itemValidator = self.opts(OPT_ITEM_VALIDATOR)
+			;
+
+		if(isString(itemManager))
+			itemManager = textext.itemManagers[itemManager];
+
+		if(isString(itemValidator))
+			itemValidator = textext.itemValidators[itemValidator];
+
+		$.extend(true, itemValidator, self.opts(OPT_EXT + '.itemValidator'));
+		$.extend(true, itemManager, self.opts(OPT_EXT + '.itemManager'));
+
+		this.initPlugins(
+			'itemManager itemValidator',
+			{
+				'itemManager'   : itemManager,
+				'itemValidator' : itemValidator
+			}
+		);
 	};
 
 	/**
@@ -552,7 +575,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.initPlugins
+	 * @id initPlugins
 	 */
 	p.initPlugins = function(plugins, source)
 	{
@@ -564,7 +587,7 @@
 			i
 			;
 
-		if(typeof(plugins) === 'string')
+		if(isString(plugins))
 			plugins = plugins.split(/\s*[,>]\s*|\s+/g);
 
 		function createGetter(name, plugin)
@@ -595,24 +618,14 @@
 				// For example for `autocomplete` plugin we will have `textext.autocomplete()`
 				// function returning this isntance.
 				createGetter(name, plugin);
+
+				plugin.init(self);
 			}
 			else
 			{
 				throw new Error('TextExt.js: unknown plugin: ' + name);
 			}
 		}
-
-		// sort plugins based on their priority values
-		initList.sort(function(p1, p2)
-		{
-			p1 = p1.initPriority();
-			p2 = p2.initPriority();
-
-			return p1 === p2
-				? 0
-				: p1 < p2 ? 1 : -1
-				;
-		});
 
 		for(i = 0; i < initList.length; i++)
 		{
@@ -621,7 +634,6 @@
 			if(!self.dataSource && plugin.getFormData)
 				self.dataSource = plugin;
 
-			plugin.init(self);
 		}
 	};
 
@@ -634,7 +646,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/12/28
-	 * @id TextExt.hasPlugin
+	 * @id hasPlugin
 	 * @version 1.1
 	 */
 	p.hasPlugin = function(name)
@@ -653,7 +665,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.on
+	 * @id on
 	 */
 	p.on = hookupEvents;
 
@@ -667,7 +679,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.bind
+	 * @id bind
 	 */
 	p.bind = function(event, handler)
 	{
@@ -684,7 +696,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.trigger
+	 * @id trigger
 	 */
 	p.trigger = function()
 	{
@@ -693,18 +705,24 @@
 	};
 
 	/**
-	 * Returns instance of `itemManager` that is used by the component.
+	 * Returns instance of item manager configured via `itemManager` option.
 	 *
 	 * @signature TextExt.itemManager()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.itemManager
+	 * @id itemManager
 	 */
-	p.itemManager = function()
-	{
-		return this._itemManager;
-	};
+
+	/**
+	 * Returns instance of validator configured via `validator` option.
+	 *
+	 * @signature TextExt.validator()
+	 *
+	 * @author agorbatchev
+	 * @date 2012/07/08
+	 * @id validator
+	 */
 
 	/**
 	 * Returns jQuery input element with which user is interacting with.
@@ -713,7 +731,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/10
-	 * @id TextExt.input
+	 * @id input
 	 */
 	p.input = function()
 	{
@@ -730,12 +748,12 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.opts
+	 * @id opts
 	 */
 	p.opts = function(name)
 	{
 		var result = getProperty(this.userOptions, name);
-		return typeof(result) == 'undefined' ? getProperty(this.defaultOptions, name) : result;
+		return typeof(result) == UNDEFINED ? getProperty(this.defaultOptions, name) : result;
 	};
 
 	/**
@@ -746,7 +764,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.wrapElement
+	 * @id wrapElement
 	 */
 	p.wrapElement = function()
 	{
@@ -761,7 +779,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.invalidateBounds
+	 * @id invalidateBounds
 	 */
 	p.invalidateBounds = function()
 	{
@@ -791,7 +809,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.focusInput
+	 * @id focusInput
 	 */
 	p.focusInput = function()
 	{
@@ -805,7 +823,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id TextExt.hiddenInput
+	 * @id hiddenInput
 	 */
 	p.hiddenInput = function(value)
 	{
@@ -826,13 +844,14 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExt.invalidateData
+	 * @id invalidateData
 	 */
-	p.invalidateData = function(keyCode)
+	p.invalidateData = function()
 	{
-		var self       = this,
-			dataSource = self.dataSource,
-			plugin     = dataSource
+		var self        = this,
+			dataSource  = self.dataSource,
+			plugin,
+			getFormData
 			;
 		
 		function error(msg)
@@ -843,26 +862,34 @@
 		if(!dataSource)
 			error('no `dataSource` set and no plugin supports `getFormData`');
 
-		if(typeof(dataSource) === 'string')
+		if(isString(dataSource))
 		{
 			plugin = self.plugins[dataSource];
 			
 			if(!plugin)
 				error('`dataSource` plugin not found: ' + dataSource);
 		}
+		else
+		{
+			if(dataSource instanceof textext.Plugin)
+			{
+				plugin     = dataSource;
+				dataSource = null;
+			}
+		}
 
-		if(plugin.getFormData)
+		if(plugin && plugin.getFormData)
 			// need to insure `dataSource` below is executing with plugin as plugin scop and
 			// if we just reference the `getFormData` function it will be in the window scope.
-			dataSource = function()
+			getFormData = function()
 			{
 				plugin.getFormData.apply(plugin, arguments);
 			};
 
-		if(!dataSource)
+		if(!getFormData)
 			error('specified `dataSource` plugin does not have `getFormData` function: ' + dataSource);
 
-		dataSource(keyCode, function(err, form, input)
+		getFormData(function(err, form, input)
 		{
 			self.setInputData(input);
 			self.setFormData(form);
@@ -871,24 +898,6 @@
 
 	//--------------------------------------------------------------------------------
 	// Event handlers
-
-	/**
-	 * Reacts to the `anyKeyUp` event and triggers the `getFormData` to change data that will be submitted
-	 * with the form. Default behaviour is that everything that is typed in will be JSON serialized, so
-	 * the end result will be a JSON string.
-	 *
-	 * @signature TextExt.onAnyKeyUp(e)
-	 *
-	 * @param e {Object} jQuery event.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/19
-	 * @id TextExt.onAnyKeyUp
-	 */
-	p.onAnyKeyUp = function(e, keyCode)
-	{
-		this.invalidateData(keyCode);
-	};
 
 	/**
 	 * Reacts to the `setInputData` event and populates the input text field that user is currently
@@ -901,7 +910,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExt.onSetInputData
+	 * @id onSetInputData
 	 */
 	p.setInputData = function(data)
 	{
@@ -927,7 +936,7 @@
 	 * 
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExt.onSetFormData
+	 * @id onSetFormData
 	 */
 	p.setFormData = function(data)
 	{
@@ -953,7 +962,7 @@
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.onKeyUp
+	 * @id onKeyUp
 	 */
 
 	/**
@@ -964,7 +973,7 @@
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.onKeyDown
+	 * @id onKeyDown
 	 */
 	
 	$(['Down', 'Up']).each(function()
@@ -1027,7 +1036,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id TextExt.jquery
+	 * @id jquery
 	 */
 
 	var cssInjected = false;
@@ -1070,7 +1079,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/10/11
-	 * @id TextExt.addPlugin
+	 * @id addPlugin
 	 */
 	textext.addPlugin = function(name, constructor)
 	{
@@ -1089,7 +1098,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/10/11
-	 * @id TextExt.addPatch
+	 * @id addPatch
 	 */
 	textext.addPatch = function(name, constructor)
 	{
@@ -1103,9 +1112,16 @@
 		constructor.prototype      = new textext.ItemManager();
 	};
 
-	textext.TextExt      = TextExt;
-	textext.plugins      = {};
-	textext.patches      = {};
-	textext.itemManagers = {};
+	textext.addItemValidator = function(name, constructor)
+	{
+		textext.itemValidators[name] = constructor;
+		constructor.prototype        = new textext.ItemValidator();
+	};
+
+	textext.TextExt        = TextExt;
+	textext.plugins        = {};
+	textext.patches        = {};
+	textext.itemManagers   = {};
+	textext.itemValidators = {};
 })(jQuery);
 

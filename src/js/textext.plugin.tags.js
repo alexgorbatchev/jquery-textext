@@ -65,6 +65,8 @@
 		 */
 		OPT_ENABLED = 'tags.enabled',
 
+		OPT_HOT_KEY = 'tags.hotKey',
+
 		/**
 		 * Allows to specify tags which will be added to the input by default upon initialization.
 		 * Each item in the array must be of the type that current `ItemManager` can understand.
@@ -109,26 +111,6 @@
 		 */
 
 		/**
-		 * Tags plugin triggers the `isTagAllowed` event before adding each tag to the tag list. Other plugins have
-		 * an opportunity to interrupt this by setting `result` of the second argument to `false`. For example:
-		 *
-		 *     $('textarea').textext({...}).bind('isTagAllowed', function(e, data)
-		 *     {
-		 *         if(data.tag === 'foo')
-		 *             data.result = false;
-		 *     })
-		 *
-		 * The second argument `data` has the following format: `{ tag : {Object}, result : {Boolean} }`. `tag`
-		 * property is in the format that the current `ItemManager` can understand.
-		 *
-		 * @name isTagAllowed
-		 * @author agorbatchev
-		 * @date 2011/08/19
-		 * @id events.isTagAllowed
-		 */
-		EVENT_IS_TAG_ALLOWED = 'isTagAllowed',
-
-		/**
 		 * Tags plugin triggers the `tagClick` event when user clicks on one of the tags. This allows to process
 		 * the click and potentially change the value of the tag (for example in case of user feedback).
 		 *
@@ -160,7 +142,8 @@
 		DEFAULT_OPTS = {
 			tags : {
 				enabled : true,
-				items   : null
+				items   : null,
+				hotKey  : 13
 			},
 
 			html : {
@@ -198,10 +181,10 @@
 			$(self).data('container', container);
 
 			self.on({
-				enterKeyPress    : self.onEnterKeyPress,
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				preInvalidate    : self.onPreInvalidate,
-				postInit         : self.onPostInit
+				postInit         : self.onPostInit,
+				anyKeyUp         : self.onAnyKeyUp
 			});
 
 			self.on(container, {
@@ -212,17 +195,19 @@
 			self.on(input, {
 				mousemove : self.onInputMouseMove
 			});
+
+			self._hotKey = self.opts(OPT_HOT_KEY);
+
+			self._originalPadding = {
+				left : parseInt(input.css('paddingLeft') || 0),
+				top  : parseInt(input.css('paddingTop') || 0)
+			};
+
+			self._paddingBox = {
+				left : 0,
+				top  : 0
+			};
 		}
-
-		self._originalPadding = {
-			left : parseInt(input.css('paddingLeft') || 0),
-			top  : parseInt(input.css('paddingTop') || 0)
-		};
-
-		self._paddingBox = {
-			left : 0,
-			top  : 0
-		};
 
 		self.updateFormCache();
 	};
@@ -262,8 +247,6 @@
 		self.addTags(self.opts(OPT_ITEMS));
 	};
 
-	p.serialize = JSON.stringify;
-
 	/**
 	 * Reacts to the [`getFormData`][1] event triggered by the core. Returns data with the
 	 * weight of 200 to be *greater than the Autocomplete plugin* data weight. The weights
@@ -281,11 +264,11 @@
 	 * @date 2011/08/22
 	 * @id onGetFormData
 	 */
-	p.getFormData = function(keyCode, callback)
+	p.getFormData = function(callback)
 	{
 		var self       = this,
-			inputValue = keyCode === 13 ? '' : self.val(),
-			formValue  = self.serialize(self._formData)
+			inputValue = self.val(),
+			formValue  = self.itemManager().serialize(self._formData)
 			;
 
 		callback(null, formValue, inputValue);
@@ -436,29 +419,40 @@
 	};
 
 	/**
-	 * Reacts to the `enterKeyPress` event and adds whatever is currently in the text input
-	 * as a new tag. Triggers `isTagAllowed` to check if the tag could be added first.
+	 * Reacts to the `anyKeyUp` event and triggers the `getFormData` to change data that will be submitted
+	 * with the form. Default behaviour is that everything that is typed in will be JSON serialized, so
+	 * the end result will be a JSON string.
 	 *
-	 * @signature PluginTags.onEnterKeyPress(e)
+	 * @signature TextExt.onAnyKeyUp(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onEnterKeyPress
+	 * @id onAnyKeyUp
 	 */
-	p.onEnterKeyPress = function(e)
+	p.onAnyKeyUp = function(e, keyCode)
 	{
 		var self = this,
-			val  = self.val(),
-			tag  = self.itemManager().stringToItem(val)
+			core = self.core(),
+			item
 			;
 
-		if(self.isTagAllowed(tag))
+		if(self._hotKey === keyCode)
 		{
-			self.addTags([ tag ]);
-			// refocus the textarea just in case it lost the focus
-			self.core().focusInput();
+			item = self.itemManager().stringToItem(self.val());
+
+			self.itemValidator().isValid(item, function(err, isValid)
+			{
+				if(isValid)
+				{
+					self.addTags([ item ]);
+					self.val('');
+					// refocus the textarea just in case it lost the focus
+					core.focusInput();
+					core.invalidateData();
+				}
+			});
 		}
 	};
 
@@ -536,26 +530,6 @@
 	};
 
 	/**
-	 * Wrapper around the `isTagAllowed` event which triggers it and returns `true`
-	 * if `result` property of the second argument remains `true`.
-	 *
-	 * @signature PluginTags.isTagAllowed(tag)
-	 *
-	 * @param tag {Object} Tag object that the current `ItemManager` can understand.
-	 * Default is `String`.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/19
-	 * @id isTagAllowed
-	 */
-	p.isTagAllowed = function(tag)
-	{
-		var opts = { tag : tag, result : true };
-		this.trigger(EVENT_IS_TAG_ALLOWED, opts);
-		return opts.result === true;
-	};
-
-	/**
 	 * Adds specified tags to the tag list. Triggers `isTagAllowed` event for each tag
 	 * to insure that it could be added. Calls `TextExt.getFormData()` to refresh the data.
 	 *
@@ -582,9 +556,7 @@
 		for(i = 0; i < tags.length; i++)
 		{
 			tag = tags[i];
-
-			if(tag && self.isTagAllowed(tag))
-				container.append(self.renderTag(tag));
+			container.append(self.renderTag(tag));
 		}
 
 		self.updateFormCache();

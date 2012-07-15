@@ -72,23 +72,12 @@
 		;
 		
 	textext.ItemManager = ItemManager;
-	
-	/**
-	 * Serializes data for to be set into the hidden input field and which will be submitted 
-	 * with the HTML form.
-	 *
-	 * By default simple JSON serialization is used. It's expected that `JSON.stringify`
-	 * method would be available either through built in class in most modern browsers
-	 * or through JSON2 library.
-	 *
-	 * @signature ItemManager.serialize(data)
-	 *
-	 * @param data {Object} Data to serialize.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/09
-	 * @id serializeData
-	 */
+
+	p.init = function(core)
+	{
+		this.baseInit(core);
+	};
+
 	p.serialize = JSON.stringify;
 
 	/**
@@ -105,7 +94,7 @@
 	 */
 	p.getSuggestions = function(filter, callback)
 	{
-		this.filter(this._core.opts('suggestions'), filter, callback);
+		this.filter(this.core().opts('suggestions'), filter, callback);
 	};
 
 	p.filter = function(items, filter, callback)

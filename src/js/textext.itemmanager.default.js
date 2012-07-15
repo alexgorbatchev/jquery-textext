@@ -17,10 +17,5 @@
 		;
 
 	textext.addItemManager('default', ItemManager);
-
-	p.init = function(core)
-	{
-		this.baseInit(core, {});
-	};
 })(jQuery);
 

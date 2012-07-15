@@ -184,6 +184,11 @@
 		return this.core().itemManager();
 	};
 
+	p.itemValidator = function()
+	{
+		return this.core().itemValidator();
+	};
+
 	/**
 	 * Shortcut to the core's `input()` method. Returns instance of the HTML element that represents
 	 * current text input.
@@ -255,24 +260,6 @@
 	p.bind = function(event, handler)
 	{
 		this.core().bind(event, handler);
-	};
-
-	/**
-	 * Returns initialization priority for this plugin. If current plugin depends upon some other plugin
-	 * to be initialized before or after, priority needs to be adjusted accordingly. Plugins with higher
-	 * priority initialize before plugins with lower priority.
-	 *
-	 * Default initialization priority is `0`.
-	 *
-	 * @signature Plugin.initPriority()
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/22
-	 * @id initPriority
-	 */
-	p.initPriority = function()
-	{
-		return 0;
 	};
 })(jQuery);
 
