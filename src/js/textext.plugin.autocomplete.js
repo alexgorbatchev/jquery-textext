@@ -443,6 +443,8 @@
 
 		if(self.isDropdownVisible())
 			self.selectFromDropdown();
+		else
+			self.invalidateData();
 	};
 
 	/**
@@ -590,14 +592,15 @@
 	 * @date 2011/08/22
 	 * @id onGetFormData
 	 */
-	p.getFormData = function(keyCode, callback)
+	p.getFormData = function(callback)
 	{
 		var self        = this,
 			itemManager = self.itemManager(),
-			val         = self.val()
+			inputValue = self.val(),
+			formValue  = itemManager.serialize(itemManager.stringToItem(inputValue))
 			;
 
-		callback(null, itemManager.serialize(itemManager.stringToItem(val)), val);
+		callback(null, formValue, inputValue);
 	};
 
 	p.dropdownItems = function()
@@ -881,10 +884,21 @@
 		if(suggestion)
 		{
 			self.val(self.itemManager().itemToString(suggestion));
-			self.core().invalidateData();
+			self.invalidateData();
 		}
 
 		self.hideDropdown();
+	};
+
+	p.invalidateData = function()
+	{
+		var self = this;
+
+		self.itemValidator().isValid(self.val(), function(err, isValid)
+		{
+			if(isValid)
+				self.core().invalidateData();
+		});
 	};
 	
 	/**
