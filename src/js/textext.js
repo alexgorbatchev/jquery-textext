@@ -368,6 +368,11 @@
 		}
 		;
 
+	function nextTick(callback)
+	{
+		setTimeout(callback, 1);
+	}
+
 	function isString(val)
 	{
 		return typeof(val) === 'string';
@@ -493,12 +498,12 @@
 
 		self.invalidateBounds();
 
-		setTimeout(function()
+		nextTick(function()
 		{
 			self.trigger(EVENT_POST_INIT);
 			self.trigger(EVENT_READY);
 			self.invalidateData();
-		}, 1);
+		});
 	};
 
 	/**
@@ -846,7 +851,7 @@
 	 * @date 2011/08/22
 	 * @id invalidateData
 	 */
-	p.invalidateData = function()
+	p.invalidateData = function(callback)
 	{
 		var self        = this,
 			dataSource  = self.dataSource,
@@ -889,10 +894,15 @@
 		if(!getFormData)
 			error('specified `dataSource` plugin does not have `getFormData` function: ' + dataSource);
 
-		getFormData(function(err, form, input)
+		nextTick(function()
 		{
-			self.setInputData(input);
-			self.setFormData(form);
+			getFormData(function(err, form, input)
+			{
+				self.setInputData(input);
+				self.setFormData(form);
+
+				callback && callback();
+			});
 		});
 	};
 

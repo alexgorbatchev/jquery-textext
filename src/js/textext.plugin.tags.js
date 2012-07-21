@@ -209,7 +209,7 @@
 			};
 		}
 
-		self.updateFormCache();
+		self.updateFromTags();
 	};
 
 	/**
@@ -406,7 +406,7 @@
 			tag.data(CSS_TAG, newValue);
 			tag.find(CSS_DOT_LABEL).text(self.itemManager().itemToString(newValue));
 
-			self.updateFormCache();
+			self.updateFromTags();
 			core.invalidateData();
 			core.invalidateBounds();
 
@@ -463,13 +463,13 @@
 	 * Creates a cache object with all the tags currently added which will be returned
 	 * in the `onGetFormData` handler.
 	 *
-	 * @signature PluginTags.updateFormCache()
+	 * @signature PluginTags.updateFromTags()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id updateFormCache
+	 * @id updateFromTags
 	 */
-	p.updateFormCache = function()
+	p.updateFromTags = function()
 	{
 		var self   = this,
 			result = []
@@ -559,7 +559,7 @@
 			container.append(self.renderTag(tag));
 		}
 
-		self.updateFormCache();
+		self.updateFromTags();
 		core.invalidateData();
 		core.invalidateBounds();
 	};
@@ -618,7 +618,7 @@
 		}
 
 		element.remove();
-		self.updateFormCache();
+		self.updateFromTags();
 		core.invalidateData();
 		core.invalidateBounds();
 	};
