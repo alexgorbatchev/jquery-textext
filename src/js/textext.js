@@ -467,6 +467,9 @@
 		if(isString(self.selectionKey))
 			self.selectionKey = self.selectionKey.charCodeAt(0);
 
+		if(input.is('textarea'))
+			input.attr('rows', 1);
+
 		input
 			.wrap(container)
 			.keydown(function(e) { return self.onKeyDown(e) })
@@ -838,7 +841,7 @@
 	/**
 	 * Triggers the `getFormData` event to get all the plugins to return their data.
 	 *
-	 * After the data is returned, triggers `setFormData` and `setInputData` to update appopriate values.
+	 * After the data is returned, triggers `setFormData` and `inputValue` to update appopriate values.
 	 *
 	 * @signature TextExt.invalidateData(keyCode)
 	 *
@@ -898,8 +901,8 @@
 		{
 			getFormData(function(err, form, input)
 			{
-				self.setInputData(input);
-				self.setFormData(form);
+				self.inputValue(input);
+				self.formValue(form);
 
 				callback && callback();
 			});
@@ -910,7 +913,7 @@
 	// Event handlers
 
 	/**
-	 * Reacts to the `setInputData` event and populates the input text field that user is currently
+	 * Reacts to the `inputValue` event and populates the input text field that user is currently
 	 * interacting with.
 	 *
 	 * @signature TextExt.onSetInputData(e, data)
@@ -922,16 +925,20 @@
 	 * @date 2011/08/22
 	 * @id onSetInputData
 	 */
-	p.setInputData = function(data)
+	p.inputValue = function(value)
 	{
 		var self  = this,
-			input = this.input()
+			input = self.input()
 			;
 
-		if(input.val() != data)
+		if(typeof(value) === UNDEFINED)
+			return self._inputValue;
+
+		if(self._inputValue !== value)
 		{
-			input.val(data);
-			self.trigger(EVENT_INPUT_DATA_CHANGE, data);
+			input.val(value);
+			self._inputValue = value;
+			self.trigger(EVENT_INPUT_DATA_CHANGE, value);
 		}
 	};
 
@@ -948,16 +955,20 @@
 	 * @date 2011/08/22
 	 * @id onSetFormData
 	 */
-	p.setFormData = function(data)
+	p.formValue = function(value)
 	{
-		var self  = this,
-			input = this.hiddenInput()
+		var self        = this,
+			hiddenInput = self.hiddenInput()
 			;
 
-		if(input.val() != data)
+		if(typeof(value) === UNDEFINED)
+			return self._formValue;
+
+		if(self._formValue !== value)
 		{
-			input.val(data);
-			self.trigger(EVENT_FORM_DATA_CHANGE, data);
+			self._formValue = value;
+			hiddenInput.val(value);
+			self.trigger(EVENT_FORM_DATA_CHANGE, value);
 		}
 	};
 
