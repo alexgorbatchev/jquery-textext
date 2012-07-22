@@ -596,11 +596,15 @@
 	{
 		var self        = this,
 			itemManager = self.itemManager(),
-			inputValue = self.val(),
-			formValue  = itemManager.serialize(itemManager.stringToItem(inputValue))
+			inputValue  = self.val(),
+			formValue
 			;
 
-		callback(null, formValue, inputValue);
+		itemManager.stringToItem(inputValue, function(err, item)
+		{
+			formValue = itemManager.serialize(item);
+			callback(null, formValue, inputValue);
+		});
 	};
 
 	p.dropdownItems = function()

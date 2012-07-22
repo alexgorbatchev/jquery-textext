@@ -150,9 +150,9 @@
 	 * @date 2011/08/19
 	 * @id ItemManager.stringToItem
 	 */
-	p.stringToItem = function(str)
+	p.stringToItem = function(str, callback)
 	{
-		return str;
+		callback(null, str);
 	};
 
 	/**

@@ -434,24 +434,24 @@
 	p.onAnyKeyUp = function(e, keyCode)
 	{
 		var self = this,
-			core = self.core(),
-			item
+			core = self.core()
 			;
 
 		if(self._hotKey === keyCode)
 		{
-			item = self.itemManager().stringToItem(self.val());
-
-			self.itemValidator().isValid(item, function(err, isValid)
+			self.itemManager().stringToItem(self.val(), function(err, item)
 			{
-				if(isValid)
+				self.itemValidator().isValid(item, function(err, isValid)
 				{
-					self.addTags([ item ]);
-					self.val('');
-					// refocus the textarea just in case it lost the focus
-					core.focusInput();
-					core.invalidateData();
-				}
+					if(isValid)
+					{
+						self.addTags([ item ]);
+						self.val('');
+						// refocus the textarea just in case it lost the focus
+						core.focusInput();
+						core.invalidateData();
+					}
+				});
 			});
 		}
 	};
