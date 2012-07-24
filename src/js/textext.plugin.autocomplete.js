@@ -254,8 +254,8 @@
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
+	 * @author bugherd
+	 * @date 2012/07/24
 	 * @id TextExtAutocomplete.init
 	 */
 	p.init = function(core)
@@ -296,7 +296,7 @@
 			self.on(container, {
 				mouseover : self.onMouseOver,
 				mousedown : self.onMouseDown,
-				click     : self.onClick
+				mouseup   : self.onMouseUp
 			});
 
 			container
@@ -380,11 +380,11 @@
 	 *
 	 * @param e {Object} jQuery event.
 	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
+	 * @author bugherd
+	 * @date 2012/07/24
 	 * @id TextExtAutocomplete.onClick
 	 */
-	p.onClick = function(e)
+	p.onMouseUp = function(e)
 	{
 		var self   = this,
 			target = $(e.target)
