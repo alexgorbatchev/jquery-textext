@@ -23,7 +23,7 @@
 	$.fn.textext.addPlugin('autocomplete', TextExtAutocomplete);
 
 	var p = TextExtAutocomplete.prototype,
-		
+
 		CSS_DOT            = '.',
 		CSS_SELECTED       = 'text-selected',
 		CSS_DOT_SELECTED   = CSS_DOT + CSS_SELECTED,
@@ -33,7 +33,7 @@
 		CSS_DOT_LABEL      = CSS_DOT + CSS_LABEL,
 
 		/**
-		 * Autocomplete plugin options are grouped under `autocomplete` when passed to the 
+		 * Autocomplete plugin options are grouped under `autocomplete` when passed to the
 		 * `$().textext()` function. For example:
 		 *
 		 *     $('textarea').textext({
@@ -88,7 +88,7 @@
 		/**
 		 * This option allows to override how a suggestion item is rendered. The value should be
 		 * a function, the first argument of which is suggestion to be rendered and `this` context
-		 * is the current instance of `TextExtAutocomplete`. 
+		 * is the current instance of `TextExtAutocomplete`.
 		 *
 		 * [Click here](/manual/examples/autocomplete-with-custom-render.html) to see a demo.
 		 *
@@ -142,9 +142,9 @@
 		 * @date 2011/08/17
 		 * @id TextExtAutocomplete.events
 		 */
-	
+
 		/**
-		 * Autocomplete plugin triggers and reacts to the `hideDropdown` to hide the dropdown if it's 
+		 * Autocomplete plugin triggers and reacts to the `hideDropdown` to hide the dropdown if it's
 		 * already visible.
 		 *
 		 * @name hideDropdown
@@ -155,11 +155,11 @@
 		EVENT_HIDE_DROPDOWN = 'hideDropdown',
 
 		/**
-		 * Autocomplete plugin triggers and reacts to the `showDropdown` to show the dropdown if it's 
+		 * Autocomplete plugin triggers and reacts to the `showDropdown` to show the dropdown if it's
 		 * not already visible.
 		 *
 		 * It's possible to pass a render callback function which will be called instead of the
-		 * default `TextExtAutocomplete.renderSuggestions()`. 
+		 * default `TextExtAutocomplete.renderSuggestions()`.
 		 *
 		 * Here's how another plugin should trigger this event with the optional render callback:
 		 *
@@ -179,8 +179,8 @@
 
 		/**
 		 * Autocomplete plugin reacts to the `setSuggestions` event triggered by other plugins which
-		 * wish to populate the suggestion items. Suggestions should be passed as event argument in the 
-		 * following format: `{ data : [ ... ] }`. 
+		 * wish to populate the suggestion items. Suggestions should be passed as event argument in the
+		 * following format: `{ data : [ ... ] }`.
 		 *
 		 * Here's how another plugin should trigger this event:
 		 *
@@ -206,7 +206,7 @@
 		/**
 		 * Autocomplete plugin triggers `getFormData` event with the current suggestion so that the the core
 		 * will be updated with serialized data to be submitted with the HTML form.
-		 * 
+		 *
 		 * @name getFormData
 		 * @author agorbatchev
 		 * @date 2011/08/18
@@ -217,7 +217,7 @@
 		/**
 		 * Autocomplete plugin reacts to `toggleDropdown` event and either shows or hides the dropdown
 		 * depending if it's currently hidden or visible.
-		 * 
+		 *
 		 * @name toggleDropdown
 		 * @author agorbatchev
 		 * @date 2011/12/27
@@ -228,7 +228,7 @@
 
 		POSITION_ABOVE = 'above',
 		POSITION_BELOW = 'below',
-		
+
 		DATA_MOUSEDOWN_ON_AUTOCOMPLETE = 'mousedownOnAutocomplete',
 
 		DEFAULT_OPTS = {
@@ -305,8 +305,8 @@
 				;
 
 			$(self).data('container', container);
-			
-			$(document.body).click(function(e) 
+
+			$(document.body).click(function(e)
 			{
 				if (self.isDropdownVisible() && !self.withinWrapElement(e.target))
 					self.trigger(EVENT_HIDE_DROPDOWN);
@@ -318,9 +318,9 @@
 
 	/**
 	 * Returns top level dropdown container HTML element.
-	 * 
+	 *
 	 * @signature TextExtAutocomplete.containerElement()
-	 * 
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
 	 * @id TextExtAutocomplete.containerElement
@@ -332,7 +332,7 @@
 
 	//--------------------------------------------------------------------------------
 	// User mouse/keyboard input
-	
+
 	/**
 	 * Reacts to the `mouseOver` event triggered by the TextExt core.
 	 *
@@ -356,7 +356,7 @@
 			target.addClass(CSS_SELECTED);
 		}
 	};
-	
+
 	/**
 	 * Reacts to the `mouseDown` event triggered by the TextExt core.
 	 *
@@ -372,7 +372,7 @@
 	{
 		this.containerElement().data(DATA_MOUSEDOWN_ON_AUTOCOMPLETE, true);
 	};
-	
+
 	/**
 	 * Reacts to the `click` event triggered by the TextExt core.
 	 *
@@ -392,7 +392,7 @@
 
 		if(target.is(CSS_DOT_SUGGESTION) || target.is(CSS_DOT_LABEL))
 			self.trigger('enterKeyPress');
-		
+
 		if (self.core().hasPlugin('tags'))
 			self.val('');
 	};
@@ -415,17 +415,17 @@
 			isBlurByMousedown = container.data(DATA_MOUSEDOWN_ON_AUTOCOMPLETE) === true
 			;
 
-		// only trigger a close event if the blur event was 
+		// only trigger a close event if the blur event was
 		// not triggered by a mousedown event on the autocomplete
 		// otherwise set focus back back on the input
 		if(self.isDropdownVisible())
 			isBlurByMousedown ? self.core().focusInput() : self.trigger(EVENT_HIDE_DROPDOWN);
-				
+
 		container.removeData(DATA_MOUSEDOWN_ON_AUTOCOMPLETE);
 	};
 
 	/**
-	 * Reacts to the `backspaceKeyPress` event triggered by the TextExt core. 
+	 * Reacts to the `backspaceKeyPress` event triggered by the TextExt core.
 	 *
 	 * @signature TextExtAutocomplete.onBackspaceKeyPress(e)
 	 *
@@ -482,7 +482,7 @@
 		var self = this;
 
 		self.isDropdownVisible()
-			? self.toggleNextSuggestion() 
+			? self.toggleNextSuggestion()
 			: self.getSuggestions()
 			;
 	};
@@ -747,8 +747,8 @@
 	 * @signature TextExtAutocomplete.onShowDropdown(e, renderCallback)
 	 *
 	 * @param e {Object} jQuery event.
-	 * @param renderCallback {Function} Optional callback function which would be used to 
-	 * render dropdown items. As a first argument, reference to the current instance of 
+	 * @param renderCallback {Function} Optional callback function which would be used to
+	 * render dropdown items. As a first argument, reference to the current instance of
 	 * Autocomplete plugin will be supplied. It's assumed, that if this callback is provided
 	 * rendering will be handled completely manually.
 	 *
@@ -775,7 +775,7 @@
 			self.renderSuggestions(self._suggestions);
 			self.toggleNextSuggestion();
 		}
-		
+
 		self.showDropdown(self.containerElement());
 		self.setSelectedSuggestion(current);
 	};
@@ -789,7 +789,7 @@
 	 *         showHideDropdown : false
 	 *     }
 	 *
-	 * Notice the optional `showHideDropdown` option. By default, ie without the `showHideDropdown` 
+	 * Notice the optional `showHideDropdown` option. By default, ie without the `showHideDropdown`
 	 * value the method will trigger either `showDropdown` or `hideDropdown` depending if there are
 	 * suggestions. If set to `false`, no event is triggered.
 	 *
@@ -1085,12 +1085,12 @@
 		if(suggestion)
 		{
 			self.val(self.itemManager().itemToString(suggestion));
-			self.core().getFormData();	
+			self.core().getFormData();
 		}
 
 		self.trigger(EVENT_HIDE_DROPDOWN);
 	};
-	
+
 	/**
 	 * Determines if the specified HTML element is within the TextExt core wrap HTML element.
 	 *
@@ -1103,7 +1103,7 @@
 	 * @date 2012/01/15
 	 * @id TextExtAutocomplete.withinWrapElement
 	 */
-	p.withinWrapElement = function(element) 
+	p.withinWrapElement = function(element)
 	{
 		return this.core().wrapElement().find(element).size() > 0;
 	}

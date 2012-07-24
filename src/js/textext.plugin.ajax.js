@@ -41,9 +41,9 @@
 		 *
 		 * **Important**: Because it's necessary to pass options to `jQuery.ajax()` in a single object,
 		 * all jQuery related AJAX options like `url`, `dataType`, etc **must** be within the `ajax` object.
-		 * This is the exception to general rule that TextExt options can be specified in dot or camel case 
+		 * This is the exception to general rule that TextExt options can be specified in dot or camel case
 		 * notation.
-		 * 
+		 *
 		 * @author agorbatchev
 		 * @date 2011/08/16
 		 * @id TextExtAjax.options
@@ -61,7 +61,7 @@
 		 *     'dataCallback' : function(query)
 		 *     {
 		 *         return { 'search' : query };
-		 *     } 
+		 *     }
 		 *
 		 * @name ajax.data.callback
 		 * @default null
@@ -70,7 +70,7 @@
 		 * @id TextExtAjax.options.data.callback
 		 */
 		OPT_DATA_CALLBACK = 'ajax.data.callback',
-		
+
 		/**
 		 * By default, the server end point is constantly being reloaded whenever user changes the value
 		 * in the text input. If you'd rather have the client do result filtering, you can return all
@@ -86,7 +86,7 @@
 		 * @id TextExtAjax.options.cache.results
 		 */
 		OPT_CACHE_RESULTS = 'ajax.cache.results',
-		
+
 		/**
 		 * The loading message delay is set in seconds and will specify how long it would take before
 		 * user sees the message. If you don't want user to ever see this message, set the option value
@@ -228,7 +228,7 @@
 				data    : dataCallback(query),
 				success : function(data) { self.onComplete(data, query) },
 				error   : function(jqXHR, message) { console.error(message, query) }
-			}, 
+			},
 			self.opts('ajax')
 		);
 
@@ -255,7 +255,7 @@
 		var self   = this,
 			result = data
 			;
-		
+
 		self.dontShowLoading();
 
 		// If results are expected to be cached, then we store the original
@@ -340,7 +340,7 @@
 
 		if(suggestions && self.opts(OPT_CACHE_RESULTS) === true)
 			return self.onComplete(suggestions, query);
-		
+
 		self.startTimer(
 			'ajax',
 			self.opts(OPT_TYPE_DELAY),

@@ -23,7 +23,7 @@
 
 	var p = TextExtFocus.prototype,
 		/**
-		 * Focus plugin only has one option and that is its HTML template. It could be 
+		 * Focus plugin only has one option and that is its HTML template. It could be
 		 * changed when passed to the `$().textext()` function. For example:
 		 *
 		 *     $('textarea').textext({
@@ -37,7 +37,7 @@
 		 * @date 2011/08/18
 		 * @id TextExtFocus.options
 		 */
-		
+
 		/**
 		 * HTML source that is used to generate markup required for the focus effect.
 		 *
@@ -110,9 +110,9 @@
 
 	//--------------------------------------------------------------------------------
 	// Event handlers
-	
+
 	/**
-	 * Reacts to the `blur` event and hides the focus effect with a slight delay which 
+	 * Reacts to the `blur` event and hides the focus effect with a slight delay which
 	 * allows quick refocusing without effect blinking in and out.
 	 *
 	 * @signature TextExtFocus.onBlur(e)
@@ -151,10 +151,10 @@
 		var self = this;
 
 		clearTimeout(self._timeoutId);
-		
+
 		self.getFocus().show();
 	};
-	
+
 	//--------------------------------------------------------------------------------
 	// Core functionality
 

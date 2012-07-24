@@ -86,7 +86,7 @@
 		 * @date 2011/08/18
 		 * @id TextExtPrompt.events.blur
 		 */
-	
+
 		DEFAULT_OPTS = {
 			prompt : 'Awaiting input...',
 
@@ -116,13 +116,13 @@
 			;
 
 		self.baseInit(core, DEFAULT_OPTS);
-		
+
 		container = $(self.opts(OPT_HTML_PROMPT));
 		$(self).data('container', container);
 
 		self.core().wrapElement().append(container);
 		self.setPrompt(self.opts(OPT_PROMPT));
-		
+
 		prompt = core.input().attr(placeholderKey);
 
 		if(!prompt)
@@ -147,7 +147,7 @@
 
 	//--------------------------------------------------------------------------------
 	// Event handlers
-	
+
 	/**
 	 * Reacts to the `postInit` and configures the plugin for initial display.
 	 *
@@ -202,7 +202,7 @@
 	};
 
 	/**
-	 * Reacts to the `blur` event and shows the prompt effect with a slight delay which 
+	 * Reacts to the `blur` event and shows the prompt effect with a slight delay which
 	 * allows quick refocusing without effect blinking in and out.
 	 *
 	 * The prompt is restored if the text box has no value.
@@ -239,7 +239,7 @@
 		var self     = this,
 			input    = self.input()
 			;
-		
+
 		if($.trim(self.val()).length === 0 && !input.is(':focus'))
 			self.containerElement().removeClass(CSS_HIDE_PROMPT);
 	};
@@ -273,7 +273,7 @@
 	{
 		this.hidePrompt();
 	};
-	
+
 	//--------------------------------------------------------------------------------
 	// Core functionality
 

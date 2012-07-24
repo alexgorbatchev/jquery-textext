@@ -24,7 +24,7 @@
 
 	var p = TextExtArrow.prototype,
 		/**
-		 * Arrow plugin only has one option and that is its HTML template. It could be 
+		 * Arrow plugin only has one option and that is its HTML template. It could be
 		 * changed when passed to the `$().textext()` function. For example:
 		 *
 		 *     $('textarea').textext({
@@ -38,7 +38,7 @@
 		 * @date 2011/12/27
 		 * @id TextExtArrow.options
 		 */
-		
+
 		/**
 		 * HTML source that is used to generate markup required for the arrow.
 		 *
@@ -83,7 +83,7 @@
 
 	//--------------------------------------------------------------------------------
 	// Event handlers
-	
+
 	/**
 	 * Reacts to the `click` event whenever user clicks the arrow.
 	 *
@@ -99,7 +99,7 @@
 		this.trigger('toggleDropdown');
 		this.core().focusInput();
 	};
-	
+
 	//--------------------------------------------------------------------------------
 	// Core functionality
 
