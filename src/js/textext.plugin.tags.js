@@ -177,8 +177,8 @@
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
-	 * @author agorbatchev
-	 * @date 2011/08/19
+	 * @author bugherd
+	 * @date 2012/07/24
 	 * @id TextExtTags.init
 	 */
 	p.init = function(core)
@@ -216,8 +216,8 @@
 		}
 
 		self._originalPadding = {
-			left : parseInt(input.css('paddingLeft') || 0),
-			top  : parseInt(input.css('paddingTop') || 0)
+			left : parseInt(input.css('paddingLeft') || 0, 10),
+			top  : parseInt(input.css('paddingTop') || 0, 10)
 		};
 
 		self._paddingBox = {

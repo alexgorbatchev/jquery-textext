@@ -1035,8 +1035,8 @@
 	 * @param item {HTMLElement} jQuery HTML suggestion element which needs to
 	 * scrolled into view.
 	 *
-	 * @author agorbatchev
-	 * @date 2011/08/17
+	 * @author bugherd
+	 * @date 2012/07/24
 	 * @id TextExtAutocomplete.scrollSuggestionIntoView
 	 */
 	p.scrollSuggestionIntoView = function(item)
@@ -1047,7 +1047,7 @@
 			scrollPos      = dropdown.scrollTop(),
 			itemTop        = (item.position() || {}).top,
 			scrollTo       = null,
-			paddingTop     = parseInt(dropdown.css('paddingTop'))
+			paddingTop     = parseInt(dropdown.css('paddingTop'), 10)
 			;
 
 		if(itemTop == null)
