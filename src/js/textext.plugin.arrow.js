@@ -9,20 +9,20 @@
 (function($)
 {
 	/**
-	 * Displays a dropdown style arrow button. The `TextExtArrow` works together with the
+	 * Displays a dropdown style arrow button. The `PluginArrow` works together with the
 	 * `TextExtAutocomplete` plugin and whenever clicked tells the autocomplete plugin to
 	 * display its suggestions.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/12/27
-	 * @id TextExtArrow
+	 * @id PluginArrow
 	 */
-	function TextExtArrow() {};
+	function PluginArrow() {};
 
-	$.fn.textext.TextExtArrow = TextExtArrow;
-	$.fn.textext.addPlugin('arrow', TextExtArrow);
+	$.fn.textext.PluginArrow = PluginArrow;
+	$.fn.textext.addPlugin('arrow', PluginArrow);
 
-	var p = TextExtArrow.prototype,
+	var p = PluginArrow.prototype,
 		/**
 		 * Arrow plugin only has one option and that is its HTML template. It could be 
 		 * changed when passed to the `$().textext()` function. For example:
@@ -36,7 +36,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/12/27
-		 * @id TextExtArrow.options
+		 * @id options
 		 */
 		
 		/**
@@ -46,7 +46,7 @@
 		 * @default '<div class="text-arrow"/>'
 		 * @author agorbatchev
 		 * @date 2011/12/27
-		 * @id TextExtArrow.options.html.arrow
+		 * @id options.html.arrow
 		 */
 		OPT_HTML_ARROW = 'html.arrow',
 
@@ -60,13 +60,13 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtArrow.init(core)
+	 * @signature PluginArrow.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/12/27
-	 * @id TextExtArrow.init
+	 * @id init
 	 */
 	p.init = function(core)
 	{
@@ -78,7 +78,10 @@
 
 		self._arrow = arrow = $(self.opts(OPT_HTML_ARROW));
 		self.core().wrapElement().append(arrow);
-		arrow.bind('click', function(e) { self.onArrowClick(e); });
+
+		self.on(arrow, {
+			click : self.onArrowClick
+		});
 	};
 
 	//--------------------------------------------------------------------------------
@@ -87,20 +90,24 @@
 	/**
 	 * Reacts to the `click` event whenever user clicks the arrow.
 	 *
-	 * @signature TextExtArrow.onArrowClick(e)
+	 * @signature PluginArrow.onArrowClick(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/12/27
-	 * @id TextExtArrow.onArrowClick
+	 * @id onArrowClick
 	 */
 	p.onArrowClick = function(e)
 	{
-		this.trigger('toggleDropdown');
-		this.core().focusInput();
-	};
-	
-	//--------------------------------------------------------------------------------
-	// Core functionality
+		var self         = this,
+			core         = self.core(),
+			autocomplete = core.autocomplete && core.autocomplete()
+			;
 
+		if(autocomplete)
+		{
+			autocomplete.renderSuggestions();
+			core.focusInput();
+		}
+	};
 })(jQuery);
