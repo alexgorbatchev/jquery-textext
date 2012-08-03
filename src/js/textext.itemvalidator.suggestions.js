@@ -19,7 +19,10 @@
 
 	p.init = function(core)
 	{
-		this.baseInit(core);
+		var self = this;
+
+		self.baseInit(core);
+		self.on({ enterKeyPress : self.onEnterKeyPress });
 	};
 
 	p.isValid = function(item, callback)
@@ -32,6 +35,32 @@
 		itemManager.getSuggestions(itemManager.itemToString(item), function(err, items)
 		{
 			callback(err, items && itemManager.compareItems(item, items[0]));
+		});
+	};
+
+	p.onEnterKeyPress = function(e)
+	{
+		var self = this;
+
+		self.isValid(self.val(), function(err, isValid)
+		{
+			if(isValid)
+				self.core().invalidateData();
+		});
+	};
+
+	p.getFormData = function(callback)
+	{
+		var self        = this,
+			itemManager = self.itemManager(),
+			inputValue  = self.val(),
+			formValue
+			;
+
+		itemManager.stringToItem(inputValue, function(err, item)
+		{
+			formValue = itemManager.serialize(item);
+			callback(null, formValue, inputValue);
 		});
 	};
 })(jQuery);
