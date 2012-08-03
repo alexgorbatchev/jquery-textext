@@ -184,7 +184,7 @@
 				backspaceKeyDown : self.onBackspaceKeyDown,
 				preInvalidate    : self.onPreInvalidate,
 				postInit         : self.onPostInit,
-				anyKeyUp         : self.onAnyKeyUp
+				anyKeyPress      : self.onAnyKeyPress
 			});
 
 			self.on(container, {
@@ -423,36 +423,42 @@
 	 * with the form. Default behaviour is that everything that is typed in will be JSON serialized, so
 	 * the end result will be a JSON string.
 	 *
-	 * @signature TextExt.onAnyKeyUp(e)
+	 * @signature TextExt.onAnyKeyPress(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onAnyKeyUp
+	 * @id onAnyKeyPress
 	 */
-	p.onAnyKeyUp = function(e, keyCode)
+	p.onAnyKeyPress = function(e, keyCode)
 	{
 		var self = this,
-			core = self.core()
+			core = self.core(),
+			val
 			;
 
 		if(self._hotKey === keyCode)
 		{
-			self.itemManager().stringToItem(self.val(), function(err, item)
+			val = self.val();
+
+			if(val && val.length > 0)
 			{
-				self.itemValidator().isValid(item, function(err, isValid)
+				self.itemManager().stringToItem(self.val(), function(err, item)
 				{
-					if(isValid)
+					self.itemValidator().isValid(item, function(err, isValid)
 					{
-						self.addTags([ item ]);
-						self.val('');
-						// refocus the textarea just in case it lost the focus
-						core.focusInput();
-						core.invalidateData();
-					}
+						if(isValid)
+						{
+							self.addTags([ item ]);
+							self.val('');
+							// refocus the textarea just in case it lost the focus
+							core.focusInput();
+							core.invalidateData();
+						}
+					});
 				});
-			});
+			}
 		}
 	};
 
