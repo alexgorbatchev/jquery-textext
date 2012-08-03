@@ -1020,6 +1020,7 @@
 				{
 					self._lastKeyDown = null;
 					self.trigger(keyName + 'KeyPress');
+					self.trigger('anyKeyPress', e.keyCode);
 				}
 
 				if(type == 'Down')
