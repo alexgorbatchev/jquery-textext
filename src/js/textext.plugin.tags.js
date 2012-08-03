@@ -139,6 +139,10 @@
 		 */
 		EVENT_TAG_CLICK = 'tagClick',
 
+		EVENT_TAG_REMOVE = 'tagRemove',
+
+		EVENT_TAG_ADD = 'tagAdd',
+
 		DEFAULT_OPTS = {
 			tags : {
 				enabled : true,
@@ -450,8 +454,8 @@
 					{
 						if(isValid)
 						{
-							self.addTags([ item ]);
 							self.val('');
+							self.addTags([ item ]);
 							// refocus the textarea just in case it lost the focus
 							core.focusInput();
 							core.invalidateData();
@@ -556,18 +560,26 @@
 		var self      = this,
 			core      = self.core(),
 			container = self.containerElement(),
-			i, tag
+			nodes     = [],
+			node,
+			i,
+			tag
 			;
 
 		for(i = 0; i < tags.length; i++)
 		{
-			tag = tags[i];
-			container.append(self.renderTag(tag));
+			tag  = tags[i];
+			node = self.renderTag(tag);
+
+			container.append(node);
+			nodes.push(node);
 		}
 
 		self.updateFromTags();
 		core.invalidateData();
 		core.invalidateBounds();
+
+		self.trigger(EVENT_TAG_ADD, nodes, tags);
 	};
 
 	/**
@@ -610,23 +622,28 @@
 	{
 		var self = this,
 			core = self.core(),
-			element
+			element,
+			item
 			;
 
 		if(tag instanceof $)
 		{
 			element = tag;
-			tag = tag.data(CSS_TAG);
+			tag     = tag.data(CSS_TAG);
 		}
 		else
 		{
 			element = self.getTagElement(tag);
 		}
 
+		item = element.data(CSS_TAG);
+
 		element.remove();
 		self.updateFromTags();
 		core.invalidateData();
 		core.invalidateBounds();
+
+		self.trigger(EVENT_TAG_REMOVE, item);
 	};
 
 	/**
