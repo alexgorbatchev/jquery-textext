@@ -80,6 +80,8 @@
 		 */
 		OPT_ITEMS = 'tags.items',
 
+		OPT_HTML_ALLOW_DUPLICATES = 'tags.allowDuplicates',
+
 		/**
 		 * HTML source that is used to generate a single tag.
 		 *
@@ -145,9 +147,10 @@
 
 		DEFAULT_OPTS = {
 			tags : {
-				enabled : true,
-				items   : null,
-				hotKey  : 13
+				enabled         : true,
+				items           : null,
+				allowDuplicates : true,
+				hotKey          : 13
 			},
 
 			html : {
@@ -212,8 +215,6 @@
 				top  : 0
 			};
 		}
-
-		self.updateFromTags();
 	};
 
 	/**
@@ -272,7 +273,8 @@
 	{
 		var self       = this,
 			inputValue = self.val(),
-			formValue  = self.itemManager().serialize(self._formData)
+			tags       = self.getTags(),
+			formValue  = self.itemManager().serialize(tags)
 			;
 
 		callback(null, formValue, inputValue);
@@ -410,7 +412,6 @@
 			tag.data(CSS_TAG, newValue);
 			tag.find(CSS_DOT_LABEL).text(self.itemManager().itemToString(newValue));
 
-			self.updateFromTags();
 			core.invalidateData();
 			core.invalidateBounds();
 
@@ -479,7 +480,7 @@
 	 * @date 2011/08/09
 	 * @id updateFromTags
 	 */
-	p.updateFromTags = function()
+	p.getTags = function()
 	{
 		var self   = this,
 			result = []
@@ -490,8 +491,7 @@
 			result.push($(this).data(CSS_TAG));
 		});
 
-		// cache the results to be used in the onGetFormData
-		self._formData = result;
+		return result;
 	};
 
 	/**
@@ -575,7 +575,6 @@
 			nodes.push(node);
 		}
 
-		self.updateFromTags();
 		core.invalidateData();
 		core.invalidateBounds();
 
@@ -639,7 +638,6 @@
 		item = element.data(CSS_TAG);
 
 		element.remove();
-		self.updateFromTags();
 		core.invalidateData();
 		core.invalidateBounds();
 
