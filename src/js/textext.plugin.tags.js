@@ -138,7 +138,6 @@
 		 * Please check out [example](/manual/examples/tags-changing.html).
 		 *
 		 * @name tagClick
-		 * @version 1.3.0
 		 * @author s.stok
 		 * @date 2011/01/23
 		 * @id TagsPlugin.events.tagClick

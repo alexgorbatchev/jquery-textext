@@ -81,7 +81,6 @@
 		 * @author agorbatchev
 		 * @date 2011/12/29
 		 * @id AutocompletePlugin.options.autocomplete.dropdown.maxHeight
-		 * @version 1.1
 		 */
 		OPT_MAX_HEIGHT = 'autocomplete.dropdown.maxHeight',
 
@@ -109,7 +108,6 @@
 		 * @author agorbatchev
 		 * @date 2011/12/23
 		 * @id AutocompletePlugin.options.autocomplete.render
-		 * @version 1.1
 		 */
 		OPT_RENDER = 'autocomplete.render',
 
@@ -913,7 +911,6 @@
 	 * @param element {HTMLElement} element to check if contained by wrap element
 	 *
 	 * @author adamayres
-	 * @version 1.3.0
 	 * @date 2012/01/15
 	 * @id AutocompletePlugin.withinWrapElement
 	 */

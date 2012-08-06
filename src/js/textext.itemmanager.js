@@ -90,7 +90,6 @@
 	 * @author agorbatchev
 	 * @date 2012/06/16
 	 * @id ItemManager.getSuggestions
-	 * @version 1.4
 	 */
 	p.getSuggestions = function(filter, callback)
 	{

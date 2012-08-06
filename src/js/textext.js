@@ -655,7 +655,6 @@
 	 * @author agorbatchev
 	 * @date 2011/12/28
 	 * @id TextExt.hasPlugin
-	 * @version 1.1
 	 */
 	p.hasPlugin = function(name)
 	{
