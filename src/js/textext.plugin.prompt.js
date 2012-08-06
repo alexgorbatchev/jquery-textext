@@ -15,14 +15,14 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
-	 * @id TextExtPrompt
+	 * @id PromptPlugin
 	 */
-	function TextExtPrompt() {};
+	function PromptPlugin() {};
 
-	$.fn.textext.TextExtPrompt = TextExtPrompt;
-	$.fn.textext.addPlugin('prompt', TextExtPrompt);
+	$.fn.textext.PromptPlugin = PromptPlugin;
+	$.fn.textext.addPlugin('prompt', PromptPlugin);
 
-	var p = TextExtPrompt.prototype,
+	var p = PromptPlugin.prototype,
 
 		CSS_HIDE_PROMPT = 'text-hide-prompt',
 
@@ -37,7 +37,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtPrompt.options
+		 * @id PromptPlugin.options
 		 */
 
 		/**
@@ -47,7 +47,7 @@
 		 * @default 'Awaiting input...'
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtPrompt.options.prompt
+		 * @id PromptPlugin.options.prompt
 		 */
 		OPT_PROMPT = 'prompt',
 
@@ -58,13 +58,13 @@
 		 * @default '<div class="text-prompt"/>'
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtPrompt.options.html.prompt
+		 * @id PromptPlugin.options.html.prompt
 		 */
 		OPT_HTML_PROMPT = 'html.prompt',
 
 		/**
 		 * Prompt plugin dispatches or reacts to the following events.
-		 * @id TextExtPrompt.events
+		 * @id PromptPlugin.events
 		 */
 
 		/**
@@ -74,7 +74,7 @@
 		 * @name focus
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtPrompt.events.focus
+		 * @id PromptPlugin.events.focus
 		 */
 
 		/**
@@ -84,7 +84,7 @@
 		 * @name blur
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtPrompt.events.blur
+		 * @id PromptPlugin.events.blur
 		 */
 	
 		DEFAULT_OPTS = {
@@ -99,13 +99,13 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtPrompt.init(core)
+	 * @signature PromptPlugin.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
-	 * @id TextExtPrompt.init
+	 * @id PromptPlugin.init
 	 */
 	p.init = function(core)
 	{
@@ -151,13 +151,13 @@
 	/**
 	 * Reacts to the `postInit` and configures the plugin for initial display.
 	 *
-	 * @signature TextExtPrompt.onPostInit(e)
+	 * @signature PromptPlugin.onPostInit(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/24
-	 * @id TextExtPrompt.onPostInit
+	 * @id PromptPlugin.onPostInit
 	 */
 	p.onPostInit = function(e)
 	{
@@ -167,13 +167,13 @@
 	/**
 	 * Reacts to the `postInvalidate` and insures that prompt display remains correct.
 	 *
-	 * @signature TextExtPrompt.onPostInvalidate(e)
+	 * @signature PromptPlugin.onPostInvalidate(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/24
-	 * @id TextExtPrompt.onPostInvalidate
+	 * @id PromptPlugin.onPostInvalidate
 	 */
 	p.onPostInvalidate = function(e)
 	{
@@ -183,11 +183,11 @@
 	/**
 	 * Repositions the prompt to make sure it's always at the same place as in the text input carret.
 	 *
-	 * @signature TextExtPrompt.invalidateBounds()
+	 * @signature PromptPlugin.invalidateBounds()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/24
-	 * @id TextExtPrompt.invalidateBounds
+	 * @id PromptPlugin.invalidateBounds
 	 */
 	p.invalidateBounds = function()
 	{
@@ -207,13 +207,13 @@
 	 *
 	 * The prompt is restored if the text box has no value.
 	 *
-	 * @signature TextExtPrompt.onBlur(e)
+	 * @signature PromptPlugin.onBlur(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtPrompt.onBlur
+	 * @id PromptPlugin.onBlur
 	 */
 	p.onBlur = function(e)
 	{
@@ -228,11 +228,11 @@
 	/**
 	 * Shows prompt HTML element.
 	 *
-	 * @signature TextExtPrompt.showPrompt()
+	 * @signature PromptPlugin.showPrompt()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExtPrompt.showPrompt
+	 * @id PromptPlugin.showPrompt
 	 */
 	p.showPrompt = function()
 	{
@@ -247,11 +247,11 @@
 	/**
 	 * Hides prompt HTML element.
 	 *
-	 * @signature TextExtPrompt.hidePrompt()
+	 * @signature PromptPlugin.hidePrompt()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id TextExtPrompt.hidePrompt
+	 * @id PromptPlugin.hidePrompt
 	 */
 	p.hidePrompt = function()
 	{
@@ -262,12 +262,12 @@
 	/**
 	 * Reacts to the `focus` event and hides the prompt effect.
 	 *
-	 * @signature TextExtPrompt.onFocus
+	 * @signature PromptPlugin.onFocus
 	 *
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtPrompt.onFocus
+	 * @id PromptPlugin.onFocus
 	 */
 	p.onFocus = function(e)
 	{
@@ -280,13 +280,13 @@
 	/**
 	 * Sets the prompt display to the specified string.
 	 *
-	 * @signature TextExtPrompt.setPrompt(str)
+	 * @signature PromptPlugin.setPrompt(str)
 	 *
 	 * @oaram str {String} String that will be displayed in the prompt.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
-	 * @id TextExtPrompt.setPrompt
+	 * @id PromptPlugin.setPrompt
 	 */
 	p.setPrompt = function(str)
 	{
@@ -296,11 +296,11 @@
 	/**
 	 * Returns prompt effect HTML element.
 	 *
-	 * @signature TextExtPrompt.containerElement()
+	 * @signature PromptPlugin.containerElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtPrompt.containerElement
+	 * @id PromptPlugin.containerElement
 	 */
 	p.containerElement = function()
 	{

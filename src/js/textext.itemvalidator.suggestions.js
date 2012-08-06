@@ -8,14 +8,14 @@
  */
 (function($, undefined)
 {
-	function ItemValidatorSuggestions()
+	function SuggestionsItemValidator()
 	{
 	};
 
-	$.fn.textext.ItemValidatorSuggestions = ItemValidatorSuggestions;
-	$.fn.textext.addItemValidator('suggestions', ItemValidatorSuggestions);
+	$.fn.textext.SuggestionsItemValidator = SuggestionsItemValidator;
+	$.fn.textext.addItemValidator('suggestions', SuggestionsItemValidator);
 
-	var p = ItemValidatorSuggestions.prototype;
+	var p = SuggestionsItemValidator.prototype;
 
 	p.init = function(core)
 	{

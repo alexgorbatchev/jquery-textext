@@ -18,12 +18,12 @@
 	 * @date 2011/08/19
 	 * @id tags
 	 */
-	function PluginTags() {};
+	function TagsPlugin() {};
 
-	$.fn.textext.PluginTags = PluginTags;
-	$.fn.textext.addPlugin('tags', PluginTags);
+	$.fn.textext.TagsPlugin = TagsPlugin;
+	$.fn.textext.addPlugin('tags', TagsPlugin);
 
-	var p = PluginTags.prototype,
+	var p = TagsPlugin.prototype,
 
 		CSS_DOT             = '.',
 		CSS_TAGS_ON_TOP     = 'text-tags-on-top',
@@ -167,7 +167,7 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature PluginTags.init(core)
+	 * @signature TagsPlugin.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
@@ -224,7 +224,7 @@
 	/**
 	 * Returns HTML element in which all tag HTML elements are residing.
 	 *
-	 * @signature PluginTags.containerElement()
+	 * @signature TagsPlugin.containerElement()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
@@ -242,7 +242,7 @@
 	 * Reacts to the `postInit` event triggered by the core and sets default tags
 	 * if any were specified.
 	 *
-	 * @signature PluginTags.onPostInit(e)
+	 * @signature TagsPlugin.onPostInit(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -263,7 +263,7 @@
 	 *
 	 * [1]: /manual/textext.html#getformdata
 	 *
-	 * @signature PluginTags.onGetFormData(e, data, keyCode)
+	 * @signature TagsPlugin.onGetFormData(e, data, keyCode)
 	 *
 	 * @param e {Object} jQuery event.
 	 * @param data {Object} Data object to be populated.
@@ -290,7 +290,7 @@
 	 * tags, the tags container is flipped to be on top of the text area which
 	 * makes all tags functional with the mouse.
 	 *
-	 * @signature PluginTags.onInputMouseMove(e)
+	 * @signature TagsPlugin.onInputMouseMove(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -309,7 +309,7 @@
 	 * the tags container is sent back under the text area which allows user
 	 * to interact with the text using mouse cursor as expected.
 	 *
-	 * @signature PluginTags.onContainerMouseMove(e)
+	 * @signature TagsPlugin.onContainerMouseMove(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -326,7 +326,7 @@
 	 * Reacts to the `backspaceKeyDown` event. When backspace key is pressed in an empty text field,
 	 * deletes last tag from the list.
 	 *
-	 * @signature PluginTags.onBackspaceKeyDown(e)
+	 * @signature TagsPlugin.onBackspaceKeyDown(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -348,7 +348,7 @@
 	 * Reacts to the `preInvalidate` event and updates the input box to look like the tags are
 	 * positioned inside it.
 	 *
-	 * @signature PluginTags.onPreInvalidate(e)
+	 * @signature TagsPlugin.onPreInvalidate(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -379,7 +379,7 @@
 	/**
 	 * Reacts to the mouse `click` event.
 	 *
-	 * @signature PluginTags.onClick(e)
+	 * @signature TagsPlugin.onClick(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -502,7 +502,7 @@
 	 * Creates a cache object with all the tags currently added which will be returned
 	 * in the `onGetFormData` handler.
 	 *
-	 * @signature PluginTags.updateFromTags()
+	 * @signature TagsPlugin.updateFromTags()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
@@ -529,7 +529,7 @@
 	 * is over any of the tags, the tag container is brought to be over the text
 	 * area.
 	 *
-	 * @signature PluginTags.toggleZIndex(e)
+	 * @signature TagsPlugin.toggleZIndex(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
@@ -556,7 +556,7 @@
 	/**
 	 * Returns all tag HTML elements.
 	 *
-	 * @signature PluginTags.tagElements()
+	 * @signature TagsPlugin.tagElements()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
@@ -571,7 +571,7 @@
 	 * Adds specified tags to the tag list. Triggers `isTagAllowed` event for each tag
 	 * to insure that it could be added. Calls `TextExt.getFormData()` to refresh the data.
 	 *
-	 * @signature PluginTags.addTags(tags)
+	 * @signature TagsPlugin.addTags(tags)
 	 *
 	 * @param tags {Array} List of tags that current `ItemManager` can understand. Default
 	 * is `String`.
@@ -620,7 +620,7 @@
 	/**
 	 * Returns HTML element for the specified tag.
 	 *
-	 * @signature PluginTags.getTagElement(tag)
+	 * @signature TagsPlugin.getTagElement(tag)
 	 *
 	 * @param tag {Object} Tag object in the format that current `ItemManager` can understand.
 	 * Default is `String`.
@@ -644,7 +644,7 @@
 	/**
 	 * Removes specified tag from the list. Calls `TextExt.getFormData()` to refresh the data.
 	 *
-	 * @signature PluginTags.removeTag(tag)
+	 * @signature TagsPlugin.removeTag(tag)
 	 *
 	 * @param tag {Object} Tag object in the format that current `ItemManager` can understand.
 	 * Default is `String`.
@@ -683,7 +683,7 @@
 	/**
 	 * Creates and returns new HTML element from the source code specified in the `html.tag` option.
 	 *
-	 * @signature PluginTags.renderTag(tag)
+	 * @signature TagsPlugin.renderTag(tag)
 	 *
 	 * @param tag {Object} Tag object in the format that current `ItemManager` can understand.
 	 * Default is `String`.

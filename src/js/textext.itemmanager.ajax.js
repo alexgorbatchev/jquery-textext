@@ -8,14 +8,14 @@
  */
 (function($, undefined)
 {
-	function ItemManagerAjax()
+	function AjaxItemManager()
 	{
 	};
 
-	$.fn.textext.ItemManagerAjax = ItemManagerAjax;
-	$.fn.textext.addItemManager('ajax', ItemManagerAjax);
+	$.fn.textext.AjaxItemManager = AjaxItemManager;
+	$.fn.textext.addItemManager('ajax', AjaxItemManager);
 
-	var p = ItemManagerAjax.prototype,
+	var p = AjaxItemManager.prototype,
 
 		CSS_LOADING = 'text-loading',
 
@@ -39,7 +39,7 @@
 		 * 
 		 * @author agorbatchev
 		 * @date 2011/08/16
-		 * @id ItemManagerAjax.options
+		 * @id AjaxItemManager.options
 		 */
 
 		/**
@@ -60,7 +60,7 @@
 		 * @default null
 		 * @author agorbatchev
 		 * @date 2011/08/16
-		 * @id ItemManagerAjax.options.data.callback
+		 * @id AjaxItemManager.options.data.callback
 		 */
 		OPT_DATA_CALLBACK = 'ajax.data.callback',
 		
@@ -70,13 +70,13 @@
 		 * possible results from the server and cache them on the client by setting this option to `true`.
 		 *
 		 * In such a case, only one call to the server will be made and filtering will be performed on
-		 * the client side using `ItemManagerAjax` attached to the core.
+		 * the client side using `AjaxItemManager` attached to the core.
 		 *
 		 * @name ajax.data.results
 		 * @default false
 		 * @author agorbatchev
 		 * @date 2011/08/16
-		 * @id ItemManagerAjax.options.cache.results
+		 * @id AjaxItemManager.options.cache.results
 		 */
 		OPT_CACHE_RESULTS = 'ajax.cache.results',
 		
@@ -89,7 +89,7 @@
 		 * @default 0.5
 		 * @author agorbatchev
 		 * @date 2011/08/16
-		 * @id ItemManagerAjax.options.loading.delay
+		 * @id AjaxItemManager.options.loading.delay
 		 */
 		OPT_LOADING_DELAY = 'ajax.loading.delay',
 
@@ -102,7 +102,7 @@
 		 * @default "Loading..."
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id ItemManagerAjax.options.loading.message
+		 * @id AjaxItemManager.options.loading.message
 		 */
 		OPT_LOADING_MESSAGE = 'ajax.loading.message',
 
@@ -116,7 +116,7 @@
 		 * @default 0.5
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id ItemManagerAjax.options.type.delay
+		 * @id AjaxItemManager.options.type.delay
 		 */
 		OPT_TYPE_DELAY = 'ajax.type.delay',
 
@@ -135,13 +135,13 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature ItemManagerAjax.init(core)
+	 * @signature AjaxItemManager.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id ItemManagerAjax.init
+	 * @id AjaxItemManager.init
 	 */
 	p.init = function(core)
 	{
@@ -222,11 +222,11 @@
 	 * If show loading message timer was started, calling this function disables it,
 	 * otherwise nothing else happens.
 	 *
-	 * @signature ItemManagerAjax.stopLoading()
+	 * @signature AjaxItemManager.stopLoading()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/16
-	 * @id ItemManagerAjax.stopLoading
+	 * @id AjaxItemManager.stopLoading
 	 */
 	p.stopLoading = function()
 	{
@@ -238,11 +238,11 @@
 	 * Shows message specified in `ajax.loading.message` if loading data takes more than
 	 * number of seconds specified in `ajax.loading.delay`.
 	 *
-	 * @signature ItemManagerAjax.beginLoading()
+	 * @signature AjaxItemManager.beginLoading()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id ItemManagerAjax.beginLoading
+	 * @id AjaxItemManager.beginLoading
 	 */
 	p.beginLoading = function()
 	{

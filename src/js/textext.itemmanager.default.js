@@ -8,14 +8,13 @@
  */
 (function($, undefined)
 {
-	function ItemManager()
+	function DefaultItemManager()
 	{
 	};
 
-	var textext = $.fn.textext,
-		p       = ItemManager.prototype
-		;
+	$.fn.textext.AjaxItemManager = AjaxItemManager;
+	$.fn.textext.addItemManager('default', DefaultItemManager);
 
-	textext.addItemManager('default', ItemManager);
+	var p = DefaultItemManager.prototype;
 })(jQuery);
 

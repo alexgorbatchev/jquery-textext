@@ -14,14 +14,14 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
-	 * @id TextExtFocus
+	 * @id FocusPlugin
 	 */
-	function TextExtFocus() {};
+	function FocusPlugin() {};
 
-	$.fn.textext.TextExtFocus = TextExtFocus;
-	$.fn.textext.addPlugin('focus', TextExtFocus);
+	$.fn.textext.FocusPlugin = FocusPlugin;
+	$.fn.textext.addPlugin('focus', FocusPlugin);
 
-	var p = TextExtFocus.prototype,
+	var p = FocusPlugin.prototype,
 		/**
 		 * Focus plugin only has one option and that is its HTML template. It could be 
 		 * changed when passed to the `$().textext()` function. For example:
@@ -35,7 +35,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtFocus.options
+		 * @id FocusPlugin.options
 		 */
 		
 		/**
@@ -45,7 +45,7 @@
 		 * @default '<div class="text-focus"/>'
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtFocus.options.html.focus
+		 * @id FocusPlugin.options.html.focus
 		 */
 		OPT_HTML_FOCUS = 'html.focus',
 
@@ -54,7 +54,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id TextExtFocus.events
+		 * @id FocusPlugin.events
 		 */
 
 		/**
@@ -64,7 +64,7 @@
 		 * @name focus
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtFocus.events.focus
+		 * @id FocusPlugin.events.focus
 		 */
 
 		/**
@@ -73,7 +73,7 @@
 		 * @name blur
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id TextExtFocus.events.blur
+		 * @id FocusPlugin.events.blur
 		 */
 
 		DEFAULT_OPTS = {
@@ -86,13 +86,13 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature TextExtFocus.init(core)
+	 * @signature FocusPlugin.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
-	 * @id TextExtFocus.init
+	 * @id FocusPlugin.init
 	 */
 	p.init = function(core)
 	{
@@ -115,13 +115,13 @@
 	 * Reacts to the `blur` event and hides the focus effect with a slight delay which 
 	 * allows quick refocusing without effect blinking in and out.
 	 *
-	 * @signature TextExtFocus.onBlur(e)
+	 * @signature FocusPlugin.onBlur(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtFocus.onBlur
+	 * @id FocusPlugin.onBlur
 	 */
 	p.onBlur = function(e)
 	{
@@ -139,12 +139,12 @@
 	/**
 	 * Reacts to the `focus` event and shows the focus effect.
 	 *
-	 * @signature TextExtFocus.onFocus
+	 * @signature FocusPlugin.onFocus
 	 *
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtFocus.onFocus
+	 * @id FocusPlugin.onFocus
 	 */
 	p.onFocus = function(e)
 	{
@@ -161,11 +161,11 @@
 	/**
 	 * Returns focus effect HTML element.
 	 *
-	 * @signature TextExtFocus.getFocus()
+	 * @signature FocusPlugin.getFocus()
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id TextExtFocus.getFocus
+	 * @id FocusPlugin.getFocus
 	 */
 	p.getFocus = function()
 	{

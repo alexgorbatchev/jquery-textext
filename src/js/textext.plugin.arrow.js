@@ -9,20 +9,20 @@
 (function($)
 {
 	/**
-	 * Displays a dropdown style arrow button. The `PluginArrow` works together with the
+	 * Displays a dropdown style arrow button. The `ArrowPlugin` works together with the
 	 * `TextExtAutocomplete` plugin and whenever clicked tells the autocomplete plugin to
 	 * display its suggestions.
 	 *
 	 * @author agorbatchev
 	 * @date 2011/12/27
-	 * @id PluginArrow
+	 * @id ArrowPlugin
 	 */
-	function PluginArrow() {};
+	function ArrowPlugin() {};
 
-	$.fn.textext.PluginArrow = PluginArrow;
-	$.fn.textext.addPlugin('arrow', PluginArrow);
+	$.fn.textext.ArrowPlugin = ArrowPlugin;
+	$.fn.textext.addPlugin('arrow', ArrowPlugin);
 
-	var p = PluginArrow.prototype,
+	var p = ArrowPlugin.prototype,
 		/**
 		 * Arrow plugin only has one option and that is its HTML template. It could be 
 		 * changed when passed to the `$().textext()` function. For example:
@@ -60,7 +60,7 @@
 	/**
 	 * Initialization method called by the core during plugin instantiation.
 	 *
-	 * @signature PluginArrow.init(core)
+	 * @signature ArrowPlugin.init(core)
 	 *
 	 * @param core {TextExt} Instance of the TextExt core class.
 	 *
@@ -90,7 +90,7 @@
 	/**
 	 * Reacts to the `click` event whenever user clicks the arrow.
 	 *
-	 * @signature PluginArrow.onArrowClick(e)
+	 * @signature ArrowPlugin.onArrowClick(e)
 	 *
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev

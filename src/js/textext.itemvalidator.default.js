@@ -8,14 +8,14 @@
  */
 (function($, undefined)
 {
-	function ItemValidatorDefault()
+	function DefaultItemValidator()
 	{
 	};
 
-	$.fn.textext.ItemValidatorDefault = ItemValidatorDefault;
-	$.fn.textext.addItemValidator('default', ItemValidatorDefault);
+	$.fn.textext.DefaultItemValidator = DefaultItemValidator;
+	$.fn.textext.addItemValidator('default', DefaultItemValidator);
 
-	var p = ItemValidatorDefault.prototype;
+	var p = DefaultItemValidator.prototype;
 
 	p.init = function(core)
 	{
