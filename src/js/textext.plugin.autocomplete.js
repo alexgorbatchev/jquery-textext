@@ -15,7 +15,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id 
+	 * @id AutocompletePlugin
 	 */
 	function AutocompletePlugin() {};
 
@@ -45,7 +45,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id options
+		 * @id AutocompletePlugin.options
 		 */
 
 		/**
@@ -56,7 +56,7 @@
 		 * @default true
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id options.autocomplete.enabled
+		 * @id AutocompletePlugin.options.autocomplete.enabled
 		 */
 		OPT_ENABLED = 'autocomplete.enabled',
 
@@ -68,7 +68,7 @@
 		 * @default "below"
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id options.autocomplete.dropdown.position
+		 * @id AutocompletePlugin.options.autocomplete.dropdown.position
 		 */
 		OPT_POSITION = 'autocomplete.dropdown.position',
 
@@ -80,7 +80,7 @@
 		 * @default "100px"
 		 * @author agorbatchev
 		 * @date 2011/12/29
-		 * @id options.autocomplete.dropdown.maxHeight
+		 * @id AutocompletePlugin.options.autocomplete.dropdown.maxHeight
 		 * @version 1.1
 		 */
 		OPT_MAX_HEIGHT = 'autocomplete.dropdown.maxHeight',
@@ -108,7 +108,7 @@
 		 * @default null
 		 * @author agorbatchev
 		 * @date 2011/12/23
-		 * @id options.autocomplete.render
+		 * @id AutocompletePlugin.options.autocomplete.render
 		 * @version 1.1
 		 */
 		OPT_RENDER = 'autocomplete.render',
@@ -120,7 +120,7 @@
 		 * @default '<div class="text-dropdown"><div class="text-list"/></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id options.html.dropdown
+		 * @id AutocompletePlugin.options.html.dropdown
 		 */
 		OPT_HTML_DROPDOWN = 'html.dropdown',
 
@@ -131,7 +131,7 @@
 		 * @default '<div class="text-suggestion"><span class="text-label"/></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id options.html.suggestion
+		 * @id AutocompletePlugin.options.html.suggestion
 		 */
 		OPT_HTML_SUGGESTION = 'html.suggestion',
 
@@ -140,7 +140,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id events
+		 * @id AutocompletePlugin.events
 		 */
 	
 		/**
@@ -150,7 +150,7 @@
 		 * @name getFormData
 		 * @author agorbatchev
 		 * @date 2011/08/18
-		 * @id events.getFormData
+		 * @id AutocompletePlugin.events.getFormData
 		 */
 		EVENT_GET_FORM_DATA = 'getFormData',
 
@@ -184,7 +184,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id init
+	 * @id AutocompletePlugin.init
 	 */
 	p.init = function(core)
 	{
@@ -246,7 +246,7 @@
 	 * 
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id containerElement
+	 * @id AutocompletePlugin.containerElement
 	 */
 	p.containerElement = function()
 	{
@@ -265,7 +265,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onMouseOver
+	 * @id AutocompletePlugin.onMouseOver
 	 */
 	p.onMouseOver = function(e)
 	{
@@ -289,7 +289,7 @@
 	 *
 	 * @author adamayres
 	 * @date 2012/01/13
-	 * @id onMouseDown
+	 * @id AutocompletePlugin.onMouseDown
 	 */
 	p.onMouseDown = function(e)
 	{
@@ -305,7 +305,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onClick
+	 * @id AutocompletePlugin.onClick
 	 */
 	p.onClick = function(e)
 	{
@@ -329,7 +329,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onBlur
+	 * @id AutocompletePlugin.onBlur
 	 */
 	p.onBlur = function(e)
 	{
@@ -356,7 +356,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onBackspaceKeyPress
+	 * @id AutocompletePlugin.onBackspaceKeyPress
 	 */
 	p.onBackspaceKeyPress = function(e)
 	{
@@ -377,7 +377,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onAnyKeyUp
+	 * @id AutocompletePlugin.onAnyKeyUp
 	 */
 	p.onAnyKeyUp = function(e, keyCode)
 	{
@@ -398,7 +398,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onDownKeyDown
+	 * @id AutocompletePlugin.onDownKeyDown
 	 */
 	p.onDownKeyDown = function(e)
 	{
@@ -419,7 +419,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onUpKeyDown
+	 * @id AutocompletePlugin.onUpKeyDown
 	 */
 	p.onUpKeyDown = function(e)
 	{
@@ -435,7 +435,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onEnterKeyPress
+	 * @id AutocompletePlugin.onEnterKeyPress
 	 */
 	p.onEnterKeyPress = function(e)
 	{
@@ -457,7 +457,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id onEscapeKeyPress
+	 * @id AutocompletePlugin.onEscapeKeyPress
 	 */
 	p.onEscapeKeyPress = function(e)
 	{
@@ -478,7 +478,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id positionDropdown
+	 * @id AutocompletePlugin.positionDropdown
 	 */
 	p.positionDropdown = function()
 	{
@@ -500,7 +500,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id suggestionElements
+	 * @id AutocompletePlugin.suggestionElements
 	 */
 	p.suggestionElements = function()
 	{
@@ -517,7 +517,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id setSelectedSuggestion
+	 * @id AutocompletePlugin.setSelectedSuggestion
 	 */
 	p.setSelectedSuggestion = function(suggestion)
 	{
@@ -554,7 +554,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id selectedSuggestionElement
+	 * @id AutocompletePlugin.selectedSuggestionElement
 	 */
 	p.selectedSuggestionElement = function()
 	{
@@ -568,7 +568,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id isDropdownVisible
+	 * @id AutocompletePlugin.isDropdownVisible
 	 */
 	p.isDropdownVisible = function()
 	{
@@ -590,7 +590,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id onGetFormData
+	 * @id AutocompletePlugin.onGetFormData
 	 */
 	p.getFormData = function(callback)
 	{
@@ -619,7 +619,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id clearItems
+	 * @id AutocompletePlugin.clearItems
 	 */
 	p.clearItems = function()
 	{
@@ -633,7 +633,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id renderSuggestions
+	 * @id AutocompletePlugin.renderSuggestions
 	 */
 	p.renderSuggestions = function()
 	{
@@ -679,7 +679,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id showDropdown
+	 * @id AutocompletePlugin.showDropdown
 	 */
 	p.showDropdown = function()
 	{
@@ -702,7 +702,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id hideDropdown
+	 * @id AutocompletePlugin.hideDropdown
 	 */
 	p.hideDropdown = function()
 	{
@@ -722,7 +722,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id addSuggestion
+	 * @id AutocompletePlugin.addSuggestion
 	 */
 	p.addSuggestion = function(suggestion)
 	{
@@ -743,7 +743,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id addDropdownItem
+	 * @id AutocompletePlugin.addDropdownItem
 	 */
 	p.addDropdownItem = function(html)
 	{
@@ -764,7 +764,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id clearSelected
+	 * @id AutocompletePlugin.clearSelected
 	 */
 	p.clearSelected = function()
 	{
@@ -780,7 +780,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id toggleNextSuggestion
+	 * @id AutocompletePlugin.toggleNextSuggestion
 	 */
 	p.toggleNextSuggestion = function()
 	{
@@ -813,7 +813,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id togglePreviousSuggestion
+	 * @id AutocompletePlugin.togglePreviousSuggestion
 	 */
 	p.togglePreviousSuggestion = function()
 	{
@@ -840,7 +840,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id scrollSuggestionIntoView
+	 * @id AutocompletePlugin.scrollSuggestionIntoView
 	 */
 	p.scrollSuggestionIntoView = function(item)
 	{
@@ -877,7 +877,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/17
-	 * @id selectFromDropdown
+	 * @id AutocompletePlugin.selectFromDropdown
 	 */
 	p.selectFromDropdown = function()
 	{
@@ -915,7 +915,7 @@
 	 * @author adamayres
 	 * @version 1.3.0
 	 * @date 2012/01/15
-	 * @id withinWrapElement
+	 * @id AutocompletePlugin.withinWrapElement
 	 */
 	p.withinWrapElement = function(element) 
 	{

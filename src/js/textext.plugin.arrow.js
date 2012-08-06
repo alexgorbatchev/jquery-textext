@@ -36,7 +36,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/12/27
-		 * @id options
+		 * @id ArrowPlugin.options
 		 */
 		
 		/**
@@ -46,7 +46,7 @@
 		 * @default '<div class="text-arrow"/>'
 		 * @author agorbatchev
 		 * @date 2011/12/27
-		 * @id options.html.arrow
+		 * @id ArrowPlugin.options.html.arrow
 		 */
 		OPT_HTML_ARROW = 'html.arrow',
 
@@ -66,7 +66,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/12/27
-	 * @id init
+	 * @id ArrowPlugin.init
 	 */
 	p.init = function(core)
 	{
@@ -95,7 +95,7 @@
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/12/27
-	 * @id onArrowClick
+	 * @id ArrowPlugin.onArrowClick
 	 */
 	p.onArrowClick = function(e)
 	{

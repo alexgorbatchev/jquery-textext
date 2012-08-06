@@ -16,7 +16,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id tags
+	 * @id TagsPlugin
 	 */
 	function TagsPlugin() {};
 
@@ -50,7 +50,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options
+		 * @id TagsPlugin.options
 		 */
 
 		/**
@@ -61,7 +61,7 @@
 		 * @default true
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.tags.enabled
+		 * @id TagsPlugin.options.tags.enabled
 		 */
 		OPT_ENABLED = 'tags.enabled',
 
@@ -76,7 +76,7 @@
 		 * @default null
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.tags.items
+		 * @id TagsPlugin.options.tags.items
 		 */
 		OPT_ITEMS = 'tags.items',
 
@@ -93,7 +93,7 @@
 		 * @default '<div class="text-tags"/>'
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.html.tag
+		 * @id TagsPlugin.options.html.tag
 		 */
 		OPT_HTML_TAG  = 'html.tag',
 
@@ -104,7 +104,7 @@
 		 * @default '<div class="text-tag"><div class="text-button"><span class="text-label"/><a class="text-remove"/></div></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.html.tags
+		 * @id TagsPlugin.options.html.tags
 		 */
 		OPT_HTML_TAGS = 'html.tags',
 
@@ -113,7 +113,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id events
+		 * @id TagsPlugin.events
 		 */
 
 		/**
@@ -141,7 +141,7 @@
 		 * @version 1.3.0
 		 * @author s.stok
 		 * @date 2011/01/23
-		 * @id events.tagClick
+		 * @id TagsPlugin.events.tagClick
 		 */
 		EVENT_TAG_CLICK = 'tagClick',
 
@@ -173,7 +173,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id init
+	 * @id TagsPlugin.init
 	 */
 	p.init = function(core)
 	{
@@ -228,7 +228,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/15
-	 * @id containerElement
+	 * @id TagsPlugin.containerElement
 	 */
 	p.containerElement = function()
 	{
@@ -248,7 +248,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id onPostInit
+	 * @id TagsPlugin.onPostInit
 	 */
 	p.onPostInit = function(e)
 	{
@@ -271,7 +271,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id onGetFormData
+	 * @id TagsPlugin.onGetFormData
 	 */
 	p.getFormData = function(callback)
 	{
@@ -296,7 +296,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id onInputMouseMove
+	 * @id TagsPlugin.onInputMouseMove
 	 */
 	p.onInputMouseMove = function(e)
 	{
@@ -315,7 +315,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id onContainerMouseMove
+	 * @id TagsPlugin.onContainerMouseMove
 	 */
 	p.onContainerMouseMove = function(e)
 	{
@@ -332,7 +332,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/02
-	 * @id onBackspaceKeyDown
+	 * @id TagsPlugin.onBackspaceKeyDown
 	 */
 	p.onBackspaceKeyDown = function(e)
 	{
@@ -354,7 +354,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onPreInvalidate
+	 * @id TagsPlugin.onPreInvalidate
 	 */
 	p.onPreInvalidate = function(e)
 	{
@@ -385,7 +385,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onClick
+	 * @id TagsPlugin.onClick
 	 */
 	p.onClick = function(e)
 	{
@@ -438,7 +438,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onAnyKeyPress
+	 * @id TagsPlugin.onAnyKeyPress
 	 */
 	p.onAnyKeyPress = function(e, keyCode)
 	{
@@ -506,7 +506,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id updateFromTags
+	 * @id TagsPlugin.updateFromTags
 	 */
 	p.getTags = function()
 	{
@@ -535,7 +535,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/08
-	 * @id toggleZIndex
+	 * @id TagsPlugin.toggleZIndex
 	 */
 	p.toggleZIndex = function(e)
 	{
@@ -560,7 +560,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id tagElements
+	 * @id TagsPlugin.tagElements
 	 */
 	p.tagElements = function()
 	{
@@ -578,7 +578,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id addTags
+	 * @id TagsPlugin.addTags
 	 */
 	p.addTags = function(tags)
 	{
@@ -627,7 +627,7 @@
 
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id getTagElement
+	 * @id TagsPlugin.getTagElement
 	 */
 	p.getTagElement = function(tag)
 	{
@@ -651,7 +651,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id removeTag
+	 * @id TagsPlugin.removeTag
 	 */
 	p.removeTag = function(tag)
 	{
@@ -690,7 +690,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id renderTag
+	 * @id TagsPlugin.renderTag
 	 */
 	p.renderTag = function(tag)
 	{

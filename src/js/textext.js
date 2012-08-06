@@ -90,7 +90,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id options
+		 * @id TextExt.options
 		 */
 
 		/**
@@ -100,7 +100,7 @@
 		 * @default ItemManager
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.item.manager
+		 * @id TextExt.options.item.manager
 		 */
 		OPT_ITEM_MANAGER = 'item.manager',
 
@@ -114,7 +114,7 @@
 		 * @default []
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.plugins
+		 * @id TextExt.options.plugins
 		 */
 		OPT_PLUGINS = 'plugins',
 		
@@ -175,7 +175,7 @@
 		 * @default {}
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.ext
+		 * @id TextExt.options.ext
 		 */
 		OPT_EXT = 'ext',
 		
@@ -187,7 +187,7 @@
 		 * @default '<div class="text-core"><div class="text-wrap"/></div>'
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.html.wrap
+		 * @id TextExt.options.html.wrap
 		 */
 		OPT_HTML_WRAP = 'html.wrap',
 
@@ -199,7 +199,7 @@
 		 * @default '<input type="hidden" />'
 		 * @author agorbatchev
 		 * @date 2011/08/20
-		 * @id options.html.hidden
+		 * @id TextExt.options.html.hidden
 		 */
 		OPT_HTML_HIDDEN = 'html.hidden',
 
@@ -231,7 +231,7 @@
 		 * @default { ... }
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id options.keys
+		 * @id TextExt.options.keys
 		 */
 		OPT_KEYS = 'keys',
 
@@ -240,7 +240,7 @@
 		 *
 		 * @author agorbatchev
 		 * @date 2011/08/17
-		 * @id events
+		 * @id TextExt.events
 		 */
 
 		/**
@@ -250,7 +250,7 @@
 		 * @name preInvalidate
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.preInvalidate
+		 * @id TextExt.events.preInvalidate
 		 */
 		EVENT_PRE_INVALIDATE = 'preInvalidate',
 
@@ -261,7 +261,7 @@
 		 * @name postInvalidate
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.postInvalidate
+		 * @id TextExt.events.postInvalidate
 		 */
 		EVENT_POST_INVALIDATE = 'postInvalidate',
 		
@@ -274,7 +274,7 @@
 		 * @name postInit
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.postInit
+		 * @id TextExt.events.postInit
 		 */
 		EVENT_POST_INIT = 'postInit',
 
@@ -286,7 +286,7 @@
 		 * @name ready
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.ready
+		 * @id TextExt.events.ready
 		 */
 		EVENT_READY = 'ready',
 
@@ -299,7 +299,7 @@
 		 * @name anyKeyUp
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.anyKeyUp
+		 * @id TextExt.events.anyKeyUp
 		 */
 
 		/**
@@ -308,7 +308,7 @@
 		 * @name anyKeyDown
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.anyKeyDown
+		 * @id TextExt.events.anyKeyDown
 		 */
 
 		/**
@@ -318,7 +318,7 @@
 		 * @name [name]KeyUp
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.[name]KeyUp
+		 * @id TextExt.events.[name]KeyUp
 		 */
 
 		/**
@@ -328,7 +328,7 @@
 		 * @name [name]KeyDown
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.[name]KeyDown
+		 * @id TextExt.events.[name]KeyDown
 		 */
 
 		/**
@@ -338,7 +338,7 @@
 		 * @name [name]KeyPress
 		 * @author agorbatchev
 		 * @date 2011/08/19
-		 * @id events.[name]KeyPress
+		 * @id TextExt.events.[name]KeyPress
 		 */
 
 		DEFAULT_OPTS = {
@@ -382,7 +382,7 @@
 	 * Returns object property by name where name is dot-separated and object is multiple levels deep.
 	 * @param target Object Source object.
 	 * @param name String Dot separated property name, ie `foo.bar.world`
-	 * @id core.getProperty
+	 * @id TextExt.core.getProperty
 	 */
 	function getProperty(source, name)
 	{
@@ -447,7 +447,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id init
+	 * @id TextExt.init
 	 */
 	p.init = function(input, opts)
 	{
@@ -525,7 +525,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/10/11
-	 * @id initPatches
+	 * @id TextExt.initPatches
 	 */
 	p.initPatches = function()
 	{
@@ -583,7 +583,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id initPlugins
+	 * @id TextExt.initPlugins
 	 */
 	p.initPlugins = function(plugins, source)
 	{
@@ -654,7 +654,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/12/28
-	 * @id hasPlugin
+	 * @id TextExt.hasPlugin
 	 * @version 1.1
 	 */
 	p.hasPlugin = function(name)
@@ -673,7 +673,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id on
+	 * @id TextExt.on
 	 */
 	p.on = hookupEvents;
 
@@ -687,7 +687,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id bind
+	 * @id TextExt.bind
 	 */
 	p.bind = function(event, handler)
 	{
@@ -704,7 +704,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id trigger
+	 * @id TextExt.trigger
 	 */
 	p.trigger = function()
 	{
@@ -719,7 +719,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id itemManager
+	 * @id TextExt.itemManager
 	 */
 
 	/**
@@ -729,7 +729,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2012/07/08
-	 * @id validator
+	 * @id TextExt.validator
 	 */
 
 	/**
@@ -739,7 +739,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/10
-	 * @id input
+	 * @id TextExt.input
 	 */
 	p.input = function()
 	{
@@ -756,7 +756,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id opts
+	 * @id TextExt.opts
 	 */
 	p.opts = function(name)
 	{
@@ -772,7 +772,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id wrapElement
+	 * @id TextExt.wrapElement
 	 */
 	p.wrapElement = function()
 	{
@@ -787,7 +787,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id invalidateBounds
+	 * @id TextExt.invalidateBounds
 	 */
 	p.invalidateBounds = function()
 	{
@@ -817,7 +817,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id focusInput
+	 * @id TextExt.focusInput
 	 */
 	p.focusInput = function()
 	{
@@ -831,7 +831,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/09
-	 * @id hiddenInput
+	 * @id TextExt.hiddenInput
 	 */
 	p.hiddenInput = function(value)
 	{
@@ -852,7 +852,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id invalidateData
+	 * @id TextExt.invalidateData
 	 */
 	p.invalidateData = function(callback)
 	{
@@ -923,7 +923,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id onSetInputData
+	 * @id TextExt.onSetInputData
 	 */
 	p.inputValue = function(value)
 	{
@@ -953,7 +953,7 @@
 	 * 
 	 * @author agorbatchev
 	 * @date 2011/08/22
-	 * @id onSetFormData
+	 * @id TextExt.onSetFormData
 	 */
 	p.formValue = function(value)
 	{
@@ -983,7 +983,7 @@
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onKeyUp
+	 * @id TextExt.onKeyUp
 	 */
 
 	/**
@@ -994,7 +994,7 @@
 	 * @param e {Object} jQuery event.
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id onKeyDown
+	 * @id TextExt.onKeyDown
 	 */
 	
 	$(['Down', 'Up']).each(function()
@@ -1058,7 +1058,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/08/19
-	 * @id jquery
+	 * @id TextExt.jquery
 	 */
 
 	var cssInjected = false;
@@ -1101,7 +1101,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/10/11
-	 * @id addPlugin
+	 * @id TextExt.addPlugin
 	 */
 	textext.addPlugin = function(name, constructor)
 	{
@@ -1120,7 +1120,7 @@
 	 *
 	 * @author agorbatchev
 	 * @date 2011/10/11
-	 * @id addPatch
+	 * @id TextExt.addPatch
 	 */
 	textext.addPatch = function(name, constructor)
 	{
