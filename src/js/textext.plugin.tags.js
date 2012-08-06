@@ -80,7 +80,11 @@
 		 */
 		OPT_ITEMS = 'tags.items',
 
-		OPT_HTML_ALLOW_DUPLICATES = 'tags.allowDuplicates',
+		/**
+		 * @author agorbatchev
+		 * @date 2012/08/06
+		 */
+		OPT_ALLOW_DUPLICATES = 'tags.allowDuplicates',
 
 		/**
 		 * HTML source that is used to generate a single tag.
@@ -471,6 +475,30 @@
 	// Core functionality
 
 	/**
+	 * @author agorbatchev
+	 * @date 2012/08/06
+	 */
+	p.hasTag = function(tag)
+	{
+		var self        = this,
+			elements    = this.tagElements(),
+			itemManager = self.core().itemManager(),
+			item,
+			i
+			;
+
+		for(i = 0; i < elements.length; i++)
+		{
+			item = $(elements[i]).data(CSS_TAG);
+
+			if(itemManager.compareItems(item, tag))
+				return true;
+		}
+
+		return false;
+	};
+
+	/**
 	 * Creates a cache object with all the tags currently added which will be returned
 	 * in the `onGetFormData` handler.
 	 *
@@ -557,10 +585,11 @@
 		if(!tags || tags.length == 0)
 			return;
 
-		var self      = this,
-			core      = self.core(),
-			container = self.containerElement(),
-			nodes     = [],
+		var self            = this,
+			core            = self.core(),
+			container       = self.containerElement(),
+			allowDuplicates = self.opts(OPT_ALLOW_DUPLICATES),
+			nodes           = [],
 			node,
 			i,
 			tag
@@ -569,16 +598,23 @@
 		for(i = 0; i < tags.length; i++)
 		{
 			tag  = tags[i];
-			node = self.renderTag(tag);
 
-			container.append(node);
-			nodes.push(node);
+			if(allowDuplicates || !self.hasTag(tag))
+			{
+				node = self.renderTag(tag);
+
+				container.append(node);
+				nodes.push(node);
+			}
 		}
 
-		core.invalidateData();
-		core.invalidateBounds();
-
-		self.trigger(EVENT_TAG_ADD, nodes, tags);
+		// only trigger events and invalidate if at least one tag was added
+		if(nodes.length)
+		{
+			core.invalidateData();
+			core.invalidateBounds();
+			self.trigger(EVENT_TAG_ADD, nodes, tags);
+		}
 	};
 
 	/**
