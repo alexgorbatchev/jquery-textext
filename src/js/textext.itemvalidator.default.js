@@ -24,7 +24,7 @@
 
 	p.isValid = function(item, callback)
 	{
-		callback(null, true);
+		callback(null, item && item.length > 0);
 	};
 })(jQuery);
 
