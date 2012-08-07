@@ -12,7 +12,7 @@
 	{
 	};
 
-	$.fn.textext.AjaxItemManager = AjaxItemManager;
+	$.fn.textext.DefaultItemManager = DefaultItemManager;
 	$.fn.textext.addItemManager('default', DefaultItemManager);
 
 	var p = DefaultItemManager.prototype;
