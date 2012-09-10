@@ -1,0 +1,13 @@
+.text-core .text-wrap .text-clear {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 14px;
+  width: 22px;
+  height: 22px;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAYUlEQVR42mP4////P1IwA5RBNIBr+Pj5+/9Tlx78v373OYoCkBgIY2gACWr7tP63CO8BanoBlmyfuQssBsIYGtAVLNpwEsMADA0gAFMIw+hOpEwDSU4i2dMkByvJEUcsAABHaALCQIZDrAAAAABJRU5ErkJggg==") 50% 50% no-repeat;
+  cursor: pointer;
+  z-index: 2;
+}
