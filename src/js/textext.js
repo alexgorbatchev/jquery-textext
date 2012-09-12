@@ -39,7 +39,9 @@
 		 *
 		 * There are multiple ways of passing in the options:
 		 *
-		 * 1. Options could be nested multiple levels deep and accessed using all lowercased, dot
+		 * ### Hierarchical
+		 *
+		 * Options could be nested multiple levels deep and accessed using all lowercased, dot
 		 * separated style, eg `foo.bar.world`. The manual is using this style for clarity and
 		 * consistency. For example:
 		 *
@@ -60,7 +62,9 @@
 		 *            }
 		 *        }
 		 *
-		 * 2. Options could be specified using camel cased names in a flat key/value fashion like so:
+		 * ### Flat
+		 *
+		 * Options could be specified using camel cased names in a flat key/value fashion like so:
 		 *
 		 *        {
 		 *            itemManager: ...,
@@ -69,7 +73,9 @@
 		 *            autocompleteDropdownPosition: ...
 		 *        }
 		 *
-		 * 3. Finally, options could be specified in mixed style. It's important to understand that
+		 * ### Mixed
+		 *
+		 * Finally, options could be specified in mixed style. It's important to understand that
 		 * for each dot separated name, its alternative in camel case is also checked for, eg for 
 		 * `foo.bar.world` it's alternatives could be `fooBarWorld`, `foo.barWorld` or `fooBar.world`, 
 		 * which translates to `{ foo: { bar: { world: ... } } }`, `{ fooBarWorld: ... }`, 
@@ -94,22 +100,44 @@
 		 */
 
 		/**
-		 * Default instance of `ItemManager` which takes `String` type as default for tags.
+		 * Allows to change which [`ItemManager`](itemmanager.html) is used to manage this instance of `TextExt`.
 		 *
 		 * @name item.manager
-		 * @default ItemManager
+		 * @default ItemManagerDefault
 		 * @author agorbatchev
 		 * @date 2011/08/19
 		 * @id TextExt.options.item.manager
 		 */
 		OPT_ITEM_MANAGER = 'item.manager',
 
+		/**
+		 * Allows to change which [`ItemValidator`](itemvalidator.html) is used to validate entries in this instance of `TextExt`.
+		 *
+		 * @name item.validator
+		 * @default ItemValidatorDefault
+		 * @author agorbatchev
+		 * @date 2012/09/12
+		 * @id TextExt.options.item.validator
+		 */
 		OPT_ITEM_VALIDATOR = 'item.validator',
 		
 		/**
-		 * List of plugins that should be used with the current instance of TextExt. The list could be
-		 * specified as array of strings or as comma or space separated string.
+		 * List of plugins that should be used with the current instance of TextExt. Here are all the ways
+		 * that you can set this. The order in which plugins are specified is significant. First plugin in 
+		 * the list that has `getFormData` method will be used as [`dataSource`](#datasource).
 		 *
+		 *     // array
+		 *     [ 'autocomplete', 'tags', 'prompt' ]
+		 *
+		 *     // space separated string
+		 *     'autocomplete tags prompt'
+		 *
+		 *     // comma separated string
+		 *     'autocomplete, tags, prompt'
+		 *
+		 *     // bracket separated string
+		 *     'autocomplete > tags > prompt'
+		 *      
 		 * @name plugins
 		 * @default []
 		 * @author agorbatchev
@@ -118,6 +146,33 @@
 		 */
 		OPT_PLUGINS = 'plugins',
 		
+		/**
+		 * Name of the plugin that will be used as primary data source to populate form data that `TextExt` generates.
+		 *
+		 * `TextExt` always tries to automatically determine best `dataSource` plugin. It uses the first plugin in the
+		 * `plugins` option which has `getFormData((function(err, form, input) {})` function. You can always specify
+		 * exactly which plugin you wish to use either by setting `dataSource` value or by simply adding `*` after
+		 * the plugin name in the `plugins` option. 
+		 *
+		 *     // In this example `autocomplete` will be automatically selected as `dataSource` 
+		 *     // because it's the first plugin in the list that has `getFormData` method.
+		 *     $('#text').textext({ plugins : 'autocomplete tags' })
+		 *
+		 *     // In this example we specifically set `dataSource` to use `tags` plugin.
+		 *     $('#text').textext({
+		 *         plugins    : 'autocomplete tags',
+		 *         dataSource : 'tags'
+		 *     })
+		 *
+		 *     // Same result as the above using `*` shorthand
+		 *     $('#text').textext({ plugins : 'autocomplete tags*' })
+		 *
+		 * @name dataSource
+		 * @default null
+		 * @author agorbatchev
+		 * @date 2012/09/12
+		 * @id TextExt.options.dataSource
+		 */
 		OPT_DATA_SOURCE = 'dataSource',
 
 		/**
@@ -127,49 +182,45 @@
 		 * It's possible to specifically target the core or any plugin, as well as overwrite all the
 		 * desired methods everywhere.
 		 *
-		 * 1. Targeting the core:
+		 *     // Targeting the core:
+		 *     ext: {
+		 *         core: {
+		 *             trigger: function()
+		 *             {
+		 *                 console.log('TextExt.trigger', arguments);
+		 *                 $.fn.textext.TextExt.prototype.trigger.apply(this, arguments);
+		 *             }
+		 *         }
+		 *     }
 		 *
-		 *        ext: {
-		 *            core: {
-		 *                trigger: function()
-		 *                {
-		 *                    console.log('TextExt.trigger', arguments);
-		 *                    $.fn.textext.TextExt.prototype.trigger.apply(this, arguments);
-		 *                }
-		 *            }
-		 *        }
+		 *     // In this case we monkey patch currently used instance of the `Tags` plugin.
+		 *     ext: {
+		 *         tags: {
+		 *             addTags: function(tags)
+		 *             {
+		 *                 console.log('TextExtTags.addTags', tags);
+		 *                 $.fn.textext.TextExtTags.prototype.addTags.apply(this, arguments);
+		 *             }
+		 *         }
+		 *     }
 		 *
-		 * 2. Targeting individual plugins:
+		 *     // Targeting currently used `ItemManager` instance:
+		 *     ext: {
+		 *         itemManager: {
+		 *             stringToItem: function(str)
+		 *             {
+		 *                 console.log('ItemManager.stringToItem', str);
+		 *                 return $.fn.textext.ItemManager.prototype.stringToItem.apply(this, arguments);
+		 *             }
+		 *         }
+		 *     }
 		 *
-		 *        ext: {
-		 *            tags: {
-		 *                addTags: function(tags)
-		 *                {
-		 *                    console.log('TextExtTags.addTags', tags);
-		 *                    $.fn.textext.TextExtTags.prototype.addTags.apply(this, arguments);
-		 *                }
-		 *            }
-		 *        }
-		 *
-		 * 3. Targeting `ItemManager` instance:
-		 *
-		 *        ext: {
-		 *            itemManager: {
-		 *                stringToItem: function(str)
-		 *                {
-		 *                    console.log('ItemManager.stringToItem', str);
-		 *                    return $.fn.textext.ItemManager.prototype.stringToItem.apply(this, arguments);
-		 *                }
-		 *            }
-		 *        }
-		 *
-		 * 4. And finally, in edge cases you can extend everything at once:
-		 *
-		 *        ext: {
-		 *            '*': {
-		 *                fooBar: function() {}
-		 *            }
-		 *        }
+		 *     // ... and finally, in edge cases you can extend everything at once:
+		 *     ext: {
+		 *         '*': {
+		 *             fooBar: function() {}
+		 *         }
+		 *     }
 		 *
 		 * @name ext
 		 * @default {}
@@ -205,9 +256,9 @@
 
 		/**
 		 * Hash table of key codes and key names for which special events will be created
-		 * by the core. For each entry a `[name]KeyDown`, `[name]KeyUp` and `[name]KeyPress` events 
-		 * will be triggered along side with `anyKeyUp` and `anyKeyDown` events for every 
-		 * key stroke.
+		 * by the core. For each entry a [`[name]KeyDown`](#name-keydown), [`[name]KeyUp`](#name-keyup)
+		 * and [`[name]KeyPress`](#name-keypress) events will be triggered along side with 
+		 * [`anyKeyUp`](#anykeyup) and [`anyKeyDown`](#anykeydown) events for every key stroke.
 		 *
 		 * Here's a list of default keys:
 		 *
