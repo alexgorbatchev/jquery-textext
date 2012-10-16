@@ -52,6 +52,11 @@ The steps to using TextExt are as follows:
 
 ## History
 
+### 1.3.1
+
+#### Bug Fixes
+* Fixed jQuery 1.8.x compatability ([issue #74](https://github.com/alexgorbatchev/jquery-textext/issues/74)).
+
 ### 1.3.0
 
 #### New Features
