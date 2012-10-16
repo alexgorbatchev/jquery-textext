@@ -184,7 +184,6 @@
 	p.init = function(core)
 	{
 		this.baseInit(core, DEFAULT_OPTS);
-
 		var self  = this,
 			input = self.input(),
 			container

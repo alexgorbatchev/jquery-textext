@@ -970,17 +970,19 @@
 			input     = self.input(),
 			wrap      = self.wrapElement(),
 			container = wrap.parent(),
-			width     = self.originalWidth,
+			width     = self.originalWidth + 'px',
 			height
 			;
 
 		self.trigger(EVENT_PRE_INVALIDATE);
 
-		height = input.outerHeight();
+		height = input.outerHeight() + 'px';
 
-		input.width(width);
-		wrap.width(width).height(height);
-		container.height(height);
+		// using css() method instead of width() and height() here because they don't seem to do the right thing in jQuery 1.8.x
+		// https://github.com/alexgorbatchev/jquery-textext/issues/74
+		input.css({ 'width' : width });
+		wrap.css({ 'width' : width, 'height' : height });
+		container.css({ 'height' : height }); 
 
 		self.trigger(EVENT_POST_INVALIDATE);
 	};
