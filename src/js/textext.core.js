@@ -2,7 +2,7 @@
  * jQuery TextExt Plugin
  * http://textextjs.com
  *
- * @version 1.3.0
+ * @version 1.3.1
  * @copyright Copyright (C) 2011 Alex Gorbatchev. All rights reserved.
  * @license MIT License
  */
