@@ -1,0 +1,17 @@
+@import '_common';
+
+.text-core .text-wrap .text-prompt {
+	.border_box;
+	position    : absolute;
+	width       : 100%
+	height      : 100%
+	margin      : 1px 0 0 2px;
+	font        : @font;
+	color       : silver;
+	overflow    : hidden;
+	white-space : pre;
+
+	&.text-hide-prompt {
+		display : none;
+	}
+}

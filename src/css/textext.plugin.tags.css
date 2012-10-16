@@ -23,8 +23,8 @@
   box-sizing: border-box;
   position: relative;
   float: left;
-  border: 1px solid #9daccc;
-  background: #e2e6f0;
+  border: 1px solid #9DACCC;
+  background: #E2E6F0;
   color: #000;
   padding: 0px 17px 0px 3px;
   margin: 0 2px 2px 0;
@@ -39,7 +39,7 @@
   display: block;
   width: 11px;
   height: 11px;
-  background: url("close.png") 0 0 no-repeat;
+  background: url('close.png') 0 0 no-repeat;
 }
 .text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:hover {
   background-position: 0 -11px;

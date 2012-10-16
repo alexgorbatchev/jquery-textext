@@ -1,0 +1,21 @@
+@border   : #9DACCC;
+@selected : #6D84B4;
+@font     : 11px "lucida grande",tahoma,verdana,arial,sans-serif;
+
+.border_box() {
+    -webkit-box-sizing : border-box;
+    -moz-box-sizing    : border-box;
+    box-sizing         : border-box;
+}
+
+.shadow(@_) {
+    -webkit-box-shadow : @arguments;
+    -moz-box-shadow    : @arguments;
+    box-shadow         : @arguments;
+}
+
+.round_corners(@_) {
+    -webkit-border-radius : @arguments;
+    -moz-border-radius    : @arguments;
+    border-radius         : @arguments;
+}

@@ -3,11 +3,11 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  margin: 1px 0 0 2px;
+  width: 100%
+	height      : 100%
+	margin      : 1px 0 0 2px;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
-  color: #c0c0c0;
+  color: silver;
   overflow: hidden;
   white-space: pre;
 }
