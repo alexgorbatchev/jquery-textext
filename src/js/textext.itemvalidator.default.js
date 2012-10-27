@@ -8,23 +8,23 @@
  */
 (function($, undefined)
 {
-	function DefaultItemValidator()
-	{
-	};
+    function DefaultItemValidator()
+    {
+    };
 
-	$.fn.textext.DefaultItemValidator = DefaultItemValidator;
-	$.fn.textext.addItemValidator('default', DefaultItemValidator);
+    $.fn.textext.DefaultItemValidator = DefaultItemValidator;
+    $.fn.textext.addItemValidator('default', DefaultItemValidator);
 
-	var p = DefaultItemValidator.prototype;
+    var p = DefaultItemValidator.prototype;
 
-	p.init = function(core)
-	{
-		this.baseInit(core);
-	};
+    p.init = function(core)
+    {
+        this.baseInit(core);
+    };
 
-	p.isValid = function(item, callback)
-	{
-		callback(null, item && item.length > 0);
-	};
+    p.isValid = function(item, callback)
+    {
+        callback(null, item && item.length > 0);
+    };
 })(jQuery);
 

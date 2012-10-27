@@ -8,24 +8,24 @@
  */
 (function($, undefined)
 {
-	function ItemValidator()
-	{
-	};
+    function ItemValidator()
+    {
+    };
 
-	var textext = $.fn.textext,
-		p       = ItemValidator.prototype = new textext.Plugin()
-		;
-		
-	textext.ItemValidator = ItemValidator;
+    var textext = $.fn.textext,
+        p       = ItemValidator.prototype = new textext.Plugin()
+        ;
+        
+    textext.ItemValidator = ItemValidator;
 
-	p.init = function(core)
-	{
-		this.baseInit(core);
-	};
+    p.init = function(core)
+    {
+        this.baseInit(core);
+    };
 
-	p.isValid = function(item, callback)
-	{
-		throw new Error('TextExt.js: please implement `ItemValidator.isValid`');
-	};
+    p.isValid = function(item, callback)
+    {
+        throw new Error('TextExt.js: please implement `ItemValidator.isValid`');
+    };
 })(jQuery);
 

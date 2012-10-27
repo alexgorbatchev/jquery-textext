@@ -8,13 +8,13 @@
  */
 (function($, undefined)
 {
-	function DefaultItemManager()
-	{
-	};
+    function DefaultItemManager()
+    {
+    };
 
-	$.fn.textext.DefaultItemManager = DefaultItemManager;
-	$.fn.textext.addItemManager('default', DefaultItemManager);
+    $.fn.textext.DefaultItemManager = DefaultItemManager;
+    $.fn.textext.addItemManager('default', DefaultItemManager);
 
-	var p = DefaultItemManager.prototype;
+    var p = DefaultItemManager.prototype;
 })(jQuery);
 

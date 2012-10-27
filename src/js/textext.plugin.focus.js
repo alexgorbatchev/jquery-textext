@@ -8,167 +8,167 @@
  */
 (function($)
 {
-	/**
-	 * Focus plugin displays a visual effect whenever user sets focus
-	 * into the text area.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/18
-	 * @id FocusPlugin
-	 */
-	function FocusPlugin() {};
+    /**
+     * Focus plugin displays a visual effect whenever user sets focus
+     * into the text area.
+     *
+     * @author agorbatchev
+     * @date 2011/08/18
+     * @id FocusPlugin
+     */
+    function FocusPlugin() {};
 
-	$.fn.textext.FocusPlugin = FocusPlugin;
-	$.fn.textext.addPlugin('focus', FocusPlugin);
+    $.fn.textext.FocusPlugin = FocusPlugin;
+    $.fn.textext.addPlugin('focus', FocusPlugin);
 
-	var p = FocusPlugin.prototype,
-		/**
-		 * Focus plugin only has one option and that is its HTML template. It could be 
-		 * changed when passed to the `$().textext()` function. For example:
-		 *
-		 *     $('textarea').textext({
-		 *         plugins: 'focus',
-		 *         html: {
-		 *             focus: "<span/>"
-		 *         }
-		 *     })
-		 *
-		 * @author agorbatchev
-		 * @date 2011/08/18
-		 * @id FocusPlugin.options
-		 */
-		
-		/**
-		 * HTML source that is used to generate markup required for the focus effect.
-		 *
-		 * @name html.focus
-		 * @default '<div class="text-focus"/>'
-		 * @author agorbatchev
-		 * @date 2011/08/18
-		 * @id FocusPlugin.options.html.focus
-		 */
-		OPT_HTML_FOCUS = 'html.focus',
+    var p = FocusPlugin.prototype,
+        /**
+         * Focus plugin only has one option and that is its HTML template. It could be 
+         * changed when passed to the `$().textext()` function. For example:
+         *
+         *     $('textarea').textext({
+         *         plugins: 'focus',
+         *         html: {
+         *             focus: "<span/>"
+         *         }
+         *     })
+         *
+         * @author agorbatchev
+         * @date 2011/08/18
+         * @id FocusPlugin.options
+         */
+        
+        /**
+         * HTML source that is used to generate markup required for the focus effect.
+         *
+         * @name html.focus
+         * @default '<div class="text-focus"/>'
+         * @author agorbatchev
+         * @date 2011/08/18
+         * @id FocusPlugin.options.html.focus
+         */
+        OPT_HTML_FOCUS = 'html.focus',
 
-		/**
-		 * Focus plugin dispatches or reacts to the following events.
-		 *
-		 * @author agorbatchev
-		 * @date 2011/08/17
-		 * @id FocusPlugin.events
-		 */
+        /**
+         * Focus plugin dispatches or reacts to the following events.
+         *
+         * @author agorbatchev
+         * @date 2011/08/17
+         * @id FocusPlugin.events
+         */
 
-		/**
-		 * Focus plugin reacts to the `focus` event and shows the markup generated from
-		 * the `html.focus` option.
-		 *
-		 * @name focus
-		 * @author agorbatchev
-		 * @date 2011/08/18
-		 * @id FocusPlugin.events.focus
-		 */
+        /**
+         * Focus plugin reacts to the `focus` event and shows the markup generated from
+         * the `html.focus` option.
+         *
+         * @name focus
+         * @author agorbatchev
+         * @date 2011/08/18
+         * @id FocusPlugin.events.focus
+         */
 
-		/**
-		 * Focus plugin reacts to the `blur` event and hides the effect.
-		 *
-		 * @name blur
-		 * @author agorbatchev
-		 * @date 2011/08/18
-		 * @id FocusPlugin.events.blur
-		 */
+        /**
+         * Focus plugin reacts to the `blur` event and hides the effect.
+         *
+         * @name blur
+         * @author agorbatchev
+         * @date 2011/08/18
+         * @id FocusPlugin.events.blur
+         */
 
-		DEFAULT_OPTS = {
-			html : {
-				focus : '<div class="text-focus"/>'
-			}
-		}
-		;
+        DEFAULT_OPTS = {
+            html : {
+                focus : '<div class="text-focus"/>'
+            }
+        }
+        ;
 
-	/**
-	 * Initialization method called by the core during plugin instantiation.
-	 *
-	 * @signature FocusPlugin.init(core)
-	 *
-	 * @param core {TextExt} Instance of the TextExt core class.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/18
-	 * @id FocusPlugin.init
-	 */
-	p.init = function(core)
-	{
-		var self = this;
+    /**
+     * Initialization method called by the core during plugin instantiation.
+     *
+     * @signature FocusPlugin.init(core)
+     *
+     * @param core {TextExt} Instance of the TextExt core class.
+     *
+     * @author agorbatchev
+     * @date 2011/08/18
+     * @id FocusPlugin.init
+     */
+    p.init = function(core)
+    {
+        var self = this;
 
-		self.baseInit(core, DEFAULT_OPTS);
-		self.core().wrapElement().append(self.opts(OPT_HTML_FOCUS));
-		self.on({
-			blur  : self.onBlur,
-			focus : self.onFocus
-		});
+        self.baseInit(core, DEFAULT_OPTS);
+        self.core().wrapElement().append(self.opts(OPT_HTML_FOCUS));
+        self.on({
+            blur  : self.onBlur,
+            focus : self.onFocus
+        });
 
-		self._timeoutId = 0;
-	};
+        self._timeoutId = 0;
+    };
 
-	//--------------------------------------------------------------------------------
-	// Event handlers
-	
-	/**
-	 * Reacts to the `blur` event and hides the focus effect with a slight delay which 
-	 * allows quick refocusing without effect blinking in and out.
-	 *
-	 * @signature FocusPlugin.onBlur(e)
-	 *
-	 * @param e {Object} jQuery event.
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/08
-	 * @id FocusPlugin.onBlur
-	 */
-	p.onBlur = function(e)
-	{
-		var self = this;
+    //--------------------------------------------------------------------------------
+    // Event handlers
+    
+    /**
+     * Reacts to the `blur` event and hides the focus effect with a slight delay which 
+     * allows quick refocusing without effect blinking in and out.
+     *
+     * @signature FocusPlugin.onBlur(e)
+     *
+     * @param e {Object} jQuery event.
+     *
+     * @author agorbatchev
+     * @date 2011/08/08
+     * @id FocusPlugin.onBlur
+     */
+    p.onBlur = function(e)
+    {
+        var self = this;
 
-		clearTimeout(self._timeoutId);
+        clearTimeout(self._timeoutId);
 
-		self._timeoutId = setTimeout(function()
-		{
-			self.getFocus().hide();
-		},
-		100);
-	};
+        self._timeoutId = setTimeout(function()
+        {
+            self.getFocus().hide();
+        },
+        100);
+    };
 
-	/**
-	 * Reacts to the `focus` event and shows the focus effect.
-	 *
-	 * @signature FocusPlugin.onFocus
-	 *
-	 * @param e {Object} jQuery event.
-	 * @author agorbatchev
-	 * @date 2011/08/08
-	 * @id FocusPlugin.onFocus
-	 */
-	p.onFocus = function(e)
-	{
-		var self = this;
+    /**
+     * Reacts to the `focus` event and shows the focus effect.
+     *
+     * @signature FocusPlugin.onFocus
+     *
+     * @param e {Object} jQuery event.
+     * @author agorbatchev
+     * @date 2011/08/08
+     * @id FocusPlugin.onFocus
+     */
+    p.onFocus = function(e)
+    {
+        var self = this;
 
-		clearTimeout(self._timeoutId);
-		
-		self.getFocus().show();
-	};
-	
-	//--------------------------------------------------------------------------------
-	// Core functionality
+        clearTimeout(self._timeoutId);
+        
+        self.getFocus().show();
+    };
+    
+    //--------------------------------------------------------------------------------
+    // Core functionality
 
-	/**
-	 * Returns focus effect HTML element.
-	 *
-	 * @signature FocusPlugin.getFocus()
-	 *
-	 * @author agorbatchev
-	 * @date 2011/08/08
-	 * @id FocusPlugin.getFocus
-	 */
-	p.getFocus = function()
-	{
-		return this.core().wrapElement().find('.text-focus');
-	};
+    /**
+     * Returns focus effect HTML element.
+     *
+     * @signature FocusPlugin.getFocus()
+     *
+     * @author agorbatchev
+     * @date 2011/08/08
+     * @id FocusPlugin.getFocus
+     */
+    p.getFocus = function()
+    {
+        return this.core().wrapElement().find('.text-focus');
+    };
 })(jQuery);
