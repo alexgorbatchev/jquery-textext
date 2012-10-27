@@ -1,8 +1,5 @@
 PATH := "/Applications/Firefox.app/Contents/MacOS":$(PATH)
 
-stylus:
-	@./node_modules/.bin/stylus --watch --include ./src/stylus --out ./src/css ./src/stylus/*.styl 
-
 selenium:
 	@echo "Starting Selenium RC server"
 	@cd tests && java -jar selenium-server-standalone-2.15.0.jar -firefoxProfileTemplate "./firefox_profile"
