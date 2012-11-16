@@ -1123,7 +1123,9 @@
 	 */
 	p.onSetInputData = function(e, data)
 	{
-		this.input().val(data);
+		if (this.input().val() != data) {
+			this.input().val(data);
+		}
 	};
 
 	/**
