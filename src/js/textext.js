@@ -100,7 +100,7 @@
          */
 
         /**
-         * Allows to change which [`ItemManager`](itemmanager.html) is used to manage this instance of `TextExt`.
+         * Allows to change which [`ItemManager`](core-itemmanager.html) is used to manage this instance of `TextExt`.
          *
          * @name item.manager
          * @default ItemManagerDefault
@@ -111,7 +111,7 @@
         OPT_ITEM_MANAGER = 'item.manager',
 
         /**
-         * Allows to change which [`ItemValidator`](itemvalidator.html) is used to validate entries in this instance of `TextExt`.
+         * Allows to change which [`ItemValidator`](core-itemvalidator.html) is used to validate entries in this instance of `TextExt`.
          *
          * @name item.validator
          * @default ItemValidatorDefault
@@ -124,7 +124,7 @@
         /**
          * List of plugins that should be used with the current instance of TextExt. Here are all the ways
          * that you can set this. The order in which plugins are specified is significant. First plugin in 
-         * the list that has `getFormData` method will be used as [`dataSource`](#datasource).
+         * the list that has `getFormData` method will be used as [`dataSource`](#dataSource).
          *
          *     // array
          *     [ 'autocomplete', 'tags', 'prompt' ]
@@ -149,7 +149,7 @@
         /**
          * Name of the plugin that will be used as primary data source to populate form data that `TextExt` generates.
          *
-         * `TextExt` always tries to automatically determine best `dataSource` plugin. It uses the first plugin in the
+         * `TextExt` always tries to automatically determine best `dataSource` plugin to use. It uses the first plugin in the
          * `plugins` option which has `getFormData((function(err, form, input) {})` function. You can always specify
          * exactly which plugin you wish to use either by setting `dataSource` value or by simply adding `*` after
          * the plugin name in the `plugins` option. 
@@ -256,9 +256,9 @@
 
         /**
          * Hash table of key codes and key names for which special events will be created
-         * by the core. For each entry a [`[name]KeyDown`](#name-keydown), [`[name]KeyUp`](#name-keyup)
-         * and [`[name]KeyPress`](#name-keypress) events will be triggered along side with 
-         * [`anyKeyUp`](#anykeyup) and [`anyKeyDown`](#anykeydown) events for every key stroke.
+         * by the core. For each entry a [`[name]KeyDown`](#KeyDown), [`[name]KeyUp`](#KeyUp)
+         * and [`[name]KeyPress`](#KeyPress) events will be triggered along side with 
+         * [`anyKeyUp`](#anyKeyUp) and [`anyKeyDown`](#anyKeyDown) events for every key stroke.
          *
          * Here's a list of default keys:
          *
@@ -353,7 +353,7 @@
 
         /**
          * Core triggers `formDataChange` event after the value of the hidden `<input/>` tag is changed.
-         * This hidden tag carries the form value that `TextExt` produces.
+         * This hidden tag carries the form value that TextExt produces.
          * 
          * @name formDataChange
          * @author agorbatchev
@@ -361,6 +361,16 @@
          * @id TextExt.events.formDataChange
          */
         EVENT_FORM_DATA_CHANGE = 'formDataChange',
+
+        /**
+         * Core triggers `anyKeyPress` event for every key pressed.
+         * 
+         * @name anyKeyPress
+         * @author agorbatchev
+         * @date 2012/09/12
+         * @id TextExt.events.anyKeyPress
+         */
+        EVENT_ANY_KEY_PRESS = 'anyKeyPress',
 
         /**
          * Core triggers `anyKeyUp` event for every key up event triggered within the component.
@@ -440,8 +450,13 @@
     /**
      * Shorthand for executing a function asynchronously at the first possible opportunity.
      *
+     * @signature nextTick(callback)
+     *
+     * @param callback {Function} Callback function to be executed asynchronously.
+     *
      * @author agorbatchev
      * @date 2012/09/12
+     * @id TextExt.methods.nextTick
      */
     function nextTick(callback)
     {
@@ -449,10 +464,15 @@
     }
 
     /**
-     * Shorthand for checking if passed value is a string.
+     * Returns `true` if passed value is a string, `false` otherwise.
+     *
+     * @signature isString(val)
+     *
+     * @param val {Anything} Value to be checked.
      *
      * @author agorbatchev
      * @date 2012/09/12
+     * @id TextExt.methods.isString
      */
     function isString(val)
     {
@@ -460,10 +480,17 @@
     }
 
     /**
-     * Returns object property by name where name is dot-separated and object is multiple levels deep.
-     * @param target Object Source object.
-     * @param name String Dot separated property name, ie `foo.bar.world`
-     * @id TextExt.core.getProperty
+     * Returns object property value by name where name is dot-separated and object is multiple levels deep. This is a helper
+     * method for retrieving option values from a config object using a single string key.
+     *
+     * @signature getProperty(source, name)
+     *
+     * @param source {Object} Source object.
+     * @param name {String} Dot separated property name, ie `foo.bar.world`
+     *
+     * @author agorbatchev
+     * @date 2011/08/09
+     * @id TextExt.methods.getProperty
      */
     function getProperty(source, name)
     {
@@ -486,19 +513,26 @@
     };
 
     /**
-     * Hooks up specified events in the scope of the current object.
+     * Hooks up events specified in the scope of the current object.
+     *
+     * @signature hookupEvents([target], events)
+     *
+     * @param target {Object} Optional target object to the scope of which events will be bound. Defaults to current scope if not specified.
+     * @param events {Object} Events in the following format : `{ event_name : handler_function() }`.
+     *
      * @author agorbatchev
      * @date 2011/08/09
+     * @id TextExt.methods.hookupEvents
      */
-    function hookupEvents()
+    function hookupEvents(/* [target], events */)
     {
-        var args   = slice.apply(arguments),
+        var events = slice.apply(arguments),
             self   = this,
             target = args.length === 1 ? self : args.shift(),
             event
             ;
 
-        args = args[0] || {};
+        events = events[0] || {};
 
         function bind(event, handler)
         {
@@ -509,8 +543,8 @@
             });
         }
 
-        for(event in args)
-            bind(event, args[event]);
+        for(name in events)
+            bind(name , events[name]);
     };
 
     //--------------------------------------------------------------------------------
@@ -519,16 +553,17 @@
     p = TextExt.prototype;
         
     /**
-     * Initializes current component instance with work with the supplied text input and options.
+     * Initializes current component instance with the supplied text input HTML element and options. Upon completion
+     * this method triggers [`postInit`](#postInit) event followed by [`ready`](#ready) event.
      *
      * @signature TextExt.init(input, opts)
      *
-     * @param input {HTMLElement} Text input.
-     * @param opts {Object} Options.
+     * @param input {HTMLElement} Text input HTML dom element.
+     * @param opts {Object} Options object.
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.init
+     * @id TextExt.methods.init
      */
     p.init = function(input, opts)
     {
@@ -591,22 +626,13 @@
     };
 
     /**
-     * Initializes all installed patches against current instance. The patches are initialized based on their
-     * initialization priority which is returned by each patch's `initPriority()` method. Priority
-     * is a `Number` where patches with higher value gets their `init()` method called before patches
-     * with lower priority value.
-     *
-     * This facilitates initializing of patches in certain order to insure proper dependencies
-     * regardless of which order they are loaded.
-     *
-     * By default all patches have the same priority - zero, which means they will be initialized
-     * in rorder they are loaded, that is unless `initPriority()` is overriden.
+     * Initializes all patches installed via [`addPatch()`](#addPatch) method call.
      *
      * @signature TextExt.initPatches()
      *
      * @author agorbatchev
      * @date 2011/10/11
-     * @id TextExt.initPatches
+     * @id TextExt.methods.initPatches
      */
     p.initPatches = function()
     {
@@ -623,13 +649,13 @@
 
     /**
      * Initializes instances of [`ItemManager`](itemmanager.html) and [`ItemValidator`](itemvalidator.html)
-     * that are specified via [`itemManager`](#item-manager) and [`dataSource`](#datasource) options.
+     * that are specified via [`itemManager`](#manager) and [`dataSource`](#dataSource) options.
      * 
      * @signature TextExt.initTooling()
      *
      * @author agorbatchev
      * @date 2012/09/12
-     * @id TextExt.initTooling
+     * @id TextExt.methods.initTooling
      */
     p.initTooling = function()
     {
@@ -657,24 +683,16 @@
     };
 
     /**
-     * Creates and initializes all specified plugins. The plugins are initialized based on their
-     * initialization priority which is returned by each plugin's `initPriority()` method. Priority
-     * is a `Number` where plugins with higher value gets their `init()` method called before plugins
-     * with lower priority value.
+     * Initializes all plugins installed via [`addPlugin()`](#addPlugin) method call.
      *
-     * This facilitates initializing of plugins in certain order to insure proper dependencies
-     * regardless of which order user enters them in the `plugins` option field.
-     *
-     * By default all plugins have the same priority - zero, which means they will be initialized
-     * in the same order as entered by the user.
-     *
-     * @signature TextExt.initPlugins(plugins)
+     * @signature TextExt.initPlugins(plugins, source)
      *
      * @param plugins {Array} List of plugin names to initialize.
+     * @param source {Object} Key/value object where a key is plugin name and value is plugin constructor.
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.initPlugins
+     * @id TextExt.methods.initPlugins
      */
     p.initPlugins = function(plugins, source)
     {
@@ -737,7 +755,7 @@
     };
 
     /**
-     * Returns true if specified plugin is was instantiated for the current instance of core.
+     * Returns `true` if specified plugin is was instantiated for the current instance of TextExt, `false` otherwise.
      *
      * @signature TextExt.hasPlugin(name)
      *
@@ -745,7 +763,7 @@
      *
      * @author agorbatchev
      * @date 2011/12/28
-     * @id TextExt.hasPlugin
+     * @id TextExt.methods.hasPlugin
      */
     p.hasPlugin = function(name)
     {
@@ -753,22 +771,21 @@
     };
 
     /**
-     * Allows to add multiple event handlers which will be execued in the scope of the current object.
+     * Allows to add multiple event handlers which will be execued in the TextExt instance scope. Same as calling [`hookupEvents(this, ...)`](#hookupEvents).
      * 
      * @signature TextExt.on([target], handlers)
      *
-     * @param target {Object} **Optional**. Target object which has traditional `bind(event, handler)` method.
-     *                        Handler function will still be executed in the current object's scope.
-     * @param handlers {Object} Key/value pairs of event names and handlers, eg `{ event: handler }`.
+     * @param target {Object} Optional target object to the scope of which events will be bound. Defaults to current scope if not specified.
+     * @param events {Object} Events in the following format : `{ event_name : handler_function() }`.
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.on
+     * @id TextExt.methods.on
      */
     p.on = hookupEvents;
 
     /**
-     * Binds an event handler to the input box that user interacts with.
+     * Binds an event handler to the HTML dom element that user interacts with. Usually it's the original input element.
      *
      * @signature TextExt.bind(event, handler)
      *
@@ -777,7 +794,7 @@
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.bind
+     * @id TextExt.methods.bind
      */
     p.bind = function(event, handler)
     {
@@ -785,7 +802,7 @@
     };
 
     /**
-     * Triggers an event on the input box that user interacts with. All core events are originated here.
+     * Triggers an event on the HTML dom element that user interacts with. Usually it's the original input element. All core events are originated here.
      * 
      * @signature TextExt.trigger(event, ...args)
      *
@@ -794,7 +811,7 @@
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.trigger
+     * @id TextExt.methods.trigger
      */
     p.trigger = function()
     {
@@ -803,33 +820,13 @@
     };
 
     /**
-     * Returns instance of item manager configured via `itemManager` option.
-     *
-     * @signature TextExt.itemManager()
-     *
-     * @author agorbatchev
-     * @date 2011/08/19
-     * @id TextExt.itemManager
-     */
-
-    /**
-     * Returns instance of validator configured via `validator` option.
-     *
-     * @signature TextExt.validator()
-     *
-     * @author agorbatchev
-     * @date 2012/07/08
-     * @id TextExt.validator
-     */
-
-    /**
-     * Returns jQuery input element with which user is interacting with.
+     * Returns jQuery input element with which user is interacting with. Usually it's the original input element.
      *
      * @signature TextExt.input()
      *
      * @author agorbatchev
      * @date 2011/08/10
-     * @id TextExt.input
+     * @id TextExt.methods.input
      */
     p.input = function()
     {
@@ -838,7 +835,8 @@
 
     /**
      * Returns option value for the specified option by name. If the value isn't found in the user
-     * provided options, it will try looking for default value.
+     * provided options, it will try looking for default value. This method relies on [`getProperty`](#getProperty)
+     * for most of its functionality.
      *
      * @signature TextExt.opts(name)
      *
@@ -846,7 +844,7 @@
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.opts
+     * @id TextExt.methods.opts
      */
     p.opts = function(name)
     {
@@ -855,14 +853,14 @@
     };
 
     /**
-     * Returns HTML element that was created from the `html.wrap` option. This is the top level HTML
+     * Returns HTML element that was created from the [`html.wrap`](#wrap) option. This is the top level HTML
      * container for the text input with which user is interacting with.
      *
      * @signature TextExt.wrapElement()
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.wrapElement
+     * @id TextExt.methods.wrapElement
      */
     p.wrapElement = function()
     {
@@ -870,14 +868,14 @@
     };
 
     /**
-     * Updates container to match dimensions of the text input. Triggers `preInvalidate` and `postInvalidate`
-     * events.
+     * Updates TextExt elements to match dimensions of the HTML dom text input. Triggers [`preInvalidate`](#preInvalidate) 
+     * event before making any changes and [`postInvalidate`](#postInvalidate) event after everything is done.
      *
      * @signature TextExt.invalidateBounds()
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.invalidateBounds
+     * @id TextExt.methods.invalidateBounds
      */
     p.invalidateBounds = function()
     {
@@ -907,7 +905,7 @@
      *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.focusInput
+     * @id TextExt.methods.focusInput
      */
     p.focusInput = function()
     {
@@ -921,7 +919,7 @@
      *
      * @author agorbatchev
      * @date 2011/08/09
-     * @id TextExt.hiddenInput
+     * @id TextExt.methods.hiddenInput
      */
     p.hiddenInput = function(value)
     {
@@ -929,25 +927,25 @@
     };
 
     /**
-     * Triggers the `getFormData` event to get all the plugins to return their data.
+     * Updates the values that are displayed in the HTML input box to the user and that will be submitted
+     * with the form. Uses [`dataSource`](#dataSource) option to its best ability to determine which plugin
+     * acts as the main data source for the current instance. If option isn't set, the first plugin with
+     * `getFormData()` method will be used.
      *
-     * After the data is returned, triggers `setFormData` and `inputValue` to update appopriate values.
+     * @signature TextExt.invalidateData(callback)
      *
-     * @signature TextExt.invalidateData(keyCode)
-     *
-     * @param keyCode {Number} Key code number which has triggered this update. It's impotant to pass
-     * this value to the plugins because they might return different values based on the key that was 
-     * pressed. For example, the Tags plugin returns an empty string for the `input` value if the enter
-     * key was pressed, otherwise it returns whatever is currently in the text input.
+     * @param callback {Function} Optional callback function that is executed when hidden and visible inputs
+     * are updated.
      *
      * @author agorbatchev
      * @date 2011/08/22
-     * @id TextExt.invalidateData
+     * @id TextExt.methods.invalidateData
      */
     p.invalidateData = function(callback)
     {
         var self        = this,
             dataSource  = self.dataSource,
+            key         = 'getFormData',
             plugin,
             getFormData
             ;
@@ -976,12 +974,12 @@
             }
         }
 
-        if(plugin && plugin.getFormData)
+        if(plugin && plugin[key])
             // need to insure `dataSource` below is executing with plugin as plugin scop and
             // if we just reference the `getFormData` function it will be in the window scope.
             getFormData = function()
             {
-                plugin.getFormData.apply(plugin, arguments);
+                plugin[key].apply(plugin, arguments);
             };
 
         if(!getFormData)
@@ -999,21 +997,17 @@
         });
     };
 
-    //--------------------------------------------------------------------------------
-    // Event handlers
-
     /**
-     * Reacts to the `inputValue` event and populates the input text field that user is currently
-     * interacting with.
+     * Gets or sets visible HTML elment's value. This method could be used by a plugin to change displayed value
+     * in the input box. After the value is changed, triggers the [`inputDataChange`](#inputDataChange) event.
      *
-     * @signature TextExt.onSetInputData(e, data)
+     * @signature TextExt.inputValue([value])
      *
-     * @param e {Event} jQuery event.
-     * @param data {String} Value to be set.
+     * @param value {Object} Optional value to set. If argument isn't supplied, method returns current value instead.
      *
      * @author agorbatchev
      * @date 2011/08/22
-     * @id TextExt.onSetInputData
+     * @id TextExt.methods.inputValue
      */
     p.inputValue = function(value)
     {
@@ -1033,17 +1027,16 @@
     };
 
     /**
-     * Reacts to the `setFormData` event and populates the hidden input with will be submitted with
-     * the HTML form. The value will be serialized with `serializeData()` method.
+     * Gets or sets hidden HTML elment's value. This method could be used by a plugin to change value submitted
+     * with the form. After the value is changed, triggers the [`formDataChange`](#formDataChange) event.
      *
-     * @signature TextExt.onSetFormData(e, data)
+     * @signature TextExt.formValue([value])
      *
-     * @param e {Event} jQuery event.
-     * @param data {Object} Data that will be set.
+     * @param value {Object} Optional value to set. If argument isn't supplied, method returns current value instead.
      * 
      * @author agorbatchev
      * @date 2011/08/22
-     * @id TextExt.onSetFormData
+     * @id TextExt.methods.formValue
      */
     p.formValue = function(value)
     {
@@ -1061,19 +1054,24 @@
             self.trigger(EVENT_FORM_DATA_CHANGE, value);
         }
     };
+    
+    //--------------------------------------------------------------------------------
+    // Event handlers
 
     //--------------------------------------------------------------------------------
     // User mouse/keyboard input
 
     /**
-     * Triggers `[name]KeyUp` and `[name]KeyPress` for every keystroke as described in the events.
+     * Triggers [`[name]KeyUp`](#KeyUp), [`[name]KeyPress`](#KeyPress) and [`anyKeyPress`](#anyKeyPress) 
+     * for every keystroke.
      *
      * @signature TextExt.onKeyUp(e)
      *
      * @param e {Object} jQuery event.
+     *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.onKeyUp
+     * @id TextExt.methods.onKeyUp
      */
 
     /**
@@ -1082,9 +1080,10 @@
      * @signature TextExt.onKeyDown(e)
      *
      * @param e {Object} jQuery event.
+     *
      * @author agorbatchev
      * @date 2011/08/19
-     * @id TextExt.onKeyDown
+     * @id TextExt.methods.onKeyDown
      */
     
     $(['Down', 'Up']).each(function()
@@ -1110,7 +1109,7 @@
                 {
                     self._lastKeyDown = null;
                     self.trigger(keyName + 'KeyPress');
-                    self.trigger('anyKeyPress', e.keyCode);
+                    self.trigger(EVENT_ANY_KEY_PRESS, e.keyCode);
                 }
 
                 if(type == 'Down')
@@ -1141,13 +1140,14 @@
      * The following properties are also exposed through the jQuery `$.fn.textext`:
      *
      * * `TextExt` -- `TextExt` class.
-     * * `Plugin` -- `Plugin` class.
-     * * `ItemManager` -- `ItemManager` class.
+     * * [`Plugin`](core-plugin.html) -- `Plugin` class.
+     * * [`ItemManager`](core-itemmanager.html) -- `ItemManager` class.
+     * * [`ItemValidator`](core-itemvalidator.html) -- `ItemValidator` class.
      * * `plugins` -- Key/value table of all registered plugins.
-     * * `addPlugin(name, constructor)` -- All plugins should register themselves using this function.
-     * * `addPatch(name, constructor)` -- Registers a new patch, for more info <a href="textext.html#fn-textext-addpatch-name-constructor">see here</a>.
-     * * `addItemManager(name, constructor)` -- All plugins should register themselves using this function.
-     * * `addItemValidator(name, constructor)` -- All plugins should register themselves using this function.
+     * * [`addPlugin(name, constructor)`](#addPlugin) -- All plugins should register themselves using this function.
+     * * [`addPatch(name, constructor)`](#addPatch) -- All patches should register themselves using this function.
+     * * [`addItemManager(name, constructor)`](#addItemManager) -- All item managers should register themselves using this function.
+     * * [`addItemValidator(name, constructor)`](#addItemValidator) -- All item validators should register themselves using this function.
      *
      * @author agorbatchev
      * @date 2011/08/19
@@ -1189,12 +1189,12 @@
      * 
      * @signature $.fn.textext.addPlugin(name, constructor)
      *
-     * @param name {String} Name of the plugin.
+     * @param name {String} Name of the plugin which it will be identified in the options by.
      * @param constructor {Function} Plugin constructor.
      *
      * @author agorbatchev
      * @date 2011/10/11
-     * @id TextExt.addPlugin
+     * @id TextExt.methods.addPlugin
      */
     textext.addPlugin = function(name, constructor)
     {
@@ -1212,8 +1212,8 @@
      * @param constructor {Function} Patch constructor.
      *
      * @author agorbatchev
-     * @date 2011/10/11
-     * @id TextExt.addPatch
+     * @date 2012/10/27
+     * @id TextExt.methods.addPatch
      */
     textext.addPatch = function(name, constructor)
     {
@@ -1221,12 +1221,38 @@
         constructor.prototype = new textext.Plugin();
     };
 
+    /**
+     * This static function registers a new [`ItemManager`](core-itemmanager.html) is then could be used 
+     * by a new TextExt instance.
+     * 
+     * @signature $.fn.textext.addItemManager(name, constructor)
+     *
+     * @param name {String} Name of the item manager which it will be identified in the options by.
+     * @param constructor {Function} Item Manager constructor.
+     *
+     * @author agorbatchev
+     * @date 2012/10/27
+     * @id TextExt.methods.addItemManager
+     */
     textext.addItemManager = function(name, constructor)
     {
         textext.itemManagers[name] = constructor;
         constructor.prototype      = new textext.ItemManager();
     };
 
+    /**
+     * This static function registers a new [`ItemValidator`](core-itemvalidator.html) is then could be used 
+     * by a new TextExt instance.
+     * 
+     * @signature $.fn.textext.addItemValidator(name, constructor)
+     *
+     * @param name {String} Name of the item validator which it will be identified in the options by.
+     * @param constructor {Function} Item Validator constructor.
+     *
+     * @author agorbatchev
+     * @date 2012/10/27
+     * @id TextExt.methods.addItemValidator
+     */
     textext.addItemValidator = function(name, constructor)
     {
         textext.itemValidators[name] = constructor;
