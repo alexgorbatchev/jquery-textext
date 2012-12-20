@@ -528,8 +528,8 @@
     {
         var events = slice.apply(arguments),
             self   = this,
-            target = args.length === 1 ? self : args.shift(),
-            event
+            target = events.length === 1 ? self : events.shift(),
+            name
             ;
 
         events = events[0] || {};
