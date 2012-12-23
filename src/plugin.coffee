@@ -1,21 +1,21 @@
-window= jQuery= null
+do (window, $ = jQuery, module = $.fn.textext) ->
+  { opts } = module.utils
 
-do (window, $ = jQuery) ->
   class Plugin
-    constructor: (core) ->
+    @registery = {}
+    @register : (name, constructor) -> @registery[name] = constructor
+
+    constructor : (@userOptions, @defaultOptions = {}) ->
       @plugins = []
-      @core = core or @
 
-      if @.properties?
-        Object.defineProperties @, @.properties
-        delete @.propertie
+    option : (key) -> opts(@userOptions, key) or opts(@defaultOptions, key)
 
-    addPlugin: (instance) -> @plugins.push instance
+    invalidate : ->
+      plugin.invalidate() for plugin in @plugins
 
-    trigger: -> $(@core).trigger arguments
-    bind: -> $(@core).bind arguments
+    addPlugin : (instance) -> @plugins.push instance
 
-    # properties:
-    #   core:
-    #     get: -> @_core
+    trigger : -> $(@element).trigger arguments
+    bind    : -> $(@element).bind arguments
 
+  module.Plugin = Plugin
