@@ -13,7 +13,8 @@ describe 'utils', ->
         hostNames :
           remoteEnd : 'bob-remote'
 
-    it 'returns undefined', -> expect(opts null, 'version').toBe undefined
+    it 'returns undefined without options', -> expect(opts null, 'version').toBe undefined
+    it 'returns undefined when not found', -> expect(opts hash, 'invalid').toBe undefined
     it 'gets single word value', -> expect(opts hash, 'version').toBe 1
     it 'gets two word option', -> expect(opts hash, 'paramLength').toBe 10
 

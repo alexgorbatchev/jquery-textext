@@ -15,4 +15,4 @@ describe 'TextExt', ->
 
   describe 'for <select/>', ->
     it 'starts in autocomplete mode', ->
-      textext = new TextExt(select)
+      textext = new TextExt select

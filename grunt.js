@@ -8,9 +8,11 @@ module.exports = function(grunt)
 
     grunt.initConfig({
         shell : {
-            clean      : { command : 'rm -fr ./build/**; mkdir ./build' },
-            spec       : { command : 'jasmine-node --coffee spec/' },
-            specserver : { command : 'nserver --directory spec & open "http://localhost:8000"' }
+            clean         : { command : 'rm -fr ./build/**; mkdir ./build; mkdir ./build/vendor' },
+            spec          : { command : 'jasmine-node --coffee spec/' },
+            specserver    : { command : 'nserver --directory spec & open "http://localhost:8000"' },
+            watchjs       : { command : 'coffee lib/watch.js.coffee > build/vendor/watch.js' },
+            eventemitter2 : { command : 'coffee lib/eventemitter2.coffee > build/vendor/eventemitter2.js' }
         },
 
         less : {
@@ -52,13 +54,19 @@ module.exports = function(grunt)
         },
 
         watch: {
-            less: {
-                files: ['src/less/*.less'],
-                tasks: ['less']
+            coffee : {
+                files : '<config:coffee.compile.src>',
+                tasks : [ 'coffee' ]
+            },
+            less : {
+                files : ['src/less/*.less'],
+                tasks : ['less']
             }
         }
     });
 
-    grunt.registerTask('default', 'shell:clean less copy coffee shell:spec');
-    grunt.registerTask('spec', 'shell:specserver');
+    grunt.registerTask('vendor', 'shell:eventemitter2 shell:watchjs');
+    grunt.registerTask('build', 'shell:clean less copy vendor coffee shell:spec');
+    grunt.registerTask('spec', 'build shell:specserver');
+    grunt.registerTask('default', 'build');
 }

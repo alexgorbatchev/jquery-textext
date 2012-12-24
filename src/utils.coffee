@@ -12,8 +12,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     if hash.hasOwnProperty currentKey
       result = hash[currentKey]
     else
-      currentKey = currentKey.replace /([A-Z])/g, (match) -> '.' + match.toLowerCase()
-      result = opts hash, currentKey
+      newKey = currentKey.replace /([A-Z])/g, (match) -> '.' + match.toLowerCase()
+      result = opts hash, newKey if newKey isnt currentKey
 
     if hasMoreKeys
       if typeof result is 'object'

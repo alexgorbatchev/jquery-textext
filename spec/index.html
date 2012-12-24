@@ -4,23 +4,26 @@
 <head>
   <title>Jasmine Spec Runner</title>
 
-  <link rel="stylesheet" type="text/css" href="/jasmine/jasmine.css">
-  <script type="text/javascript" src="/jasmine/jasmine.js"></script>
-  <script type="text/javascript" src="/jasmine/jasmine-html.js"></script>
-  <script type="text/javascript" src="/jasmine/jasmine-jquery.js"></script>
+  <link rel="stylesheet" type="text/css" href="vendor/jasmine.css">
 
-  <script type="text/javascript" src="http:////cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.3.3/coffee-script.min.js"></script>
+  <script type="text/javascript" src="vendor/jasmine.js"></script>
+  <script type="text/javascript" src="vendor/jasmine-html.js"></script>
+  <script type="text/javascript" src="vendor/jasmine-jquery.js"></script>
+  <script type="text/javascript" src="vendor/jquery.js"></script>
+  <script type="text/javascript" src="vendor/coffee-script.js"></script>
 
-  <script type="text/coffeescript" src="src/textext.jquery.coffee"></script>
-  <script type="text/coffeescript" src="src/utils.coffee"></script>
-  <script type="text/coffeescript" src="src/plugin.coffee"></script>
-  <script type="text/coffeescript" src="src/textext.coffee"></script>
-  <script type="text/coffeescript" src="src/keys_plugin.coffee"></script>
-  <script type="text/coffeescript" src="src/tags_plugin.coffee"></script>
+  <script type="text/javascript" src="build/textext.jquery.js"></script>
+  <script type="text/javascript" src="build/vendor/eventemitter2.js"></script>
+  <script type="text/javascript" src="build/vendor/watch.js"></script>
+  <script type="text/javascript" src="build/utils.js"></script>
+  <script type="text/javascript" src="build/plugin.js"></script>
+  <script type="text/javascript" src="build/textext.js"></script>
+  <script type="text/javascript" src="build/keys_plugin.js"></script>
+  <script type="text/javascript" src="build/tags_plugin.js"></script>
 
   <script type="text/coffeescript" src="textext.spec.coffee"></script>
   <script type="text/coffeescript" src="utils.spec.coffee"></script>
+  <script type="text/coffeescript" src="plugin.spec.coffee"></script>
   <script type="text/coffeescript" src="tags_plugin.spec.coffee"></script>
   <script type="text/coffeescript" src="keys_plugin.spec.coffee"></script>
 
@@ -32,9 +35,7 @@
       reporter = new jasmine.HtmlReporter()
 
       env.addReporter(reporter)
-
-      env.specFilter = (spec) ->
-        return reporter.specFilter(spec)
+      env.specFilter = (spec) -> reporter.specFilter(spec)
 
       $ -> env.execute()
   </script>

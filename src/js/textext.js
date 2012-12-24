@@ -30,7 +30,7 @@
 
         /**
          * TextExt provides a way to pass in the options to configure the core as well as
-         * each plugin that is being currently used. The jQuery exposed plugin `$().textext()` 
+         * each plugin that is being currently used. The jQuery exposed plugin `$().textext()`
          * function takes a hash object with key/value set of options. For example:
          *
          *     $('textarea').textext({
@@ -76,9 +76,9 @@
          * ### Mixed
          *
          * Finally, options could be specified in mixed style. It's important to understand that
-         * for each dot separated name, its alternative in camel case is also checked for, eg for 
-         * `foo.bar.world` it's alternatives could be `fooBarWorld`, `foo.barWorld` or `fooBar.world`, 
-         * which translates to `{ foo: { bar: { world: ... } } }`, `{ fooBarWorld: ... }`, 
+         * for each dot separated name, its alternative in camel case is also checked for, eg for
+         * `foo.bar.world` it's alternatives could be `fooBarWorld`, `foo.barWorld` or `fooBar.world`,
+         * which translates to `{ foo: { bar: { world: ... } } }`, `{ fooBarWorld: ... }`,
          * `{ foo : { barWorld : ... } }` or `{ fooBar: { world: ... } }` respectively. For example:
          *
          *        {
@@ -120,10 +120,10 @@
          * @id TextExt.options.item.validator
          */
         OPT_ITEM_VALIDATOR = 'item.validator',
-        
+
         /**
          * List of plugins that should be used with the current instance of TextExt. Here are all the ways
-         * that you can set this. The order in which plugins are specified is significant. First plugin in 
+         * that you can set this. The order in which plugins are specified is significant. First plugin in
          * the list that has `getFormData` method will be used as [`dataSource`](#dataSource).
          *
          *     // array
@@ -137,7 +137,7 @@
          *
          *     // bracket separated string
          *     'autocomplete > tags > prompt'
-         *      
+         *
          * @name plugins
          * @default []
          * @author agorbatchev
@@ -145,16 +145,16 @@
          * @id TextExt.options.plugins
          */
         OPT_PLUGINS = 'plugins',
-        
+
         /**
          * Name of the plugin that will be used as primary data source to populate form data that `TextExt` generates.
          *
          * `TextExt` always tries to automatically determine best `dataSource` plugin to use. It uses the first plugin in the
          * `plugins` option which has `getFormData((function(err, form, input) {})` function. You can always specify
          * exactly which plugin you wish to use either by setting `dataSource` value or by simply adding `*` after
-         * the plugin name in the `plugins` option. 
+         * the plugin name in the `plugins` option.
          *
-         *     // In this example `autocomplete` will be automatically selected as `dataSource` 
+         *     // In this example `autocomplete` will be automatically selected as `dataSource`
          *     // because it's the first plugin in the list that has `getFormData` method.
          *     $('#text').textext({ plugins : 'autocomplete tags' })
          *
@@ -229,7 +229,7 @@
          * @id TextExt.options.ext
          */
         OPT_EXT = 'ext',
-        
+
         /**
          * HTML source that is used to generate elements necessary for the core and all other
          * plugins to function.
@@ -243,7 +243,7 @@
         OPT_HTML_WRAP = 'html.wrap',
 
         /**
-         * HTML source that is used to generate hidden input value of which will be submitted 
+         * HTML source that is used to generate hidden input value of which will be submitted
          * with the HTML form.
          *
          * @name html.hidden
@@ -257,7 +257,7 @@
         /**
          * Hash table of key codes and key names for which special events will be created
          * by the core. For each entry a [`[name]KeyDown`](#KeyDown), [`[name]KeyUp`](#KeyUp)
-         * and [`[name]KeyPress`](#KeyPress) events will be triggered along side with 
+         * and [`[name]KeyPress`](#KeyPress) events will be triggered along side with
          * [`anyKeyUp`](#anyKeyUp) and [`anyKeyDown`](#anyKeyDown) events for every key stroke.
          *
          * Here's a list of default keys:
@@ -315,10 +315,10 @@
          * @id TextExt.events.postInvalidate
          */
         EVENT_POST_INVALIDATE = 'postInvalidate',
-        
+
         /**
-         * Core triggers `postInit` event to let plugins run code after all plugins have been 
-         * created and initialized. This is a good place to set some kind of global values before 
+         * Core triggers `postInit` event to let plugins run code after all plugins have been
+         * created and initialized. This is a good place to set some kind of global values before
          * somebody gets to use them. This is not the right place to expect all plugins to finish
          * their initialization.
          *
@@ -331,7 +331,7 @@
 
         /**
          * Core triggers `ready` event after all global configuration and prepearation has been
-         * done and the TextExt component is ready for use. Event handlers should expect all 
+         * done and the TextExt component is ready for use. Event handlers should expect all
          * values to be set and the plugins to be in the final state.
          *
          * @name ready
@@ -354,7 +354,7 @@
         /**
          * Core triggers `formDataChange` event after the value of the hidden `<input/>` tag is changed.
          * This hidden tag carries the form value that TextExt produces.
-         * 
+         *
          * @name formDataChange
          * @author agorbatchev
          * @date 2012/09/12
@@ -364,7 +364,7 @@
 
         /**
          * Core triggers `anyKeyPress` event for every key pressed.
-         * 
+         *
          * @name anyKeyPress
          * @author agorbatchev
          * @date 2012/09/12
@@ -391,7 +391,7 @@
          */
 
         /**
-         * Core triggers `[name]KeyUp` event for every key specifid in the `keys` option that is 
+         * Core triggers `[name]KeyUp` event for every key specifid in the `keys` option that is
          * triggered within the component.
          *
          * @name [name]KeyUp
@@ -401,7 +401,7 @@
          */
 
         /**
-         * Core triggers `[name]KeyDown` event for every key specified in the `keys` option that is 
+         * Core triggers `[name]KeyDown` event for every key specified in the `keys` option that is
          * triggered within the component.
          *
          * @name [name]KeyDown
@@ -411,7 +411,7 @@
          */
 
         /**
-         * Core triggers `[name]KeyPress` event for every key specified in the `keys` option that is 
+         * Core triggers `[name]KeyPress` event for every key specified in the `keys` option that is
          * triggered within the component.
          *
          * @name [name]KeyPress
@@ -551,7 +551,7 @@
     // TextExt core component
 
     p = TextExt.prototype;
-        
+
     /**
      * Initializes current component instance with the supplied text input HTML element and options. Upon completion
      * this method triggers [`postInit`](#postInit) event followed by [`ready`](#ready) event.
@@ -608,7 +608,7 @@
         hiddenInput.insertAfter(input);
 
         $.extend(true, self, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.core'));
-        
+
         self.originalWidth = input.outerWidth();
 
         self.initPatches();
@@ -650,7 +650,7 @@
     /**
      * Initializes instances of [`ItemManager`](itemmanager.html) and [`ItemValidator`](itemvalidator.html)
      * that are specified via [`itemManager`](#manager) and [`dataSource`](#dataSource) options.
-     * 
+     *
      * @signature TextExt.initTooling()
      *
      * @author agorbatchev
@@ -698,9 +698,9 @@
     {
         var self     = this,
             initList = [],
-            ext, 
-            name, 
-            plugin, 
+            ext,
+            name,
+            plugin,
             i
             ;
 
@@ -772,7 +772,7 @@
 
     /**
      * Allows to add multiple event handlers which will be execued in the TextExt instance scope. Same as calling [`hookupEvents(this, ...)`](#hookupEvents).
-     * 
+     *
      * @signature TextExt.on([target], handlers)
      *
      * @param target {Object} Optional target object to the scope of which events will be bound. Defaults to current scope if not specified.
@@ -803,7 +803,7 @@
 
     /**
      * Triggers an event on the HTML dom element that user interacts with. Usually it's the original input element. All core events are originated here.
-     * 
+     *
      * @signature TextExt.trigger(event, ...args)
      *
      * @param event {String} Name of the event to trigger.
@@ -868,7 +868,7 @@
     };
 
     /**
-     * Updates TextExt elements to match dimensions of the HTML dom text input. Triggers [`preInvalidate`](#preInvalidate) 
+     * Updates TextExt elements to match dimensions of the HTML dom text input. Triggers [`preInvalidate`](#preInvalidate)
      * event before making any changes and [`postInvalidate`](#postInvalidate) event after everything is done.
      *
      * @signature TextExt.invalidateBounds()
@@ -949,7 +949,7 @@
             plugin,
             getFormData
             ;
-        
+
         function error(msg)
         {
             throw new Error('TextExt.js: ' + msg);
@@ -961,7 +961,7 @@
         if(isString(dataSource))
         {
             plugin = self.plugins[dataSource];
-            
+
             if(!plugin)
                 error('`dataSource` plugin not found: ' + dataSource);
         }
@@ -1033,7 +1033,7 @@
      * @signature TextExt.formValue([value])
      *
      * @param value {Object} Optional value to set. If argument isn't supplied, method returns current value instead.
-     * 
+     *
      * @author agorbatchev
      * @date 2011/08/22
      * @id TextExt.methods.formValue
@@ -1054,7 +1054,7 @@
             self.trigger(EVENT_FORM_DATA_CHANGE, value);
         }
     };
-    
+
     //--------------------------------------------------------------------------------
     // Event handlers
 
@@ -1062,7 +1062,7 @@
     // User mouse/keyboard input
 
     /**
-     * Triggers [`[name]KeyUp`](#KeyUp), [`[name]KeyPress`](#KeyPress) and [`anyKeyPress`](#anyKeyPress) 
+     * Triggers [`[name]KeyUp`](#KeyUp), [`[name]KeyPress`](#KeyPress) and [`anyKeyPress`](#anyKeyPress)
      * for every keystroke.
      *
      * @signature TextExt.onKeyUp(e)
@@ -1085,7 +1085,7 @@
      * @date 2011/08/19
      * @id TextExt.methods.onKeyDown
      */
-    
+
     $(['Down', 'Up']).each(function()
     {
         var type = this.toString();
@@ -1124,11 +1124,11 @@
 
     //--------------------------------------------------------------------------------
     // jQuery Integration
-    
+
     /**
      * TextExt integrates as a jQuery plugin available through the `$(selector).textext(opts)` call. If
      * `opts` argument is passed, then a new instance of `TextExt` will be created for all the inputs
-     * that match the `selector`. If `opts` wasn't passed and TextExt was already intantiated for 
+     * that match the `selector`. If `opts` wasn't passed and TextExt was already intantiated for
      * inputs that match the `selector`, array of `TextExt` instances will be returned instead.
      *
      *     // will create a new instance of `TextExt` for all elements that match `.sample`
@@ -1159,7 +1159,7 @@
     var textext = $.fn.textext = function(opts)
     {
         var css;
-        
+
         if(!cssInjected && (css = $.fn.textext.css) != null)
         {
             $('head').append('<style>' + css + '</style>');
@@ -1186,7 +1186,7 @@
      * This static function registers a new plugin which makes it available through the `plugins` option
      * to the end user. The name specified here is the name the end user would put in the `plugins` option
      * to add this plugin to a new instance of TextExt.
-     * 
+     *
      * @signature $.fn.textext.addPlugin(name, constructor)
      *
      * @param name {String} Name of the plugin which it will be identified in the options by.
@@ -1205,7 +1205,7 @@
     /**
      * This static function registers a new patch which is added to each instance of TextExt. If you are
      * adding a new patch, make sure to call this method.
-     * 
+     *
      * @signature $.fn.textext.addPatch(name, constructor)
      *
      * @param name {String} Name of the patch.
@@ -1222,9 +1222,9 @@
     };
 
     /**
-     * This static function registers a new [`ItemManager`](core-itemmanager.html) is then could be used 
+     * This static function registers a new [`ItemManager`](core-itemmanager.html) is then could be used
      * by a new TextExt instance.
-     * 
+     *
      * @signature $.fn.textext.addItemManager(name, constructor)
      *
      * @param name {String} Name of the item manager which it will be identified in the options by.
@@ -1241,9 +1241,9 @@
     };
 
     /**
-     * This static function registers a new [`ItemValidator`](core-itemvalidator.html) is then could be used 
+     * This static function registers a new [`ItemValidator`](core-itemvalidator.html) is then could be used
      * by a new TextExt instance.
-     * 
+     *
      * @signature $.fn.textext.addItemValidator(name, constructor)
      *
      * @param name {String} Name of the item validator which it will be identified in the options by.

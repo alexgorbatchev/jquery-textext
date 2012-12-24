@@ -1,25 +1,33 @@
 { Plugin } = $.fn.textext
 
 describe 'Plugin', ->
-  plugin = null
+  plugin = child = null
 
   beforeEach ->
-    plugin = new Plugin()
+    plugin = new Plugin
+    child = new Plugin
 
   describe '.addPlugin', ->
-    child = null
+    beforeEach -> plugin.addPlugin child
 
-    beforeEach ->
-      child = new Plugin()
-      plugin.addPlugin child
-
-    it 'adds another plugin', -> expect(child.core).toBe plugin
+    it 'adds another plugin', -> expect(plugin.plugins[0]).toBe child
 
   describe '.option', ->
-    beforeEach - >
-      plugin = new Plugin
-        { host : 'localhost' },
-        { path : '/usr' }
+    beforeEach ->
+      plugin = new Plugin { host : 'localhost' }, { path : '/usr' }
 
-    it 'returns user option value', -> expect(plugin.option 'host').toBe 'localhost'
-    it 'returns default option value', -> expect(plugin.option 'path').toBe '/usr'
+    it 'returns default option value', -> expect(plugin.option 'path').toEqual '/usr'
+    it 'returns user option value', -> expect(plugin.option 'host').toEqual 'localhost'
+
+  describe 'events', ->
+    scope =
+    beforeEach ->
+      scope = callback : -> null
+      spyOn scope, 'callback'
+      plugin.addPlugin child
+
+    it 'bubbles events from child plugins', ->
+      plugin.on 'event', scope.callback
+      child.emit 'event'
+
+      expect(scope.callback).toHaveBeenCalled()

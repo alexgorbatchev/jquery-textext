@@ -7,3 +7,9 @@
 [submodule "vendor/jasmine"]
 	path = vendor/jasmine
 	url = git://github.com/pivotal/jasmine.git
+[submodule "vendor/watchjs"]
+	path = vendor/watchjs
+	url = git://github.com/melanke/Watch.JS.git
+[submodule "vendor/jasmine-jquery"]
+	path = vendor/jasmine-jquery
+	url = git://github.com/velesin/jasmine-jquery.git

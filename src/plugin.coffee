@@ -1,7 +1,8 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
+  { EventEmitter2 } = module
   { opts } = module.utils
 
-  class Plugin
+  class Plugin extends EventEmitter2
     @registery = {}
     @register : (name, constructor) -> @registery[name] = constructor
 
@@ -13,9 +14,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     invalidate : ->
       plugin.invalidate() for plugin in @plugins
 
-    addPlugin : (instance) -> @plugins.push instance
-
-    trigger : -> $(@element).trigger arguments
-    bind    : -> $(@element).bind arguments
+    addPlugin : (instance) ->
+      instance.onAny => @emit instance.event, arguments
+      @plugins.push instance
 
   module.Plugin = Plugin

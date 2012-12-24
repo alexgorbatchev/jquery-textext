@@ -18,6 +18,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : (userOptions) ->
       super $.extend {}, KeysPlugin.defaults, userOptions
 
+      @emit 'test'
+
   Plugin.register 'keys', KeysPlugin
 
   module.KeysPlugin = KeysPlugin
