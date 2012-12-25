@@ -23,23 +23,22 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @defaultOptions ?= TagsPlugin.defaults
       @element ?= $ @options 'html.container'
 
-      WatchJS.watch @, 'items', ->
-        console.log arguments
+      # WatchJS.watch @, 'items', -> console.log arguments
 
     setItems : (@items, callback) ->
       jobs = for item in @items
-        (done) => @createItemElement item, done
+        do (item) => (done) => @createItemElement item, done
 
       resistance.parallel jobs, (err, elements...) =>
         unless err?
           for element in elements
             @element.append element
 
-        console.log @element
         callback and callback err
 
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'
+      # TODO use manager
       element.find('.textext-label').html(item)
       nextTick -> callback(null, element)
 

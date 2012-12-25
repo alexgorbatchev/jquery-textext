@@ -23,6 +23,7 @@ describe 'TagsPlugin', ->
       waitsFor -> done
 
     it 'creates tag elements', -> expect(plugin.$('.textext-tag').length).toBe items.length
-
-    it '...', ->
-      null
+    it 'adds labels to tags', ->
+      text = plugin.$('.textext-tag').text()
+      expect(text).toContain items[0]
+      expect(text).toContain items[1]

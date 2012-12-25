@@ -21,7 +21,7 @@ describe 'TextExt', ->
     select = $ '<select/>'
     it 'creates the plugin and returns correct chain', -> expect(select.textext().html()).toEqual select.html()
     it 'returns the plugin instance', -> expect(select.textext(instance : true) instanceof TextExt).toBe true
-    it 'hides target element', expect(select).not.toBe ':visible'
+    it 'hides target element', -> expect(select).not.toBe ':visible'
 
   describe '.createPlugins', ->
     beforeEach -> textext.createPlugins 'name2 name1', availablePlugins
