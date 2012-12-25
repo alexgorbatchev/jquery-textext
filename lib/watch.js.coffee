@@ -9,7 +9,7 @@ src = falafel src, (node) ->
 
   # remove first function expression where it defines modules and exports to the window
   if node.type is 'FunctionExpression' and node.params?[0]?.name is 'factory'
-    node.update('$.fn.textext.WatchJS = ')
+    node.update('function(factory) { $.fn.textext.WatchJS = factory(); }')
 
   # only keep modern browser implementation
   if node.type is 'IfStatement' and node.test?.source() is 'isModernBrowser()'

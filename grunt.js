@@ -8,10 +8,13 @@ module.exports = function(grunt)
 
     grunt.initConfig({
         shell : {
+            _options : { failOnError: true },
+
             clean         : { command : 'rm -fr ./build/**; mkdir ./build; mkdir ./build/vendor' },
             spec          : { command : 'jasmine-node --coffee spec/' },
             specserver    : { command : 'nserver --directory spec & open "http://localhost:8000"' },
             watchjs       : { command : 'coffee lib/watch.js.coffee > build/vendor/watch.js' },
+            resistance    : { command : 'coffee lib/resistance.coffee > build/vendor/resistance.js' },
             eventemitter2 : { command : 'coffee lib/eventemitter2.coffee > build/vendor/eventemitter2.js' }
         },
 
