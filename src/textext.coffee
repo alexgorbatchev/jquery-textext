@@ -3,20 +3,26 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class TextExt extends Plugin
     @defaults =
-      itemManager   : 'default'
-      itemValidator : 'default'
-      dataSource    : null
-      plugins       : []
-      ext           : {}
+      plugins : []
 
       html :
-        wrap   : '<div class="text-core"><div class="text-wrap"/></div>'
-        hidden : '<input type="hidden" />'
+        container : '<div class="textext">'
 
-    constructor : (@element, userOptions) ->
-      super $.extend {}, TextExt.defaults, userOptions
-
-    invalidate : ->
+    constructor : (target, { @element, @userOptions } = {}) ->
       super()
+
+      @defaultOptions = TextExt.defaults
+
+      @sourceElement = target
+      @element ?= $ @options 'html.container'
+
+      target.hide()
+      target.after @element
+
+    createPlugins : (list, availablePlugins = @options 'plugins') ->
+      for key in list.split /\s*,?\s+/g
+        plugin = availablePlugins[key]
+        instance = new plugin()
+        @addPlugin instance
 
   module.TextExt = TextExt

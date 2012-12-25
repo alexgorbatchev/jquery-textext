@@ -1,19 +1,47 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin } = module
+  { Plugin, WatchJS, resistance, nextTick } = module
 
   class TagsPlugin extends Plugin
     @defaults =
-      items           : null
+      items           : []
       allowDuplicates : true
       hotKey          : 13
       splitPaste      : /,/g
 
       html :
-        tags : '<div class="text-tags"/>'
-        tag  : '<div class="text-tag"><div class="text-button"><span class="text-label"/><a class="text-remove"/></div></div>'
+        container : '<div class="textext-tags"/>'
+        item : '''
+          <div class="textext-tag">
+            <span class="textext-label"/>
+            <a class="textext-remove"/>
+          </div>
+        '''
 
-    constructor : (userOptions) ->
-      super $.extend {}, TagsPlugin.defaults, userOptions
+    constructor : ({ @element, @userOptions } = {}) ->
+      super()
+
+      @defaultOptions ?= TagsPlugin.defaults
+      @element ?= $ @options 'html.container'
+
+      WatchJS.watch @, 'items', ->
+        console.log arguments
+
+    setItems : (@items, callback) ->
+      jobs = for item in @items
+        (done) => @createItemElement item, done
+
+      resistance.parallel jobs, (err, elements...) =>
+        unless err?
+          for element in elements
+            @element.append element
+
+        console.log @element
+        callback and callback err
+
+    createItemElement : (item, callback) ->
+      element = $ @options 'html.item'
+      element.find('.textext-label').html(item)
+      nextTick -> callback(null, element)
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

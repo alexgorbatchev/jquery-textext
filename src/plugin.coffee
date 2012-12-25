@@ -5,15 +5,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @registery = {}
     @register : (name, constructor) -> @registery[name] = constructor
 
-    constructor : (@userOptions, @defaultOptions = {}) ->
+    constructor : ({ @element, @userOptions, @defaultOptions } = {}) ->
+      super()
       @plugins = []
 
-    option : (key) -> opts(@userOptions, key) or opts(@defaultOptions, key)
+    options : (key) -> opts(@userOptions, key) or opts(@defaultOptions, key)
 
-    invalidate : ->
-      plugin.invalidate() for plugin in @plugins
+    $ : (selector) -> @element.find selector
+
+    # invalidate : ->
+    #   plugin.invalidate() for plugin in @plugins
 
     addPlugin : (instance) ->
+      @element.append instance.element.addClass 'textext-plugin'
       instance.onAny => @emit instance.event, arguments
       @plugins.push instance
 

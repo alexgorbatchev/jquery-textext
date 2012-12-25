@@ -4,20 +4,25 @@ describe 'Plugin', ->
   plugin = child = null
 
   beforeEach ->
-    plugin = new Plugin
-    child = new Plugin
+    plugin = new Plugin element : $ '<div class="plugin"/>'
+    child = new Plugin element : $ '<div class="child"/>'
 
   describe '.addPlugin', ->
     beforeEach -> plugin.addPlugin child
 
-    it 'adds another plugin', -> expect(plugin.plugins[0]).toBe child
+    it 'adds another plugin to the plugin as a child', -> expect(plugin.plugins[0]).toBe child
+    it 'adds child\'s element to the plugin element', -> expect(plugin.element).toContain 'div.child'
+    it 'adds `textext-plugin` class to the child\'s element', -> expect(child.element).toBe '.textext-plugin'
 
-  describe '.option', ->
+  describe '.options', ->
     beforeEach ->
-      plugin = new Plugin { host : 'localhost' }, { path : '/usr' }
+      plugin = new Plugin
+        element        : $('<div/>')
+        userOptions    : { host : 'localhost' }
+        defaultOptions : { path : '/usr' }
 
-    it 'returns default option value', -> expect(plugin.option 'path').toEqual '/usr'
-    it 'returns user option value', -> expect(plugin.option 'host').toEqual 'localhost'
+    it 'returns default option value', -> expect(plugin.options 'path').toEqual '/usr'
+    it 'returns user option value', -> expect(plugin.options 'host').toEqual 'localhost'
 
   describe 'events', ->
     scope =

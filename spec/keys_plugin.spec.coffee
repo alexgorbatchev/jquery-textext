@@ -4,6 +4,7 @@ describe 'KeysPlugin', ->
   plugin = null
 
   it 'is registered', -> expect(Plugin.registery['keys']).toBe KeysPlugin
+  it 'has default options', -> expect(KeysPlugin.defaults).toBeTruthy()
 
   describe 'instance', ->
     beforeEach -> plugin = new KeysPlugin
