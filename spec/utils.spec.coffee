@@ -1,4 +1,4 @@
-{ opts } = $.fn.textext.utils
+{ opts } = $.fn.textext
 
 describe 'utils', ->
   describe '.opts', ->

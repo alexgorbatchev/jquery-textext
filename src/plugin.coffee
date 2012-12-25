@@ -1,6 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { EventEmitter2 } = module
-  { opts } = module.utils
+  { EventEmitter2, WatchJS, opts, prop } = module
 
   class Plugin extends EventEmitter2
     @registery = {}

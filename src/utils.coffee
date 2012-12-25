@@ -1,4 +1,6 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
+  prop = (object, name, desc) -> Object.defineProperty object, name, desc
+
   opts = (hash, key) ->
     return unless hash?
 
@@ -21,4 +23,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     result
 
-  module.utils = { opts }
+  nextTick = (task) -> setTimeout task, 0
+
+  $.extend module, { opts, prop, nextTick }
