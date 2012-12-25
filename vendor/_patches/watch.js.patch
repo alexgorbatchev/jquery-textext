@@ -1,0 +1,122 @@
+--- ./vendor/watchjs/src/watch.js	2012-12-23 20:02:28.000000000 -0800
++++ ./build/vendor/watch.js	2012-12-25 08:20:57.000000000 -0800
+@@ -10,24 +10,8 @@
+  * https://github.com/melanke/Watch.JS
+  */
+ 
+-"use strict";
+-(function (factory) {
+-    if (typeof exports === 'object') {
+-        // Node. Does not work with strict CommonJS, but
+-        // only CommonJS-like enviroments that support module.exports,
+-        // like Node.
+-        module.exports = factory();
+-    } else if (typeof define === 'function' && define.amd) {
+-        // AMD. Register as an anonymous module.
+-        define(factory);
+-    } else {
+-        // Browser globals
+-        window.WatchJS = factory();
+-        window.watch = window.WatchJS.watch;
+-        window.unwatch = window.WatchJS.unwatch;
+-        window.callWatchers = window.WatchJS.callWatchers;
+-    }
+-}(function () {
++;
++(function(factory) { $.fn.textext.WatchJS = factory(); }(function () {
+ 
+     var WatchJS = {
+         noMore: false
+@@ -49,9 +33,7 @@
+         return Object.prototype.toString.call(obj) === '[object Array]';
+     };
+ 
+-    var isModernBrowser = function () {
+-        return Object.defineProperty || Object.prototype.__defineGetter__;
+-    };
++    
+ 
+     var defineGetAndSet = function (obj, propName, getter, setter) {
+         try {
+@@ -187,7 +169,7 @@
+         }
+     };
+ 
+-    if(isModernBrowser()){
++    {
+ 
+         defineWatcher = function (obj, prop, watcher) {
+ 
+@@ -279,67 +261,6 @@
+             }
+         };
+ 
+-    } else {
+-        //this implementation dont work because it cant handle the gap between "settings".
+-        //I mean, if you use a setter for an attribute after another setter of the same attribute it will only fire the second
+-        //but I think we could think something to fix it
+-
+-        var subjects = [];
+-
+-        defineWatcher = function(obj, prop, watcher){
+-
+-            subjects.push({
+-                obj: obj,
+-                prop: prop,
+-                serialized: JSON.stringify(obj[prop]),
+-                watcher: watcher
+-            });
+-
+-        };
+-
+-        unwatchOne = function (obj, prop, watcher) {
+-
+-            for (var i in subjects) {
+-                var subj = subjects[i];
+-
+-                if (subj.obj == obj && subj.prop == prop && subj.watcher == watcher) {
+-                    subjects.splice(i, 1);
+-                }
+-
+-            }
+-
+-        };
+-
+-        callWatchers = function (obj, prop, action, value) {
+-
+-            for (var i in subjects) {
+-                var subj = subjects[i];
+-
+-                if (subj.obj == obj && subj.prop == prop) {
+-                    subj.watcher.call(obj, prop, action, value);
+-                }
+-
+-            }
+-
+-        };
+-
+-        var loop = function(){
+-
+-            for(var i in subjects){
+-
+-                var subj = subjects[i];
+-                var newSer = JSON.stringify(subj.obj[subj.prop]);
+-                if(newSer != subj.serialized){
+-                    subj.watcher.call(subj.obj, subj.prop, subj.obj[subj.prop], JSON.parse(subj.serialized));
+-                    subj.serialized = newSer;
+-                }
+-
+-            }
+-
+-        };
+-
+-        setInterval(loop, 50);
+-
+     }
+ 
+     WatchJS.watch = watch;
+@@ -349,3 +270,4 @@
+     return WatchJS;
+ 
+ }));
++

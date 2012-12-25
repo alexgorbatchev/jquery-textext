@@ -13,9 +13,14 @@ module.exports = function(grunt)
             clean         : { command : 'rm -fr ./build/**; mkdir ./build; mkdir ./build/vendor' },
             spec          : { command : 'jasmine-node --coffee spec/' },
             specserver    : { command : 'nserver --directory spec & open "http://localhost:8000"' },
-            watchjs       : { command : 'coffee lib/watch.js.coffee > build/vendor/watch.js' },
-            resistance    : { command : 'coffee lib/resistance.coffee > build/vendor/resistance.js' },
-            eventemitter2 : { command : 'coffee lib/eventemitter2.coffee > build/vendor/eventemitter2.js' }
+
+            diff_resistance    : { command : 'diff -u ./vendor/resistance/lib/resistance.js ./build/vendor/resistance.js > vendor/_patches/resistance.js.patch' },
+            diff_eventemitter2 : { command : 'diff -u ./vendor/eventemitter2/lib/eventemitter2.js ./build/vendor/eventemitter2.js > vendor/_patches/eventemitter2.js.patch' },
+            diff_watchjs       : { command : 'diff -u ./vendor/watchjs/src/watch.js ./build/vendor/watch.js > vendor/_patches/watch.js.patch' },
+
+            patch_resistance    : { command : 'patch -p1 -t --output=build/vendor/resistance.js vendor/resistance/lib/resistance.js vendor/_patches/resistance.js.patch' },
+            patch_eventemitter2 : { command : 'patch -p1 -t --output=build/vendor/eventemitter2.js vendor/eventemitter2/lib/eventemitter2.js vendor/_patches/eventemitter2.js.patch' },
+            patch_watchjs       : { command : 'patch -p1 -t --output=build/vendor/watch.js vendor/watchjs/src/watch.js vendor/_patches/watch.js.patch' },
         },
 
         less : {
@@ -68,8 +73,9 @@ module.exports = function(grunt)
         }
     });
 
-    grunt.registerTask('vendor', 'shell:eventemitter2 shell:watchjs');
-    grunt.registerTask('build', 'shell:clean less copy vendor coffee shell:spec');
+    grunt.registerTask('vendor:diff', 'shell:diff_eventemitter2 shell:diff_resistance shell:diff_watchjs')
+    grunt.registerTask('vendor:patch', 'shell:patch_eventemitter2 shell:patch_watchjs shell:patch_resistance');
+    grunt.registerTask('build', 'shell:clean less copy vendor:patch coffee');
     grunt.registerTask('spec', 'build shell:specserver');
     grunt.registerTask('default', 'build');
 }

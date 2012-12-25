@@ -1,0 +1,18 @@
+--- ./vendor/eventemitter2/lib/eventemitter2.js	2012-12-23 16:51:38.000000000 -0800
++++ ./build/vendor/eventemitter2.js	2012-12-25 08:20:57.000000000 -0800
+@@ -549,12 +549,7 @@
+ 
+   };
+ 
+-  if (typeof define === 'function' && define.amd) {
+-    define(function() {
+-      return EventEmitter;
+-    });
+-  } else {
+-    exports.EventEmitter2 = EventEmitter; 
+-  }
++  exports.EventEmitter2 = EventEmitter;
++
++}($.fn.textext);
+ 
+-}(typeof process !== 'undefined' && typeof process.title !== 'undefined' && typeof exports !== 'undefined' ? exports : window);
