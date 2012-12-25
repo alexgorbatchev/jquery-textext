@@ -8,12 +8,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       html :
         container : '<div class="textext">'
 
-    constructor : (target, { @element, @userOptions } = {}) ->
-      super()
-
-      @defaultOptions = TextExt.defaults
+    constructor : (target, opts = {}) ->
+      super(opts)
 
       @sourceElement = target
+      @defaultOptions ?= TextExt.defaults
       @element ?= $ @options 'html.container'
 
       target.hide()

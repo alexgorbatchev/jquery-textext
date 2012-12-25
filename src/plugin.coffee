@@ -5,7 +5,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @registery = {}
     @register : (name, constructor) -> @registery[name] = constructor
 
-    constructor : ({ @element, @userOptions, @defaultOptions } = {}) ->
+    constructor : ({ @element, @userOptions, @defaultOptions }) ->
       super()
       @plugins = []
 

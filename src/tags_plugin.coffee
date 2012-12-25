@@ -17,8 +17,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           </div>
         '''
 
-    constructor : ({ @element, @userOptions } = {}) ->
-      super()
+    constructor : (opts = {}) ->
+      super(opts)
 
       @defaultOptions ?= TagsPlugin.defaults
       @element ?= $ @options 'html.container'
