@@ -19,48 +19,22 @@ describe 'KeysPlugin', ->
     it 'is KeysPlugins', -> expect(plugin instanceof KeysPlugin).toBe true
 
   describe 'key down event', ->
-    it 'fires for known keys', ->
-      fired = false
-      plugin.on 'key.down.knownkey', -> fired = true
-      runs -> plugin.onKeyDown 500
-      waitsFor (-> fired), 100
-
-    it 'fires for unknown keys', ->
-      fired = false
-      plugin.on 'key.down.code.600', -> fired = true
-      runs -> plugin.onKeyDown 600
-      waitsFor (-> fired), 100
-
+    it 'fires for known keys', -> expectEvent plugin, 'key.down.knownkey', -> plugin.onKeyDown 500
+    it 'fires for unknown keys', -> expectEvent plugin, 'key.down.code.600', -> plugin.onKeyDown 600
     it 'traps for known keys', -> expect(plugin.onKeyDown 501).toBe false
 
   describe 'key up event', ->
-    it 'fires for known keys', ->
-      fired = false
-      plugin.on 'key.up.knownkey', -> fired = true
-      runs -> plugin.onKeyUp 500
-      waitsFor (-> fired), 100
-
-    it 'fires for unknown keys', ->
-      fired = false
-      plugin.on 'key.up.code.600', -> fired = true
-      runs -> plugin.onKeyUp 600
-      waitsFor (-> fired), 100
-
+    it 'fires for known keys', -> expectEvent plugin, 'key.up.knownkey', -> plugin.onKeyUp 500
+    it 'fires for unknown keys', -> expectEvent plugin, 'key.up.code.600', -> plugin.onKeyUp 600
     it 'traps for known keys', -> expect(plugin.onKeyUp 501).toBe false
 
   describe 'key press event', ->
     it 'fires for known keys', ->
-      fired = false
-      plugin.on 'key.press.knownkey', -> fired = true
-      runs ->
+      expectEvent plugin, 'key.press.knownkey', ->
         plugin.onKeyDown 500
         plugin.onKeyUp 500
-      waitsFor (-> fired), 100
 
     it 'fires for unknown keys', ->
-      fired = false
-      plugin.on 'key.press.code.600', -> fired = true
-      runs ->
+      expectEvent plugin, 'key.press.code.600', ->
         plugin.onKeyDown 600
         plugin.onKeyUp 600
-      waitsFor (-> fired), 100

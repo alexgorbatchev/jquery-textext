@@ -38,6 +38,15 @@
       env.addReporter(reporter)
       env.specFilter = (spec) -> reporter.specFilter(spec)
 
+      window.expectEvent = (target, event, trigger, timeout = 250) ->
+        fired = false
+        target.on event, -> fired = true
+        runs => trigger()
+        waitsFor (-> fired), "`#{event}` event to be emitted", timeout
+
+      # beforeEach ->
+      #   @addMatchers
+
       $ -> env.execute()
   </script>
 
