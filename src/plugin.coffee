@@ -9,16 +9,31 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super()
       @plugins = []
 
-    options : (key) -> opts(@userOptions, key) or opts(@defaultOptions, key)
+    options : (key) ->
+      user = opts(@userOptions, key)
+      user = opts(@defaultOptions, key) if user is undefined
+      user
 
     $ : (selector) -> @element.find selector
 
     # invalidate : ->
     #   plugin.invalidate() for plugin in @plugins
 
-    addPlugin : (instance) ->
-      @element.append instance.element.addClass 'textext-plugin'
-      instance.onAny => @emit instance.event, arguments
-      @plugins.push instance
+    broadcast : (name, plugin) ->
+      handler = =>
+        # turn current plugin event handler so that we don't stuck in emit loop
+        plugin.offAny handler
+
+        for child in @plugins
+          child.emit "#{name}.#{plugin.event}", arguments if child isnt plugin
+
+        @broadcast name, plugin
+
+      plugin.onAny handler
+
+    addPlugin : (name, plugin) ->
+      @element.append plugin.element.addClass 'textext-plugin'
+      @plugins.push plugin
+      @broadcast name, plugin
 
   module.Plugin = Plugin
