@@ -3,17 +3,23 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class TagsPlugin extends Plugin
     @defaults =
-      items           : []
-      allowDuplicates : true
-      hotKey          : 13
-      splitPaste      : /,/g
+      items      : []
+      hotKey     : 13
+      splitPaste : /\s*,\s*/g
 
       html :
         container : '<div class="textext-tags"/>'
+
+        input : '''
+          <div class="textext-tags-input">
+            <input/>
+          </div>
+        '''
+
         item : '''
-          <div class="textext-tag">
-            <span class="textext-label"/>
-            <a class="textext-remove"/>
+          <div class="textext-tags-tag">
+            <span class="textext-tags-label"/>
+            <a/>
           </div>
         '''
 
@@ -22,8 +28,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @defaultOptions ?= TagsPlugin.defaults
       @element ?= $ @options 'html.container'
+      @input ?= $ @options 'html.input'
 
-      # WatchJS.watch @, 'items', -> console.log arguments
+      @element.append @input
+
+      @on 'keys.press.left', @onLeftKeyPress
+      @on 'keys.press.right', @onRightKeyPress
+      @on 'keys.press.backspace', @onBackspaceKeyPress
 
     setItems : (@items, callback) ->
       jobs = for item in @items
@@ -39,8 +50,20 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'
       # TODO use manager
-      element.find('.textext-label').html(item)
+      element.find('.textext-tags-label').html(item)
       nextTick -> callback(null, element)
+
+    moveInputTo : (index) ->
+      if index < @items.length
+        tag = @$("> .textext-tags-tag:nth(#{index})")
+        tag.before @input
+      else
+        tag = @$("> .textext-tags-tag:last")
+        tag.after @input
+
+    onLeftKeyPress : ->
+    onRightKeyPress : ->
+    onBackspaceKeyPress : ->
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin
