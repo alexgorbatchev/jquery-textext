@@ -3,7 +3,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class TextExt extends Plugin
     @defaults =
-      plugins : []
+      plugins          : ''
+      autoPlugins      : 'keys'
+      availablePlugins : Plugin.registery
 
       html :
         container : '<div class="textext">'
@@ -18,10 +20,21 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       target.hide()
       target.after @element
 
-    createPlugins : (list, availablePlugins = @options 'plugins') ->
-      for key in list.split /\s*,?\s+/g
-        plugin = availablePlugins[key]
-        instance = new plugin()
-        @addPlugin instance
+      @init()
+
+    init : ->
+      @createPlugins @options('autoPlugins')
+      @createPlugins @options('plugins')
+
+    createPlugins : (list) ->
+      availablePlugins = @options 'availablePlugins'
+
+      unless list.length is 0
+        list = list.split /\s*,?\s+/g
+
+        for pluginName in list
+          plugin = availablePlugins[pluginName]
+          instance = new plugin userOptions : @options pluginName
+          @addPlugin pluginName, instance
 
   module.TextExt = TextExt
