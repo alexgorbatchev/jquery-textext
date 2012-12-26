@@ -21,6 +21,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @defaultOptions ?= KeysPlugin.defaults
       @downKeys = {}
 
+      @element = $ '<div/>'
+
       @element
         .keydown((e) => @onKeyDown e.keyCode)
         .keyup((e) => @onKeyUp e.keyCode)
@@ -31,13 +33,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     onKeyDown : (keyCode) ->
       @downKeys[keyCode] = true
       key = @key keyCode
-      @emit "key.down.#{key.name}"
+      @emit "down.#{key.name}"
       key.trap isnt true
 
     onKeyUp : (keyCode) ->
       key = @key keyCode
-      @emit "key.up.#{key.name}"
-      @emit "key.press.#{key.name}" if @downKeys[keyCode]
+      @emit "up.#{key.name}"
+      @emit "press.#{key.name}" if @downKeys[keyCode]
       @downKeys[keyCode] = false
       key.trap isnt true
 
