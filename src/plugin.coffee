@@ -1,13 +1,21 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { EventEmitter2, WatchJS, opts, prop } = module
+  { EventEmitter2, opts } = module
 
   class Plugin extends EventEmitter2
-    @registery = {}
-    @register : (name, constructor) -> @registery[name] = constructor
+    @defaults =
+      plugins :
+        user      : ''
+        init      : ''
+        registery : {}
+
+    @register : (name, constructor) -> @defaults.plugins.registery[name] = constructor
+    @getRegistered : (name) -> @defaults.plugins.registery[name]
 
     constructor : ({ @element, @userOptions, @defaultOptions }) ->
       super()
       @plugins = []
+
+      @defaultOptions = $.extend true, {}, Plugin.defaults, @defaultOptions or {}
 
     options : (key) ->
       user = opts(@userOptions, key)
@@ -30,6 +38,21 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @broadcast name, plugin
 
       plugin.onAny handler
+
+    init : ->
+      @createPlugins @options('plugins.init')
+      @createPlugins @options('plugins.user')
+
+    createPlugins : (list) ->
+      availablePlugins = @options 'plugins.registery'
+
+      unless list.length is 0
+        list = list.split /\s*,?\s+/g
+
+        for name in list
+          plugin = availablePlugins[name]
+          instance = new plugin userOptions : @options name
+          @addPlugin name, instance
 
     addPlugin : (name, plugin) ->
       @element.append plugin.element.addClass 'textext-plugin'

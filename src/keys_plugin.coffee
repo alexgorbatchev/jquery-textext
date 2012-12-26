@@ -16,12 +16,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         108 : { name : 'numpadEnter' }
 
     constructor : (opts = {}) ->
-      super(opts)
+      super
+        element        : opts.element or $ '<div class="textext-keys">'
+        userOptions    : opts.userOptions
+        defaultOptions : opts.defaultOptions or KeysPlugin.defaults
 
-      @defaultOptions ?= KeysPlugin.defaults
       @downKeys = {}
-
-      @element = $ '<div/>'
 
       @element
         .keydown((e) => @onKeyDown e.keyCode)

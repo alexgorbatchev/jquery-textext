@@ -10,7 +10,7 @@ describe 'KeysPlugin', ->
           500 : name : 'knownkey'
           501 : name : 'trappedkey', trap : true
 
-  it 'is registered', -> expect(Plugin.registery['keys']).toBe KeysPlugin
+  it 'is registered', -> expect(Plugin.getRegistered 'keys').toBe KeysPlugin
   it 'has default options', -> expect(KeysPlugin.defaults).toBeTruthy()
 
   describe 'instance', ->

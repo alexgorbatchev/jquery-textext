@@ -24,11 +24,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         '''
 
     constructor : (opts = {}) ->
-      super(opts)
+      super
+        element        : opts.element
+        userOptions    : opts.userOptions
+        defaultOptions : opts.defaultOptions or TagsPlugin.defaults
 
-      @defaultOptions ?= TagsPlugin.defaults
       @element ?= $ @options 'html.container'
-      @input ?= $ @options 'html.input'
+      @input   ?= $ @options 'html.input'
 
       @element.append @input
 

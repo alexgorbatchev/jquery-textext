@@ -6,7 +6,7 @@ describe 'TagsPlugin', ->
   beforeEach ->
     plugin = new TagsPlugin
 
-  it 'is registered', -> expect(Plugin.registery['tags']).toBe TagsPlugin
+  it 'is registered', -> expect(Plugin.getRegistered 'tags').toBe TagsPlugin
   it 'has default options', -> expect(TagsPlugin.defaults).toBeTruthy()
 
   describe 'instance', ->
@@ -21,7 +21,8 @@ describe 'TagsPlugin', ->
       runs -> plugin.setItems items, -> done = true
       waitsFor -> done
 
-    it 'creates tag elements', -> expect(plugin.$('.textext-tags-tag').length).toBe items.length
+    it 'creates tag elements', ->
+      expect(plugin.$('.textext-tags-tag').length).toBe items.length
 
     it 'adds labels to tags', ->
       text = plugin.$('.textext-tags-tag').text()

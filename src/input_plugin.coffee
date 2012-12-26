@@ -11,9 +11,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         '''
 
     constructor : (opts = {}) ->
-      super(opts)
+      super
+        element        : opts.element
+        userOptions    : opts.userOptions
+        defaultOptions : opts.defaultOptions or InputPlugin.defaults
 
-      @defaultOptions ?= InputPlugin.defaults
       @element ?= $ @options 'html.input'
 
   # add plugin to the registery so that it is usable by TextExt

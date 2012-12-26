@@ -8,6 +8,7 @@ do (window, $ = jQuery) ->
 
       return instance if not opts and instance?
 
-      self.data 'textext', new module.TextExt self, opts
+      opts = $.extend {}, { element : self }, opts
+      self.data 'textext', new module.TextExt opts
 
       @

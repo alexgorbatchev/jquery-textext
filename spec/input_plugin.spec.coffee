@@ -6,7 +6,7 @@ describe 'InputPlugin', ->
   beforeEach ->
     plugin = new InputPlugin
 
-  it 'is registered', -> expect(Plugin.registery['input']).toBe InputPlugin
+  it 'is registered', -> expect(Plugin.getRegistered 'input').toBe InputPlugin
   it 'has default options', -> expect(InputPlugin.defaults).toBeTruthy()
 
   describe 'instance', ->
