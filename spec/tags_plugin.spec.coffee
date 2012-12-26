@@ -11,7 +11,7 @@ describe 'TagsPlugin', ->
 
   describe 'instance', ->
     it 'is Plugin', -> expect(plugin instanceof Plugin).toBe true
-    it 'is TagsPlugins', -> expect(plugin instanceof TagsPlugin).toBe true
+    it 'is TagsPlugin', -> expect(plugin instanceof TagsPlugin).toBe true
 
   describe '.setItems', ->
     items = [ 'item1', 'item2' ]
@@ -34,7 +34,6 @@ describe 'TagsPlugin', ->
     moveInputTo = (index) ->
       plugin.moveInputTo index
       divs = plugin.$ '> div'
-      console.log divs
       expect(divs.length).toBe items.length + 1
       expect(divs[index]).toBe '.textext-tags-input'
 

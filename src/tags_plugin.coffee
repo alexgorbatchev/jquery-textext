@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, WatchJS, resistance, nextTick } = module
+  { Plugin, resistance, nextTick } = module
 
   class TagsPlugin extends Plugin
     @defaults =
