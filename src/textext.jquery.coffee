@@ -9,6 +9,10 @@ do (window, $ = jQuery) ->
       return instance if not opts and instance?
 
       opts = $.extend {}, { element : self }, opts
-      self.data 'textext', new module.TextExt opts
+      textext = new module.TextExt
+        element     : self
+        userOptions : opts
+
+      self.data 'textext', textext
 
       @
