@@ -5,9 +5,7 @@ describe 'TagsPlugin', ->
 
   beforeEach ->
     parent = new Plugin element : $ '<div class="parent">'
-    plugin = new TagsPlugin
-      parent      : parent
-      userOptions : plugins : ''
+    plugin = new TagsPlugin parent : parent
 
   it 'is registered', -> expect(Plugin.getRegistered 'tags').toBe TagsPlugin
   it 'has default options', -> expect(TagsPlugin.defaults).toBeTruthy()
@@ -33,6 +31,19 @@ describe 'TagsPlugin', ->
       expect(text).toContain items[0]
       expect(text).toContain items[1]
 
+    it 'removes existing tag elements', ->
+      done = false
+      runs -> plugin.setItems [ 'new1', 'new2' ], -> done = true
+      waitsFor (-> done), 250
+      runs ->
+        text = plugin.$('.textext-tags-tag').text()
+        expect(text).toContain 'new1'
+        expect(text).toContain 'new2'
+        expect(text).not.toContain items[0]
+        expect(text).not.toContain items[1]
+
+    it 'moves input to the end of the list', -> expect(plugin.$('> div:last')).toBe '.textext-input'
+
   describe '.moveInputTo', ->
     items = 'item1 item2 item3 item4'.split /\s/g
 
@@ -40,11 +51,9 @@ describe 'TagsPlugin', ->
       plugin.moveInputTo index
       divs = plugin.$ '> div'
       expect(divs.length).toBe items.length + 1
-      expect(divs[index]).toBe '.input'
+      expect(divs[index]).toBe '.textext-input'
 
     beforeEach ->
-      plugin.addPlugin 'input', new Plugin element : $ '<div class="input">'
-
       done = false
       runs -> plugin.setItems items, -> done = true
       waitsFor (-> done), 250

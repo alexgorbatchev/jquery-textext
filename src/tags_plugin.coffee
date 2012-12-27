@@ -43,6 +43,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     onFunctionKeyPress : (keyCode, keyName) ->
 
     setItems : (@items, callback) ->
+      @element.find('.textext-tags-tag').remove()
+
       jobs = for item in @items
         do (item) => (done) => @createItemElement item, done
 
@@ -51,6 +53,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           for element in elements
             @element.append element
 
+        @moveInputTo elements.length
         callback and callback err
 
     createItemElement : (item, callback) ->
