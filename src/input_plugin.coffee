@@ -18,6 +18,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element ?= $ @options 'html.input'
 
+    input : -> @$ 'input'
+    value : -> @input().val.apply @input(), arguments
+    getCaretPosition : -> @input().get(0).selectionStart
+
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'input', InputPlugin
 
