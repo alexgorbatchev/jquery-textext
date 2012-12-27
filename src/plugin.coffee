@@ -22,11 +22,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     $ : (selector) -> @element.find selector
 
-    # invalidate : ->
-    #   plugin.invalidate() for plugin in @plugins
+    broadcast : (plugin) ->
+      handler = (args...) =>
+        event = plugin.event
+        args.unshift event
 
-    broadcast : (name, plugin) ->
-      handler = =>
         # turn current plugin event handler so that we don't stuck in emit loop
         plugin.offAny handler
 
@@ -52,12 +52,17 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         for name in list
           plugin = availablePlugins[name]
-          instance = new plugin userOptions : @options name
-          @addPlugin name, instance
+
+          @addPlugin name, new plugin
+            parent      : @
+            userOptions : @options name
+
+    appendToParent : -> @parent.element.append @element
 
     addPlugin : (name, plugin) ->
-      @element.append plugin.element.addClass 'textext-plugin'
-      @plugins.push plugin
-      @broadcast name, plugin
+      @plugins[name] = plugin
+      @broadcast plugin
+
+    getPlugin : (name) -> @plugins[name]
 
   module.Plugin = Plugin

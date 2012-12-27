@@ -28,13 +28,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super opts, TagsPlugin.defaults
 
       @element ?= $ @options 'html.container'
-      @input   ?= $ @options 'html.input'
-
-      @element.append @input
 
       @on 'keys.press.left', @onLeftKeyPress
       @on 'keys.press.right', @onRightKeyPress
       @on 'keys.press.backspace', @onBackspaceKeyPress
+      @on 'keys.press.*', @onFunctionKeyPress
+      @on 'keys.press.code.*', @onKeyPress
+
+      @init()
+      @appendToParent()
+
+    onKeyPress : (keyCode) ->
+
+    onFunctionKeyPress : (keyCode, keyName) ->
 
     setItems : (@items, callback) ->
       jobs = for item in @items
@@ -54,12 +60,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       nextTick -> callback(null, element)
 
     moveInputTo : (index) ->
+      input = @getPlugin('input')?.element
+
       if index < @items.length
         tag = @$("> .textext-tags-tag:nth(#{index})")
-        tag.before @input
+        tag.before input
       else
         tag = @$("> .textext-tags-tag:last")
-        tag.after @input
+        tag.after input
 
     onLeftKeyPress : ->
     onRightKeyPress : ->

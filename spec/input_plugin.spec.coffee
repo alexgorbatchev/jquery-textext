@@ -1,10 +1,11 @@
 { InputPlugin, Plugin } = $.fn.textext
 
 describe 'InputPlugin', ->
-  plugin = null
+  plugin = parent = null
 
   beforeEach ->
-    plugin = new InputPlugin
+    parent = new Plugin element : $ '<div class="parent">'
+    plugin = new InputPlugin parent : parent
 
   it 'is registered', -> expect(Plugin.getRegistered 'input').toBe InputPlugin
   it 'has default options', -> expect(InputPlugin.defaults).toBeTruthy()
@@ -12,6 +13,7 @@ describe 'InputPlugin', ->
   describe 'instance', ->
     it 'is Plugin', -> expect(plugin instanceof Plugin).toBe true
     it 'is InputPlugin', -> expect(plugin instanceof InputPlugin).toBe true
+    it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
 
   describe '.input', ->
     it 'returns DOM element', -> expect(plugin.input()).toBe 'input'
