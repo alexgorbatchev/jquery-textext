@@ -3,6 +3,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class TagsPlugin extends Plugin
     @defaults =
+      plugins    : 'input'
       items      : []
       hotKey     : 13
       splitPaste : /\s*,\s*/g

@@ -3,13 +3,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class Plugin extends EventEmitter2
     @defaults =
-      plugins :
-        user      : ''
-        init      : ''
-        registery : {}
+      plugins   : ''
+      registery : {}
 
-    @register : (name, constructor) -> @defaults.plugins.registery[name] = constructor
-    @getRegistered : (name) -> @defaults.plugins.registery[name]
+    @register : (name, constructor) -> @defaults.registery[name] = constructor
+    @getRegistered : (name) -> @defaults.registery[name]
 
     constructor : ({ @element, @userOptions, @defaultOptions }) ->
       super()
@@ -32,19 +30,22 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         # turn current plugin event handler so that we don't stuck in emit loop
         plugin.offAny handler
 
-        for child in @plugins
-          child.emit "#{name}.#{plugin.event}", arguments if child isnt plugin
+        # bubbles event up
+        @emit.apply @, args
 
-        @broadcast name, plugin
+        # rebroadcasts events to siblings
+        for key, child of @plugins
+          child.emit.apply child, args if child isnt plugin
+
+        plugin.onAny handler
 
       plugin.onAny handler
 
     init : ->
-      @createPlugins @options('plugins.init')
-      @createPlugins @options('plugins.user')
+      @createPlugins @options 'plugins'
 
     createPlugins : (list) ->
-      availablePlugins = @options 'plugins.registery'
+      availablePlugins = @options 'registery'
 
       unless list.length is 0
         list = list.split /\s*,?\s+/g

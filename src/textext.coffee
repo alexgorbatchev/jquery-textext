@@ -3,9 +3,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class TextExt extends Plugin
     @defaults =
-      plugins :
-        init : 'keys'
-
       html :
         container : '<div class="textext">'
 

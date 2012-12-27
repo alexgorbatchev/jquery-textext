@@ -68,10 +68,9 @@ describe 'Plugin', ->
 
     beforeEach ->
       plugin = new Plugin
-        element : $('<div>'),
+        element : $ '<div>'
         userOptions :
-          plugins :
-            registery : availablePlugins
+          registery : availablePlugins
 
           plugin2 :
             host : 'localhost'
@@ -97,10 +96,8 @@ describe 'Plugin', ->
       plugin = new Plugin
         element : $('<div>'),
         userOptions :
-          plugins :
-            user      : 'plugin3 plugin2'
-            init      : 'plugin1'
-            registery : availablePlugins
+          plugins   : 'plugin1 plugin3 plugin2'
+          registery : availablePlugins
 
       plugin.init()
 
