@@ -9,12 +9,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : (opts = {}) ->
       @sourceElement = opts.element
 
-      super
-        element        : opts.element
-        userOptions    : opts.userOptions
-        defaultOptions : TextExt.defaults
+      super opts, TextExt.defaults
 
-      @element ?= $ @options 'html.container'
+      @element = $ @options 'html.container'
 
       @sourceElement.hide()
       @sourceElement.after @element

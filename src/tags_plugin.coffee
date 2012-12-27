@@ -25,10 +25,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         '''
 
     constructor : (opts = {}) ->
-      super
-        element        : opts.element
-        userOptions    : opts.userOptions
-        defaultOptions : opts.defaultOptions or TagsPlugin.defaults
+      super opts, TagsPlugin.defaults
 
       @element ?= $ @options 'html.container'
       @input   ?= $ @options 'html.input'

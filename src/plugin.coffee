@@ -9,11 +9,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
 
-    constructor : ({ @element, @userOptions, @defaultOptions }) ->
-      super()
-      @plugins = []
+    constructor : ({ @parent, @element, @userOptions, @defaultOptions }, pluginDefaults = {}) ->
+      super wildcard : true
 
-      @defaultOptions = $.extend true, {}, Plugin.defaults, @defaultOptions or {}
+      @plugins        = {}
+      @defaultOptions = $.extend true, {}, Plugin.defaults, @defaultOptions or pluginDefaults
 
     options : (key) ->
       user = opts(@userOptions, key)
