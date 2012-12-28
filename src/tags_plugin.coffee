@@ -67,6 +67,16 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         callback and callback err, element
 
+    insertItem : (item, position, callback) ->
+      @items ?= []
+      @items.splice position, 0, item
+
+      @createItemElement item, (err, element) =>
+        unless err?
+          @$(".textext-tags-tag:nth-child(#{position})").after element
+
+        callback and callback err, element
+
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'
       # TODO use manager
