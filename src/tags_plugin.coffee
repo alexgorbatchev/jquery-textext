@@ -14,7 +14,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         item : '''
           <div class="textext-tags-tag">
             <span class="textext-tags-label"/>
-            <a/>
+            <a href="#">&times;</a>
           </div>
         '''
 
@@ -27,17 +27,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @on 'keys.press.right'     , @onRightKey
       @on 'keys.press.backspace' , @onBackspaceKey
       @on 'keys.press.enter'     , @onEnterKey
-      # @on 'keys.press.*'         , @onFunctionKeyPress
-      # @on 'keys.press.code.*'    , @onKeyPress
 
       @init()
       @appendToParent()
 
       @input = @getPlugin 'input'
-
-    onKeyPress : (keyCode) ->
-
-    onFunctionKeyPress : (keyCode, keyName) ->
 
     setItems : (items, callback) ->
       @element.find('.textext-tags-tag').remove()
@@ -53,18 +47,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         callback and callback err, elements
 
     addItem : (item, callback) ->
-      @createItemElement item, (err, element) =>
-        unless err?
-          @element.append element
-          @moveInput()
-
-        callback and callback err, element
-
-    addItemFromInput : (callback) ->
-      # TODO use manager
-      item = @input.value()
-      @input.value ''
-
       @createItemElement item, (err, element) =>
         unless err?
           @input.element.before element
@@ -87,11 +69,31 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         @input.element.insertAfter items.last()
 
-    onLeftKey : ->
-    onRightKey : ->
+    moveInputRight : ->
+      if @input.value().length is 0
+        next = @input.element.next '.textext-tags-tag'
+
+        if next.length
+          @input.element.insertAfter next
+          @input.focus()
+
+    moveInputLeft : ->
+      if @input.value().length is 0
+        prev = @input.element.prev '.textext-tags-tag'
+
+        if prev.length
+          @input.element.insertBefore prev
+          @input.focus()
+
+    onLeftKey : -> @moveInputLeft()
+    onRightKey : -> @moveInputRight()
+
     onBackspaceKey : ->
 
-    onEnterKey : -> @addItemFromInput -> null
+    onEnterKey : ->
+      # TODO use manager
+      item = @input.value()
+      @addItem item, => @input.value ''
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin
