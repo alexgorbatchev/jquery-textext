@@ -42,16 +42,26 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       resistance.series jobs, (err, elements...) =>
         unless err?
           @element.append element for element in elements
-          @moveInput()
+          @moveInputTo()
 
-        callback and callback err, elements
+        callback err, elements
 
     addItem : (item, callback) ->
+      # TODO hook up item manager
+
       @createItemElement item, (err, element) =>
         unless err?
           @input.element.before element
 
-        callback and callback err, element
+        callback err, element
+
+    inputPosition : -> @$('> div').index @input.element
+
+    removeItemByIndex : (index, callback) ->
+      # TODO hook up item manager
+
+      item = @$(".textext-tags-tag:eq(#{index})").remove()
+      nextTick -> callback null, item
 
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'
@@ -59,7 +69,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       element.find('.textext-tags-label').html item
       nextTick -> callback null, element
 
-    moveInput : (index) ->
+    moveInputTo : (index) ->
       items = @$ '> .textext-tags-tag'
 
       return if items.length is 0
@@ -69,31 +79,25 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         @input.element.insertAfter items.last()
 
-    moveInputRight : ->
-      if @input.value().length is 0
-        next = @input.element.next '.textext-tags-tag'
+    onLeftKey : ->
+      if @input.empty()
+        @moveInputTo @inputPosition() - 1
+        @input.focus()
 
-        if next.length
-          @input.element.insertAfter next
-          @input.focus()
-
-    moveInputLeft : ->
-      if @input.value().length is 0
-        prev = @input.element.prev '.textext-tags-tag'
-
-        if prev.length
-          @input.element.insertBefore prev
-          @input.focus()
-
-    onLeftKey : -> @moveInputLeft()
-    onRightKey : -> @moveInputRight()
+    onRightKey : ->
+      if @input.empty()
+        @moveInputTo @inputPosition() + 1
+        @input.focus()
 
     onBackspaceKey : ->
+      if @input.empty()
+        @removeItemByIndex @inputPosition() - 1, -> null
 
     onEnterKey : ->
       # TODO use manager
       item = @input.value()
-      @addItem item, => @input.value ''
+      @addItem item, =>
+        @input.value ''
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

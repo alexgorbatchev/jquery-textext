@@ -22,6 +22,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     input : -> @$ 'input'
     value : -> @input().val.apply @input(), arguments
+    empty : -> @value().length is 0
     focus : -> @input().focus()
     caretPosition : -> @input().get(0).selectionStart
 

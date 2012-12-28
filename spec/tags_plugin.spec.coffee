@@ -6,10 +6,10 @@ describe 'TagsPlugin', ->
     runs -> fn -> done = true
     waitsFor (-> done), 250
 
-  addItem    = (item) -> wait (done) -> plugin.addItem item, done
-  removeItem = (item) -> wait (done) -> plugin.removeItem item, done
-  setItems   = (items) -> wait (done) -> plugin.setItems items, done
-  moveInput  = (index) -> runs -> plugin.moveInput index
+  addItem           = (item) -> wait (done) -> plugin.addItem item, done
+  removeItemByIndex = (item) -> wait (done) -> plugin.removeItemByIndex item, done
+  setItems          = (items) -> wait (done) -> plugin.setItems items, done
+  moveInputTo       = (index) -> runs -> plugin.moveInputTo index
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
   expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'
@@ -73,75 +73,76 @@ describe 'TagsPlugin', ->
     describe 'two existing items', ->
       beforeEach ->
         setItems [ 'item1', 'item3' ]
-        moveInput 1
+        moveInputTo 1
         addItem 'item2'
 
       it 'adds item between first and second', -> expectItem('item2').toBeTruthy()
       it 'moves input after inserted item', -> expectInputToBeAt 2
       it 'has items in order', -> expectItems 'item1 item2 item3'
 
-  describe '.moveInput', ->
+  describe '.removeItemByIndex', ->
+    describe 'one existing item', ->
+      beforeEach ->
+        setItems [ 'item1' ]
+        removeItemByIndex 0
+
+      it 'removes existing item', -> expectItem('item1').toBeFalsy()
+
+    describe 'two existing items', ->
+      beforeEach ->
+        setItems [ 'item1', 'item3' ]
+        removeItemByIndex 1
+
+      it 'removes existing item', -> expectItem('item3').toBeFalsy()
+
+  describe '.moveInputTo', ->
     items = 'item1 item2 item3 item4'.split /\s/g
 
     beforeEach ->
       setItems items
 
     it 'moves input to the beginning of the item list', ->
-      moveInput 0
+      moveInputTo 0
       runs -> expectInputToBeAt 0
 
     it 'moves input to the end of the item list', ->
-      moveInput items.length
+      moveInputTo items.length
       runs -> expectInputToBeAt items.length
 
     it 'moves input to the end of the item list', ->
-      moveInput 2
+      moveInputTo 2
       runs -> expectInputToBeAt 2
-
-  describe '.moveInputRight', ->
-    beforeEach ->
-      setItems [ 'item1', 'item2', 'item3' ]
-      moveInput 1
-
-    describe 'when there is no text in the input field', ->
-      beforeEach -> plugin.moveInputRight()
-      it 'moves the input field', -> expectInputToBeAt 2
-
-    describe 'when there is text in the input field', ->
-      beforeEach ->
-        input.value 'text'
-        plugin.moveInputRight()
-
-      it 'does not move the input field', -> expectInputToBeAt 1
-
-  describe '.moveInputLeft', ->
-    beforeEach -> setItems [ 'item1', 'item2', 'item3' ]
-
-    describe 'when there is no text in the input field', ->
-      beforeEach -> plugin.moveInputLeft()
-      it 'moves the input field', -> expectInputToBeAt 2
-
-    describe 'when there is text in the input field', ->
-      beforeEach ->
-        input.value 'text'
-        plugin.moveInputLeft()
-
-      it 'does not move the input field', -> expectInputToBeAt 3
 
   describe '.onRightKey', ->
     beforeEach ->
       setItems [ 'item1', 'item2', 'item3' ]
-      moveInput 1
-      runs -> plugin.onRightKey()
+      moveInputTo 1
 
-    it 'moves the input field', -> expectInputToBeAt 2
+    describe 'when there is no text in the input field', ->
+      beforeEach -> plugin.onRightKey()
+      it 'moves the input field', -> expectInputToBeAt 2
+
+    describe 'when there is text in the input field', ->
+      beforeEach ->
+        input.value 'text'
+        plugin.onRightKey()
+
+      it 'does not move the input field', -> expectInputToBeAt 1
 
   describe '.onLeftKey', ->
     beforeEach ->
       setItems [ 'item1', 'item2', 'item3' ]
-      runs -> plugin.onLeftKey()
 
-    it 'moves the input field', -> expectInputToBeAt 2
+    describe 'when there is no text in the input field', ->
+      beforeEach -> plugin.onLeftKey()
+      it 'moves the input field', -> expectInputToBeAt 2
+
+    describe 'when there is text in the input field', ->
+      beforeEach ->
+        input.value 'text'
+        plugin.onLeftKey()
+
+      it 'does not move the input field', -> expectInputToBeAt 3
 
   describe '.onEnterKey', ->
     beforeEach ->
