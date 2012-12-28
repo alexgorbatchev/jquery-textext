@@ -53,8 +53,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           for element in elements
             @element.append element
 
-        @moveInputTo elements.length
-        callback and callback err
+          @moveInputTo @items.length
+        callback and callback err, elements
+
+    addItem : (item, callback) ->
+      @items ?= []
+      @items.push item
+
+      @createItemElement item, (err, element) =>
+        unless err?
+          @element.append element
+          @moveInputTo @items.length
+
+        callback and callback err, element
 
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'
