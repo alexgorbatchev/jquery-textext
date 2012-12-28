@@ -11,12 +11,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       html :
         container : '<div class="textext-tags"/>'
 
-        input : '''
-          <div class="textext-tags-input">
-            <input/>
-          </div>
-        '''
-
         item : '''
           <div class="textext-tags-tag">
             <span class="textext-tags-label"/>
@@ -29,73 +23,75 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element ?= $ @options 'html.container'
 
-      @on 'keys.press.left', @onLeftKeyPress
-      @on 'keys.press.right', @onRightKeyPress
-      @on 'keys.press.backspace', @onBackspaceKeyPress
-      @on 'keys.press.*', @onFunctionKeyPress
-      @on 'keys.press.code.*', @onKeyPress
+      @on 'keys.press.left'      , @onLeftKey
+      @on 'keys.press.right'     , @onRightKey
+      @on 'keys.press.backspace' , @onBackspaceKey
+      @on 'keys.press.enter'     , @onEnterKey
+      # @on 'keys.press.*'         , @onFunctionKeyPress
+      # @on 'keys.press.code.*'    , @onKeyPress
 
       @init()
       @appendToParent()
+
+      @input = @getPlugin 'input'
 
     onKeyPress : (keyCode) ->
 
     onFunctionKeyPress : (keyCode, keyName) ->
 
-    setItems : (@items, callback) ->
+    setItems : (items, callback) ->
       @element.find('.textext-tags-tag').remove()
 
-      jobs = for item in @items
+      jobs = for item in items
         do (item) => (done) => @createItemElement item, done
 
-      resistance.parallel jobs, (err, elements...) =>
+      resistance.series jobs, (err, elements...) =>
         unless err?
-          for element in elements
-            @element.append element
+          @element.append element for element in elements
+          @moveInput()
 
-          @moveInputTo @items.length
         callback and callback err, elements
 
     addItem : (item, callback) ->
-      @items ?= []
-      @items.push item
-
       @createItemElement item, (err, element) =>
         unless err?
           @element.append element
-          @moveInputTo @items.length
+          @moveInput()
 
         callback and callback err, element
 
-    insertItem : (item, position, callback) ->
-      @items ?= []
-      @items.splice position, 0, item
+    addItemFromInput : (callback) ->
+      # TODO use manager
+      item = @input.value()
+      @input.value ''
 
       @createItemElement item, (err, element) =>
         unless err?
-          @$(".textext-tags-tag:nth-child(#{position})").after element
+          @input.element.before element
 
         callback and callback err, element
 
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'
       # TODO use manager
-      element.find('.textext-tags-label').html(item)
-      nextTick -> callback(null, element)
+      element.find('.textext-tags-label').html item
+      nextTick -> callback null, element
 
-    moveInputTo : (index) ->
-      input = @getPlugin('input')?.element
+    moveInput : (index) ->
+      items = @$ '> .textext-tags-tag'
 
-      if index < @items.length
-        tag = @$("> .textext-tags-tag:nth(#{index})")
-        tag.before input
+      return if items.length is 0
+
+      if index? and index < items.length
+        @input.element.insertBefore items[index]
       else
-        tag = @$("> .textext-tags-tag:last")
-        tag.after input
+        @input.element.insertAfter items.last()
 
-    onLeftKeyPress : ->
-    onRightKeyPress : ->
-    onBackspaceKeyPress : ->
+    onLeftKey : ->
+    onRightKey : ->
+    onBackspaceKey : ->
+
+    onEnterKey : -> @addItemFromInput -> null
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

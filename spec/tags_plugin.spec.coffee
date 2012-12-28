@@ -1,28 +1,27 @@
 { TagsPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  setItems = (items) ->
+  wait = (fn) ->
     done = false
-    runs -> plugin.setItems items, -> done = true
+    runs -> fn -> done = true
     waitsFor (-> done), 250
 
-  addItem = (item) ->
-    done = false
-    runs -> plugin.addItem item, -> done = true
-    waitsFor (-> done), 250
+  addItemFromInput = -> wait (done) -> plugin.addItemFromInput done
+  addItem          = (item) -> wait (done) -> plugin.addItem item, done
+  setItems         = (items) -> wait (done) -> plugin.setItems items, done
+  moveInput        = (index) -> runs -> plugin.moveInput index
 
-  insertItem = (item, position) ->
-    done = false
-    runs -> plugin.insertItem item, position, -> done = true
-    waitsFor (-> done), 250
+  expectItems         = (items) -> expect(plugin.$('.textext-tags-tag').text().replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')).toBe items
+  expectItem          = (item) -> expect(plugin.$(".textext-tags-tag:contains(#{item})").length > 0)
+  expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
+  expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'
 
-  expectItem = (item) -> expect(plugin.$(".textext-tags-tag:contains(#{item})").length > 0)
-
-  plugin = parent = null
+  plugin = parent = input = null
 
   beforeEach ->
     parent = new Plugin element : $ '<div class="parent">'
     plugin = new TagsPlugin parent : parent
+    input = plugin.getPlugin 'input'
 
   it 'is registered', -> expect(Plugin.getRegistered 'tags').toBe TagsPlugin
   it 'has default options', -> expect(TagsPlugin.defaults).toBeTruthy()
@@ -33,19 +32,18 @@ describe 'TagsPlugin', ->
     it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
 
   describe '.setItems', ->
-    describe 'calling first time', ->
-      beforeEach -> setItems [ 'item1', 'item2' ]
+    describe 'first time', ->
+      beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
 
-      it 'creates tag elements', ->
-        expect(plugin.$('.textext-tags-tag').length).toBe 2
+      it 'creates tag elements in order', -> expectItems 'item1 item2 item3 item4'
 
       it 'adds labels to tags', ->
         expectItem('item1').toBeTruthy()
         expectItem('item2').toBeTruthy()
 
-      it 'moves input to the end of the list', -> expect(plugin.$('> div:last')).toBe '.textext-input'
+      it 'moves input to the end of the list', -> expectInputToBeLast()
 
-      describe 'calling second time', ->
+      describe 'second time', ->
         beforeEach -> setItems [ 'new1', 'new2' ]
 
         it 'removes existing tag elements', ->
@@ -54,7 +52,7 @@ describe 'TagsPlugin', ->
           expectItem('item1').toBeFalsy()
           expectItem('item2').toBeFalsy()
 
-        it 'moves input to the end of the list', -> expect(plugin.$('> div:last')).toBe '.textext-input'
+        it 'moves input to the end of the list', -> expectInputToBeLast()
 
   describe '.addItem', ->
     describe 'first item', ->
@@ -68,32 +66,55 @@ describe 'TagsPlugin', ->
         it 'preserves existing items', -> expectItem('item1').toBeTruthy()
         it 'adds another item', -> expectItem('item2').toBeTruthy()
 
-  describe '.insertItem', ->
-    beforeEach ->
-      setItems [ 'item1', 'item2' ]
-      insertItem 'item3', 1
+  describe '.addItemFromInput', ->
+    describe 'no existing items', ->
+      beforeEach ->
+        input.value 'item1'
+        addItemFromInput()
 
-    it 'adds an item', -> expectItem('item3').toBeTruthy()
+      it 'adds item to the end of the list', -> expectItem('item1').toBeTruthy()
+      it 'clears the input', -> expect(input.value()).toBeFalsy()
+      it 'moves input to the end of the list', -> expectInputToBeLast()
 
-    it 'adds item in the correct position', ->
-      tags = plugin.$('> .textext-tags-tag')
-      expect($(tags[0]).text()).toContain 'item1'
-      expect($(tags[1]).text()).toContain 'item3'
-      expect($(tags[2]).text()).toContain 'item2'
+    describe 'one existing item', ->
+      beforeEach ->
+        input.value 'item2'
+        setItems [ 'item1' ]
+        addItemFromInput()
 
-  describe '.moveInputTo', ->
+      it 'adds item to the end of the list', -> expectItem('item2').toBeTruthy()
+      it 'clears the input', -> expect(input.value()).toBeFalsy()
+      it 'moves input to the end of the list', -> expectInputToBeLast()
+
+    describe 'two existing items', ->
+      beforeEach ->
+        input.value 'item2'
+        setItems [ 'item1', 'item3' ]
+        moveInput 1
+        addItemFromInput()
+
+      it 'adds item between first and second', -> expectItem('item2').toBeTruthy()
+      it 'clears the input', -> expect(input.value()).toBeFalsy()
+      it 'moves input after inserted item', -> expectInputToBeAt 2
+      it 'has all items in order', -> expectItems 'item1 item2 item3'
+
+  describe '.moveInput', ->
     items = 'item1 item2 item3 item4'.split /\s/g
 
-    moveInputTo = (index) ->
-      plugin.moveInputTo index
-      divs = plugin.$ '> div'
-      expect(divs.length).toBe items.length + 1
-      expect(divs[index]).toBe '.textext-input'
-
     beforeEach ->
-      done = false
-      runs -> plugin.setItems items, -> done = true
-      waitsFor (-> done), 250
+      setItems items
 
-    it 'moves input to the beginning of the item list', -> moveInputTo 0
-    it 'moves input to the end of the item list', -> moveInputTo items.length
+    it 'moves input to the beginning of the item list', ->
+      moveInput 0
+      runs -> expectInputToBeAt 0
+
+    it 'moves input to the end of the item list', ->
+      moveInput items.length
+      runs -> expectInputToBeAt items.length
+
+    it 'moves input to the end of the item list', ->
+      moveInput 2
+      runs -> expectInputToBeAt 2
+
+
+
