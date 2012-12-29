@@ -5,7 +5,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @defaults =
       plugins    : 'input'
       items      : []
-      hotKey     : 13
+      hotKey     : 'enter'
       splitPaste : /\s*,\s*/g
 
       html :
@@ -23,10 +23,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element ?= $ @options 'html.container'
 
-      @on 'keys.press.left'      , @onLeftKey
-      @on 'keys.press.right'     , @onRightKey
-      @on 'keys.press.backspace' , @onBackspaceKey
-      @on 'keys.press.enter'     , @onEnterKey
+      @on 'keys.press.left'                 , @onLeftKey
+      @on 'keys.press.right'                , @onRightKey
+      @on 'keys.press.backspace'            , @onBackspaceKey
+      @on "keys.press.#{@options 'hotKey'}" , @onHotKey
+
+      @element.on 'click', 'a', (e) => @onCloseClick(e)
 
       @init()
       @appendToParent()
@@ -75,25 +77,46 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         else
           @input.element.insertAfter items.last()
 
-      nextTick -> callback()
+      nextTick callback
 
-    onLeftKey : ->
+    onLeftKey : (keyCode, keyName, callback = ->) ->
       if @input.empty()
-        @moveInputTo @inputPosition() - 1, => @input.focus()
+        @moveInputTo @inputPosition() - 1, =>
+          @input.focus()
+          callback()
+      else
+        nextTick callback
 
-    onRightKey : ->
+    onRightKey : (keyCode, keyName, callback = ->) ->
       if @input.empty()
-        @moveInputTo @inputPosition() + 1, => @input.focus()
+        @moveInputTo @inputPosition() + 1, =>
+          @input.focus()
+          callback()
+      else
+        nextTick callback
 
-    onBackspaceKey : ->
+    onBackspaceKey : (keyCode, keyName, callback = ->) ->
       if @input.empty()
-        @removeItemByIndex @inputPosition() - 1, -> null
+        @removeItemByIndex @inputPosition() - 1, =>
+          callback()
+      else
+        nextTick callback
 
-    onEnterKey : ->
+    onHotKey : (keyCode, keyName, callback = ->) ->
       # TODO use manager
-      item = @input.value()
-      @addItem item, =>
-        @input.value ''
+      unless @input.empty()
+        item = @input.value()
+        @addItem item, =>
+          @input.value ''
+          callback()
+      else
+        nextTick callback
+
+    onCloseClick : (e) ->
+      e.preventDefault()
+
+      element = @$(e.target).parents('.textext-tags-tag')
+      element.remove()
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

@@ -119,13 +119,13 @@ describe 'TagsPlugin', ->
       moveInputTo 1
 
     describe 'when there is no text in the input field', ->
-      beforeEach -> plugin.onRightKey()
+      beforeEach -> wait (done) -> plugin.onRightKey null, null, done
       it 'moves the input field', -> expectInputToBeAt 2
 
     describe 'when there is text in the input field', ->
-      beforeEach ->
+      beforeEach -> wait (done) ->
         input.value 'text'
-        plugin.onRightKey()
+        plugin.onRightKey null, null, done
 
       it 'does not move the input field', -> expectInputToBeAt 1
 
@@ -134,24 +134,28 @@ describe 'TagsPlugin', ->
       setItems [ 'item1', 'item2', 'item3' ]
 
     describe 'when there is no text in the input field', ->
-      beforeEach -> plugin.onLeftKey()
+      beforeEach -> wait (done) -> plugin.onLeftKey null, null, done
       it 'moves the input field', -> expectInputToBeAt 2
 
     describe 'when there is text in the input field', ->
-      beforeEach ->
+      beforeEach -> wait (done) ->
         input.value 'text'
-        plugin.onLeftKey()
+        plugin.onLeftKey null, null, done
 
       it 'does not move the input field', -> expectInputToBeAt 3
 
-  describe '.onEnterKey', ->
-    beforeEach ->
-      input.value 'item'
+  describe '.onHotKey', ->
+    describe 'when there is text', ->
+      beforeEach -> wait (done) ->
+        input.value 'item'
+        plugin.onHotKey null, null, done
 
-      waitsFor ->
-        plugin.onEnterKey()
-        input.value() is ''
+      it 'adds new item', -> expectItem('item').toBeTruthy()
+      it 'clears the input', -> expect(input.value()).toBeFalsy()
 
-    it 'adds new item', -> expectItem('item').toBeTruthy()
-    it 'clears the input', -> expect(input.value()).toBeFalsy()
+    describe 'when there is no text', ->
+      beforeEach -> wait (done) -> plugin.onHotKey null, null, done
+
+      it 'does not add new item', ->
+        expect(plugin.element.find('.textext-tags-tag').length).toBe 0
 
