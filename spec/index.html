@@ -42,14 +42,38 @@
 
       window.expectEvent = (target, event, trigger, timeout = 250) ->
         fired = false
-        target.on event, -> fired = true
-        runs => trigger()
+        args = null
+
+        target.on event, (eventArgs...) ->
+          args = eventArgs
+          args.shift event
+          fired = true
+
+        runs => trigger.apply trigger, args
         waitsFor (-> fired), "`#{event}` event to be emitted", timeout
+
+      window.wait = (fn) ->
+        done = false
+        runs -> fn -> done = true
+        waitsFor (-> done), 250
 
       # beforeEach ->
       #   @addMatchers
 
-      $ -> env.execute()
+      $ ->
+        # $('body').append '<input id="example">'
+        # $('#example').textext plugins : 'tags'
+
+        setTimeout ->
+          $('body > *:first').before '<input id="example">'
+
+          try
+            $('#example').textext plugins : 'tags'
+          catch e
+            console.error e.stack
+        , 1000
+
+        env.execute()
   </script>
 
 </head>

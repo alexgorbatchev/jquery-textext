@@ -1,11 +1,6 @@
 { TagsPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  wait = (fn) ->
-    done = false
-    runs -> fn -> done = true
-    waitsFor (-> done), 250
-
   addItem           = (item) -> wait (done) -> plugin.addItem item, done
   removeItemByIndex = (item) -> wait (done) -> plugin.removeItemByIndex item, done
   setItems          = (items) -> wait (done) -> plugin.setItems items, done
