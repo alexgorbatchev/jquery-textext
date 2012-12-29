@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, resistance, nextTick } = module
+  { UIPlugin, Plugin, resistance, nextTick } = module
 
-  class TagsPlugin extends Plugin
+  class TagsPlugin extends UIPlugin
     @defaults =
       plugins    : 'input'
       items      : []

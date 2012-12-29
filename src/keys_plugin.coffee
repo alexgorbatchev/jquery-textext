@@ -21,10 +21,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @init()
 
       @downKeys = {}
-      @element = @parent.element unless @element?
-      @element = @element.find 'input' unless @element.is ':input'?
 
-      @element
+      element = opts.element or @parent.element
+      element = element.find 'input' unless element.is ':input'?
+
+      element
         .keydown((e) => @onKeyDown e.keyCode)
         .keyup((e) => @onKeyUp e.keyCode)
 

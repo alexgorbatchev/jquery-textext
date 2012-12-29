@@ -2,19 +2,8 @@
 
 describe 'Plugin', ->
   class Plugin1 extends Plugin
-    constructor : (opts) ->
-      super(opts)
-      @element = $('<div class="plugin1">')
-
   class Plugin2 extends Plugin
-    constructor : (opts) ->
-      super(opts)
-      @element = $('<div class="plugin2">')
-
   class Plugin3 extends Plugin
-    constructor : (opts) ->
-      super(opts)
-      @element = $('<div class="plugin3">')
 
   availablePlugins =
     plugin1 : Plugin1
@@ -24,10 +13,10 @@ describe 'Plugin', ->
   parent = plugin = child1 = child2 = null
 
   beforeEach ->
-    parent = new Plugin element : $ '<div class="parent"/>'
-    plugin = new Plugin parent : parent, element : $ '<div class="plugin"/>'
-    child1 = new Plugin element : $ '<div class="child1"/>'
-    child2 = new Plugin element : $ '<div class="child2"/>'
+    parent = new Plugin
+    plugin = new Plugin parent : parent
+    child1 = new Plugin
+    child2 = new Plugin
 
   describe '.addPlugin', ->
     beforeEach ->
@@ -42,7 +31,7 @@ describe 'Plugin', ->
     topLevel = null
 
     beforeEach ->
-      topLevel = new Plugin element : $ '<div>'
+      topLevel = new Plugin
 
       topLevel.addPlugin 'midlevel', plugin
 
@@ -51,10 +40,6 @@ describe 'Plugin', ->
 
     it 'broadcasts events to all siblings', -> expectEvent child2, 'event', -> child1.emit 'event'
     it 'bubbles events up', -> expectEvent topLevel, 'event', -> child2.emit 'event'
-
-  describe '.appendToParent', ->
-    beforeEach -> plugin.appendToParent()
-    it 'appends own element to parent\'s', -> expect(parent.element).toContain plugin.element
 
   describe '.getPlugin', ->
     beforeEach ->
@@ -80,7 +65,6 @@ describe 'Plugin', ->
 
     beforeEach ->
       plugin = new Plugin
-        element : $ '<div>'
         userOptions :
           registery : availablePlugins
 
@@ -101,7 +85,6 @@ describe 'Plugin', ->
   describe '.init', ->
     beforeEach ->
       plugin = new Plugin
-        element : $('<div>'),
         userOptions :
           plugins   : 'plugin1 plugin3 plugin2'
           registery : availablePlugins

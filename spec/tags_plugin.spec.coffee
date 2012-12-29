@@ -1,4 +1,4 @@
-{ TagsPlugin, Plugin } = $.fn.textext
+{ TagsPlugin, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
   addItem           = (item) -> wait (done) -> plugin.addItem item, done
@@ -18,7 +18,7 @@ describe 'TagsPlugin', ->
   plugin = parent = input = null
 
   beforeEach ->
-    parent = new Plugin element : $ '<div class="parent">'
+    parent = new UIPlugin element : $ '<div class="parent">'
     plugin = new TagsPlugin parent : parent
     input = plugin.getPlugin 'input'
 
@@ -26,7 +26,7 @@ describe 'TagsPlugin', ->
   it 'has default options', -> expect(TagsPlugin.defaults).toBeTruthy()
 
   describe 'instance', ->
-    it 'is Plugin', -> expect(plugin instanceof Plugin).toBe true
+    it 'is UIPlugin', -> expect(plugin instanceof UIPlugin).toBe true
     it 'is TagsPlugin', -> expect(plugin instanceof TagsPlugin).toBe true
     it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
 

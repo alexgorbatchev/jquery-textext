@@ -9,7 +9,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
 
-    constructor : ({ @parent, @element, @userOptions, @defaultOptions }, pluginDefaults = {}) ->
+    constructor : ({ @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
       super wildcard : true
 
       @plugins        = {}
@@ -19,8 +19,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       user = opts(@userOptions, key)
       user = opts(@defaultOptions, key) if user is undefined
       user
-
-    $ : (selector) -> @element.find selector
 
     broadcast : (plugin) ->
       handler = (args...) =>
@@ -56,8 +54,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           @addPlugin name, new plugin
             parent      : @
             userOptions : @options name
-
-    appendToParent : -> @parent.element.append @element
 
     addPlugin : (name, plugin) ->
       @plugins[name] = plugin
