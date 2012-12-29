@@ -35,6 +35,13 @@ describe 'TagsPlugin', ->
     it 'is TagsPlugin', -> expect(plugin instanceof TagsPlugin).toBe true
     it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
 
+  describe '.itemPosition', ->
+    beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
+
+    it 'returns item position for element', ->
+      item = plugin.$ '.textext-tags-tag:eq(2)'
+      expect(plugin.itemPosition item).toBe 2
+
   describe '.setItems', ->
     describe 'first time', ->
       beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
@@ -158,4 +165,18 @@ describe 'TagsPlugin', ->
 
       it 'does not add new item', ->
         expect(plugin.element.find('.textext-tags-tag').length).toBe 0
+
+  describe '.onRemoveTagClick', ->
+    beforeEach ->
+      e = jQuery.Event 'click'
+
+      setItems [ 'item1', 'item2', 'item3', 'item4' ]
+      runs -> e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
+      wait (done) -> plugin.onRemoveTagClick e, done
+
+    it 'removes item', -> expectItems 'item1 item2 item4'
+
+
+
+
 

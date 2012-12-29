@@ -28,7 +28,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @on 'keys.press.backspace'            , @onBackspaceKey
       @on "keys.press.#{@options 'hotKey'}" , @onHotKey
 
-      @element.on 'click', 'a', (e) => @onCloseClick(e)
+      @element.on 'click', 'a', (e) => @onRemoveTagClick(e)
 
       @init()
       @appendToParent()
@@ -55,6 +55,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         callback err, element
 
     inputPosition : -> @$('> div').index @input.element
+
+    itemPosition : (element) ->
+      element = $ element
+      element = element.parents '.textext-tags-tag' unless element.is '.textext-tags-tag'
+      @$('.textext-tags-tag').index element
 
     removeItemByIndex : (index, callback) ->
       # TODO hook up item manager
@@ -112,11 +117,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         nextTick callback
 
-    onCloseClick : (e) ->
+    onRemoveTagClick : (e, callback = ->) ->
       e.preventDefault()
-
-      element = @$(e.target).parents('.textext-tags-tag')
-      element.remove()
+      @removeItemByIndex @itemPosition(e.target), callback
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin
