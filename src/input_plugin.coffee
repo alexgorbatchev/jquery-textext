@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, resistance, nextTick } = module
+  { Plugin } = module
 
   class InputPlugin extends Plugin
     @defaults =

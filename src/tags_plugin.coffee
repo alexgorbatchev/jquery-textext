@@ -43,7 +43,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       resistance.series jobs, (err, elements...) =>
         @element.append element for element in elements
-        @moveInputTo Number.MAX_VALUE, -> callback null, elements
+        @moveInputTo Number.MAX_VALUE, =>
+          callback null, elements
 
     addItem : (item, callback) ->
       # TODO hook up item manager
@@ -51,6 +52,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @createItemElement item, (err, element) =>
         unless err?
           @input.element.before element
+          @emit 'item.added', element
 
         callback err, element
 
@@ -65,7 +67,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       # TODO hook up item manager
 
       item = @$(".textext-tags-tag:eq(#{index})").remove()
-      nextTick -> callback null, item
+      nextTick =>
+        @emit 'item.removed', item
+        callback null, item
 
     createItemElement : (item, callback) ->
       element = $ @options 'html.item'

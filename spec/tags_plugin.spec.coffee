@@ -62,8 +62,7 @@ describe 'TagsPlugin', ->
 
   describe '.addItem', ->
     describe 'no existing items', ->
-      beforeEach ->
-        addItem 'item1'
+      beforeEach -> addItem 'item1'
 
       it 'adds new item', -> expectItem('item1').toBeTruthy()
       it 'moves input to the end of the list', -> expectInputToBeLast()
@@ -87,6 +86,14 @@ describe 'TagsPlugin', ->
       it 'moves input after inserted item', -> expectInputToBeAt 2
       it 'has items in order', -> expectItems 'item1 item2 item3'
 
+    describe 'emitted event', ->
+      it 'emits `item.added`', ->
+        addedItem = null
+        plugin.once 'item.added', (item) -> addedItem = item
+        runs -> plugin.addItem 'item', -> null
+        waitsFor (-> addedItem), 250
+        runs -> expect(addedItem.text()).toContain 'item'
+
   describe '.removeItemByIndex', ->
     describe 'one existing item', ->
       beforeEach ->
@@ -101,6 +108,16 @@ describe 'TagsPlugin', ->
         removeItemByIndex 1
 
       it 'removes existing item', -> expectItem('item3').toBeFalsy()
+
+    describe 'emitted event', ->
+      beforeEach -> setItems [ 'item1', 'item3' ]
+
+      it 'emits `item.removed`', ->
+        arg = null
+        plugin.once 'item.removed', (item) -> arg = item
+        runs -> plugin.removeItemByIndex 0, -> null
+        waitsFor (-> arg), 250
+        runs -> expect(arg.text()).toContain 'item1'
 
   describe '.moveInputTo', ->
     items = 'item1 item2 item3 item4'.split /\s/g
