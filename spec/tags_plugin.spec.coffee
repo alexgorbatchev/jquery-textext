@@ -9,7 +9,7 @@ describe 'TagsPlugin', ->
   addItem           = (item) -> wait (done) -> plugin.addItem item, done
   removeItemByIndex = (item) -> wait (done) -> plugin.removeItemByIndex item, done
   setItems          = (items) -> wait (done) -> plugin.setItems items, done
-  moveInputTo       = (index) -> runs -> plugin.moveInputTo index
+  moveInputTo       = (index) -> wait (done) -> plugin.moveInputTo index, done
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
   expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'

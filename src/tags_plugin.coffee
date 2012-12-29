@@ -40,11 +40,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         do (item) => (done) => @createItemElement item, done
 
       resistance.series jobs, (err, elements...) =>
-        unless err?
-          @element.append element for element in elements
-          @moveInputTo()
-
-        callback err, elements
+        @element.append element for element in elements
+        @moveInputTo Number.MAX_VALUE, -> callback null, elements
 
     addItem : (item, callback) ->
       # TODO hook up item manager
@@ -69,25 +66,24 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       element.find('.textext-tags-label').html item
       nextTick -> callback null, element
 
-    moveInputTo : (index) ->
+    moveInputTo : (index, callback) ->
       items = @$ '> .textext-tags-tag'
 
-      return if items.length is 0
+      if items.length
+        if index < items.length
+          @input.element.insertBefore items[index]
+        else
+          @input.element.insertAfter items.last()
 
-      if index? and index < items.length
-        @input.element.insertBefore items[index]
-      else
-        @input.element.insertAfter items.last()
+      nextTick -> callback()
 
     onLeftKey : ->
       if @input.empty()
-        @moveInputTo @inputPosition() - 1
-        @input.focus()
+        @moveInputTo @inputPosition() - 1, => @input.focus()
 
     onRightKey : ->
       if @input.empty()
-        @moveInputTo @inputPosition() + 1
-        @input.focus()
+        @moveInputTo @inputPosition() + 1, => @input.focus()
 
     onBackspaceKey : ->
       if @input.empty()
