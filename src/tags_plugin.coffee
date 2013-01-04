@@ -36,32 +36,27 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @input = @getPlugin 'input'
 
-    init : ->
-      super()
       ItemManager.createFor @
 
-    setItems : (items, callback) ->
-      @manager.setItems items, (err, items) =>
-        return callback err if err?
+      @manager.on 'change.set', (items) => @setItems items
+      @manager.on 'change.add', (item) => @addItems item
 
-        @element.find('.textext-tags-tag').remove()
+    setItems : (items, callback = ->) ->
+      @element.find('.textext-tags-tag').remove()
 
-        jobs = for item in items
-          do (item) => (done) => @createItemElement item, done
+      jobs = for item in items
+        do (item) => (done) => @addItem item, done
 
-        resistance.series jobs, (err, elements...) =>
-          @element.append element for element in elements
-          @moveInputTo Number.MAX_VALUE, =>
-            callback null, elements
+      resistance.series jobs, (err, elements...) =>
+        @moveInputTo Number.MAX_VALUE, => callback err, elements
 
-    addItem : (item, callback) ->
-      @manager.addItem item, (err, item) =>
-        @createItemElement item, (err, element) =>
-          unless err?
-            @input.element.before element
-            @emit 'item.added', element
+    addItem : (item, callback = ->) ->
+      @createItemElement item, (err, element) =>
+        unless err?
+          @input.element.before element
+          @emit 'item.added', element
 
-          callback err, element
+        callback err, element
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -78,11 +73,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @emit 'item.removed', item
         callback null, item
 
-    createItemElement : (item, callback) ->
-      element = $ @options 'html.item'
-      # TODO use manager
-      element.find('.textext-tags-label').html item
-      nextTick -> callback null, element
+    createItemElement : (item, callback = ->) ->
+      @manager.itemToString item, (err, value) =>
+        unless err?
+          element = $ @options 'html.item'
+          element.find('.textext-tags-label').html value
+
+        callback err, element
 
     moveInputTo : (index, callback) ->
       items = @$ '> .textext-tags-tag'

@@ -12,30 +12,27 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @createFor : (plugin) ->
       name           = plugin.options 'manager'
       constructor    = @defaults.registery[name]
-      instance       = new constructor userOptions : plugin.options name
+      instance       = new constructor parent : plugin, userOptions : plugin.options name
       plugin.manager = instance
 
     constructor : (opts = {}) ->
       super opts, ItemManager.defaults
 
-      @items = []
-
       @init()
 
-    getItems : (callback) ->
-      nextTick =>
-        @items = @parent.options 'items'
-        callback null, @items
+      @setItems @parent.options 'items' if @parent?
 
     setItems : (items, callback) ->
       nextTick =>
         @items = items
-        callback null, items
+        callback and callback null, items
+        @emit 'change.set', items
 
     addItem : (item, callback) ->
       nextTick =>
         @items.push item
-        callback null, item
+        callback and callback null, item
+        @emit 'change.add', item
 
     itemToString : (item, callback) ->
       nextTick =>
@@ -51,7 +48,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         result = item
         result = result[field] if field and result
 
-        callback null, result
+        callback and callback null, result
 
     stringToItem : (value, callback) ->
       nextTick =>
@@ -66,7 +63,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
             result = item
             break
 
-        return callback null, result
+        callback and callback null, result
 
     isValid : ->
 

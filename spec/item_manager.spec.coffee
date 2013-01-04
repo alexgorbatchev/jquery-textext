@@ -3,15 +3,6 @@
 describe 'ItemManager', ->
   plugin = null
 
-  getItems = (callback) ->
-    done = false
-    items = null
-    runs -> plugin.getItems (err, result) ->
-      items = result
-      done = true
-    waitsFor (-> done), 250
-    runs -> callback items
-
   setItems = (value, callback) ->
     done = false
     items = null
@@ -66,16 +57,6 @@ describe 'ItemManager', ->
     it 'is Plugin', -> console.log plugin instanceof Plugin; expect(plugin instanceof Plugin).toBe true
     it 'is ItemManager', -> expect(plugin instanceof ItemManager).toBe true
 
-  describe '.getItems', ->
-    items = null
-
-    beforeEach ->
-      parent = new Plugin userOptions : items : [ 'item1', 'item2' ]
-      plugin = new ItemManager parent : parent
-      getItems (result) -> items = result
-
-    it 'get items from parent `items` option', -> expect(items).toEqual [ 'item1', 'item2' ]
-
   describe '.setItems', ->
     beforeEach ->
       plugin = new ItemManager
@@ -86,6 +67,7 @@ describe 'ItemManager', ->
   describe '.addItem', ->
     beforeEach ->
       plugin = new ItemManager
+      plugin.items = []
       addItem 'item1', (result) -> null
 
     it 'adds item', -> expect(plugin.items).toEqual [ 'item1' ]
