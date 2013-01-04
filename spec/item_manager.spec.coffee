@@ -1,12 +1,30 @@
 { ItemManager, Plugin } = $.fn.textext
 
 describe 'ItemManager', ->
-  plugin = parent = null
+  plugin = null
 
-  getItems = (opts, callback) ->
+  getItems = (callback) ->
     done = false
     items = null
-    runs -> plugin.getItems opts, (err, result) ->
+    runs -> plugin.getItems (err, result) ->
+      items = result
+      done = true
+    waitsFor (-> done), 250
+    runs -> callback items
+
+  setItems = (value, callback) ->
+    done = false
+    items = null
+    runs -> plugin.setItems value, (err, result) ->
+      items = result
+      done = true
+    waitsFor (-> done), 250
+    runs -> callback items
+
+  addItem = (value, callback) ->
+    done = false
+    items = null
+    runs -> plugin.addItem value, (err, result) ->
       items = result
       done = true
     waitsFor (-> done), 250
@@ -30,23 +48,22 @@ describe 'ItemManager', ->
     waitsFor (-> done), 250
     runs -> callback item
 
-  stringToItem = (value, items, callback) ->
+  stringToItem = (value, callback) ->
     done = false
     item = null
-    runs -> plugin.stringToItem value, items, (err, result) ->
+    runs -> plugin.stringToItem value, (err, result) ->
       item = result
       done = true
     waitsFor (-> done), 250
     runs -> callback item
 
-  it 'is registered', -> expect(Plugin.getRegistered 'item_manager').toBe ItemManager
+  it 'is registered', -> expect(ItemManager.getRegistered 'default').toBe ItemManager
   it 'has default options', -> expect(ItemManager.defaults).toBeTruthy()
 
   describe 'instance', ->
-    beforeEach ->
-      plugin = new ItemManager
+    beforeEach -> plugin = new ItemManager
 
-    it 'is Plugin', -> expect(plugin instanceof Plugin).toBe true
+    it 'is Plugin', -> console.log plugin instanceof Plugin; expect(plugin instanceof Plugin).toBe true
     it 'is ItemManager', -> expect(plugin instanceof ItemManager).toBe true
 
   describe '.getItems', ->
@@ -55,9 +72,23 @@ describe 'ItemManager', ->
     beforeEach ->
       parent = new Plugin userOptions : items : [ 'item1', 'item2' ]
       plugin = new ItemManager parent : parent
-      getItems null, (result) -> items = result
+      getItems (result) -> items = result
 
     it 'get items from parent `items` option', -> expect(items).toEqual [ 'item1', 'item2' ]
+
+  describe '.setItems', ->
+    beforeEach ->
+      plugin = new ItemManager
+      setItems [ 'item1', 'item2' ], (result) -> null
+
+    it 'set items', -> expect(plugin.items).toEqual [ 'item1', 'item2' ]
+
+  describe '.addItem', ->
+    beforeEach ->
+      plugin = new ItemManager
+      addItem 'item1', (result) -> null
+
+    it 'adds item', -> expect(plugin.items).toEqual [ 'item1' ]
 
   describe '.itemToString', ->
     item = null
@@ -114,38 +145,38 @@ describe 'ItemManager', ->
 
     describe 'default behaviour', ->
       beforeEach ->
-        items = [ 'item1', 'item2' ]
         plugin = new ItemManager
+        plugin.items = [ 'item1', 'item2' ]
 
       it 'returns null for null item', ->
-        stringToItem null, items, (result) -> item = result
+        stringToItem null, (result) -> item = result
         runs -> expect(item).toBe null
 
       it 'returns string value when found', ->
-        stringToItem 'item1', items, (result) -> item = result
+        stringToItem 'item1', (result) -> item = result
         runs -> expect(item).toBe 'item1'
 
       it 'returns null when not found', ->
-        stringToItem 'unknown', items, (result) -> item = result
+        stringToItem 'unknown', (result) -> item = result
         runs -> expect(item).toBe null
 
     describe 'custom behaviour', ->
       beforeEach ->
-        items = [
+        plugin = new ItemManager userOptions : toStringField : 'label'
+        plugin.items = [
           { id : 'id1', label : 'item1' }
           { id : 'id2', label : 'item2' }
           { id : 'id3', label : 'item2' }
         ]
-        plugin = new ItemManager userOptions : toStringField : 'label'
 
       it 'returns null for null item', ->
-        stringToItem null, items, (result) -> item = result
+        stringToItem null, (result) -> item = result
         runs -> expect(item).toBe null
 
       it 'returns first object that matches value using `toStringField`', ->
-        stringToItem 'item2', items, (result) -> item = result
+        stringToItem 'item2', (result) -> item = result
         runs -> expect(item).toEqual { id : 'id2', label : 'item2' }
 
       it 'returns null when not found', ->
-        stringToItem 'unknown', items, (result) -> item = result
+        stringToItem 'unknown', (result) -> item = result
         runs -> expect(item).toBe null
