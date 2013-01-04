@@ -1,4 +1,4 @@
-{ TagsPlugin, UIPlugin, Plugin } = $.fn.textext
+{ TagsPlugin, ItemManager, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
   addItem           = (item) -> wait (done) -> plugin.addItem item, done
@@ -29,6 +29,9 @@ describe 'TagsPlugin', ->
     it 'is UIPlugin', -> expect(plugin instanceof UIPlugin).toBe true
     it 'is TagsPlugin', -> expect(plugin instanceof TagsPlugin).toBe true
     it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
+
+  describe '.manager', ->
+    it 'returns instance of `ItemManager` plugin', -> expect(plugin.manager instanceof ItemManager).toBeTruthy()
 
   describe '.itemPosition', ->
     beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]

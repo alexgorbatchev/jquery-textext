@@ -1,9 +1,10 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { UIPlugin, Plugin, resistance, nextTick } = module
+  { UIPlugin, Plugin, ItemManager, resistance, nextTick } = module
 
   class TagsPlugin extends UIPlugin
     @defaults =
       plugins    : 'input'
+      manager    : 'default'
       items      : []
       hotKey     : 'enter'
       splitPaste : /\s*,\s*/g
@@ -35,26 +36,32 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @input = @getPlugin 'input'
 
+    init : ->
+      super()
+      ItemManager.createFor @
+
     setItems : (items, callback) ->
-      @element.find('.textext-tags-tag').remove()
+      @manager.setItems items, (err, items) =>
+        return callback err if err?
 
-      jobs = for item in items
-        do (item) => (done) => @createItemElement item, done
+        @element.find('.textext-tags-tag').remove()
 
-      resistance.series jobs, (err, elements...) =>
-        @element.append element for element in elements
-        @moveInputTo Number.MAX_VALUE, =>
-          callback null, elements
+        jobs = for item in items
+          do (item) => (done) => @createItemElement item, done
+
+        resistance.series jobs, (err, elements...) =>
+          @element.append element for element in elements
+          @moveInputTo Number.MAX_VALUE, =>
+            callback null, elements
 
     addItem : (item, callback) ->
-      # TODO hook up item manager
+      @manager.addItem item, (err, item) =>
+        @createItemElement item, (err, element) =>
+          unless err?
+            @input.element.before element
+            @emit 'item.added', element
 
-      @createItemElement item, (err, element) =>
-        unless err?
-          @input.element.before element
-          @emit 'item.added', element
-
-        callback err, element
+          callback err, element
 
     inputPosition : -> @$('> div').index @input.element
 
