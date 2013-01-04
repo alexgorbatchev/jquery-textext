@@ -18,33 +18,23 @@ describe 'Plugin', ->
     child1 = new Plugin
     child2 = new Plugin
 
-  describe '.addPlugin', ->
-    beforeEach ->
-      plugin.addPlugin 'child1', child1
-      plugin.addPlugin 'child2', child2
-
-    it 'adds another plugin to the plugin as a child', ->
-      expect(plugin.plugins.child1).toBe child1
-      expect(plugin.plugins.child2).toBe child2
-
   describe 'events', ->
     topLevel = null
 
     beforeEach ->
       topLevel = new Plugin
 
-      topLevel.addPlugin 'midlevel', plugin
+      topLevel.plugins = midlevel : plugin
+      topLevel.handleEvents()
 
-      plugin.addPlugin 'child1', child1
-      plugin.addPlugin 'child2', child2
+      plugin.plugins = { child1, child2 }
+      plugin.handleEvents()
 
     it 'broadcasts events to all siblings', -> expectEvent child2, 'event', -> child1.emit 'event'
     it 'bubbles events up', -> expectEvent topLevel, 'event', -> child2.emit 'event'
 
   describe '.getPlugin', ->
-    beforeEach ->
-      plugin.addPlugin 'child1', child1
-      plugin.addPlugin 'child2', child2
+    beforeEach -> plugin.plugins = { child1, child2 }
 
     it 'returns plugin when found', -> expect(plugin.getPlugin 'child1').toBe child1
     it 'returns null when not found', -> expect(plugin.getPlugin 'unknown').toBe undefined
@@ -71,10 +61,7 @@ describe 'Plugin', ->
           plugin2 :
             host : 'localhost'
 
-      plugin.createPlugins 'plugin2 plugin1'
-
-      plugin1 = plugin.plugins.plugin1
-      plugin2 = plugin.plugins.plugin2
+      { plugin1, plugin2 } = plugin.createPlugins 'plugin2 plugin1'
 
     it 'creates plugins', ->
       expect(plugin2 instanceof Plugin2).toBe true

@@ -12,7 +12,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : ({ @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
       super wildcard : true
 
-      @plugins        = {}
+      @plugins        = null
       @defaultOptions = $.extend true, {}, Plugin.defaults, @defaultOptions or pluginDefaults
 
     options : (key) ->
@@ -20,44 +20,48 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       user = opts(@defaultOptions, key) if user is undefined
       user
 
-    broadcast : (plugin) ->
-      handler = (args...) =>
-        event = plugin.event
-        args.unshift event
+    handleEvents : (plugins = @plugins) ->
+      handle = (plugin) =>
+        handler = (args...) =>
+          event = plugin.event
+          args.unshift event
 
-        # turn current plugin event handler so that we don't stuck in emit loop
-        plugin.offAny handler
+          # turn current plugin event handler so that we don't stuck in emit loop
+          plugin.offAny handler
 
-        # bubbles event up
-        @emit.apply @, args
+          # bubbles event up
+          @emit.apply @, args
 
-        # rebroadcasts events to siblings
-        for key, child of @plugins
-          child.emit.apply child, args if child isnt plugin
+          # rebroadcasts events to siblings
+          for key, child of @plugins
+            child.emit.apply child, args if child isnt plugin
+
+          plugin.onAny handler
 
         plugin.onAny handler
 
-      plugin.onAny handler
+      handle plugin for name, plugin of plugins
 
     init : ->
-      @createPlugins @options 'plugins'
+      @plugins = @createPlugins @options 'plugins'
+      @handleEvents @plugins
 
-    createPlugins : (list) ->
-      availablePlugins = @options 'registery'
+      @emit 'init.after'
+
+    createPlugins : (list, registery) ->
+      registery ?= @options 'registery'
+      plugins   = {}
 
       unless list.length is 0
         list = list.split /\s*,?\s+/g
 
         for name in list
-          plugin = availablePlugins[name]
-
-          @addPlugin name, new plugin
+          constructor   = registery[name]
+          plugins[name] = new constructor
             parent      : @
             userOptions : @options name
 
-    addPlugin : (name, plugin) ->
-      @plugins[name] = plugin
-      @broadcast plugin
+      plugins
 
     getPlugin : (name) -> @plugins[name]
 
