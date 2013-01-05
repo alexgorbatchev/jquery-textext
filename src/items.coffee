@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
   { Plugin, nextTick } = module
 
-  class ItemManager extends Plugin
+  class Items extends Plugin
     @defaults =
       registery     : {}
       toStringField : null
@@ -9,39 +9,39 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
-    @createFor : (plugin) ->
-      name           = plugin.options 'manager'
-      constructor    = @defaults.registery[name]
-      instance       = new constructor parent : plugin, userOptions : plugin.options name
-      plugin.manager = instance
+    @for : (plugin) ->
+      name         = plugin.options 'manager'
+      constructor  = @defaults.registery[name]
+      instance     = new constructor parent : plugin, userOptions : plugin.options name
+      plugin.items = instance
 
     constructor : (opts = {}) ->
-      super opts, ItemManager.defaults
+      super opts, Items.defaults
 
       @init()
 
-      @setItems @parent.options 'items' if @parent?
+      @set @parent.options 'items' if @parent?
 
-    setItems : (items, callback) ->
+    set : (items, callback) ->
       nextTick =>
         @items = items
         callback and callback null, items
         @emit 'set', items
 
-    addItem : (item, callback) ->
+    add : (item, callback) ->
       nextTick =>
         @items.push item
         callback and callback null, item
         @emit 'add', item
 
-    removeItemByIndex : (index, callback) ->
+    removeAt : (index, callback) ->
       nextTick =>
         item = @items[index]
         @items.splice index, 1
         callback and callback null, item
         @emit 'remove', index, item
 
-    itemToString : (item, callback) ->
+    toString : (item, callback) ->
       nextTick =>
         field  = @options 'toStringField'
         result = item
@@ -49,7 +49,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         callback null, result
 
-    itemToValue : (item, callback) ->
+    toValue : (item, callback) ->
       nextTick =>
         field  = @options 'toValueField'
         result = item
@@ -57,7 +57,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         callback and callback null, result
 
-    stringToItem : (value, callback) ->
+    find : (value, callback) ->
       nextTick =>
         field  = @options 'toStringField'
         result = null
@@ -74,6 +74,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     isValid : ->
 
-  ItemManager.register 'default', ItemManager
+  Items.register 'default', Items
 
-  module.ItemManager = ItemManager
+  module.Items = Items

@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { UIPlugin, Plugin, ItemManager, resistance, nextTick } = module
+  { UIPlugin, Plugin, Items, resistance, nextTick } = module
 
   class TagsPlugin extends UIPlugin
     @defaults =
@@ -36,11 +36,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @input = @getPlugin 'input'
 
-      ItemManager.createFor @
+      Items.for @
 
-      @manager.on 'set', (items) => @onItemsSet items
-      @manager.on 'add', (item) => @onItemAdded item
-      @manager.on 'remove', (index, item) => @onItemRemoved index, item
+      @items.on 'set', (items) => @onItemsSet items
+      @items.on 'add', (item) => @onItemAdded item
+      @items.on 'remove', (index, item) => @onItemRemoved index, item
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -50,7 +50,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @$('.textext-tags-tag').index element
 
     createItemElement : (item, callback = ->) ->
-      @manager.itemToString item, (err, value) =>
+      @items.toString item, (err, value) =>
         unless err?
           element = $ @options 'html.item'
           element.find('.textext-tags-label').html value
@@ -109,14 +109,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onBackspaceKey : (keyCode, keyName, callback = ->) ->
       if @input.empty()
-        @manager.removeItemByIndex @inputPosition() - 1, callback
+        @items.removeAt @inputPosition() - 1, callback
       else
         nextTick callback
 
     onHotKey : (keyCode, keyName, callback = ->) ->
       unless @input.empty()
         item = @input.value()
-        @manager.addItem item, =>
+        @items.add item, =>
           @input.value ''
           callback()
       else
@@ -124,7 +124,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onRemoveTagClick : (e, callback = ->) ->
       e.preventDefault()
-      @manager.removeItemByIndex @itemPosition(e.target), callback
+      @items.removeAt @itemPosition(e.target), callback
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

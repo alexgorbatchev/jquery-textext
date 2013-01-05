@@ -13,12 +13,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super wildcard : true
 
       @plugins        = null
-      @defaultOptions = $.extend true, {}, Plugin.defaults, @defaultOptions or pluginDefaults
+      @defaultOptions ?= $.extend true, {}, Plugin.defaults, pluginDefaults
 
     options : (key) ->
-      user = opts(@userOptions, key)
-      user = opts(@defaultOptions, key) if user is undefined
-      user
+      value = opts(@userOptions, key)
+      value = opts(@defaultOptions, key) if value is undefined
+      value
 
     handleEvents : (plugins = @plugins) ->
       handle = (plugin) =>
