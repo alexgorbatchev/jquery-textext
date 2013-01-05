@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { UIPlugin, Plugin, Items, resistance, nextTick } = module
+  { UIPlugin, Plugin, ItemsManager, resistance, nextTick } = module
 
   class TagsPlugin extends UIPlugin
     @defaults =
@@ -42,7 +42,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     init : ->
       super()
 
-      managers = @createPlugins @options('manager'), Items.defaults.registery
+      managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
       @handleEvents { @items }
 

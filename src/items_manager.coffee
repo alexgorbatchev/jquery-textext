@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
   { Plugin, nextTick } = module
 
-  class Items extends Plugin
+  class ItemsManager extends Plugin
     @defaults =
       registery     : {}
       toStringField : null
@@ -11,7 +11,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @getRegistered : (name) -> @defaults.registery[name]
 
     constructor : (opts = {}) ->
-      super opts, Items.defaults
+      super opts, ItemsManager.defaults
 
       @init()
 
@@ -82,6 +82,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     isValid : ->
 
-  Items.register 'default', Items
+  ItemsManager.register 'default', ItemsManager
 
-  module.Items = Items
+  module.ItemsManager = ItemsManager

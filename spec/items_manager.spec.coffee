@@ -1,6 +1,6 @@
-{ Items, Plugin } = $.fn.textext
+{ ItemsManager, Plugin } = $.fn.textext
 
-describe 'Items', ->
+describe 'ItemsManager', ->
   plugin = null
 
   set = (value) ->
@@ -45,25 +45,25 @@ describe 'Items', ->
     waitsFor -> done
     runs -> callback item
 
-  it 'is registered', -> expect(Items.getRegistered 'default').toBe Items
-  it 'has default options', -> expect(Items.defaults).toBeTruthy()
+  it 'is registered', -> expect(ItemsManager.getRegistered 'default').toBe ItemsManager
+  it 'has default options', -> expect(ItemsManager.defaults).toBeTruthy()
 
   describe 'instance', ->
-    beforeEach -> plugin = new Items
+    beforeEach -> plugin = new ItemsManager
 
     it 'is Plugin', -> expect(plugin instanceof Plugin).toBe true
-    it 'is Items', -> expect(plugin instanceof Items).toBe true
+    it 'is ItemsManager', -> expect(plugin instanceof ItemsManager).toBe true
 
   describe '.set', ->
     beforeEach ->
-      plugin = new Items
+      plugin = new ItemsManager
       set [ 'item1', 'item2' ]
 
     it 'set items', -> expect(plugin.items).toEqual [ 'item1', 'item2' ]
 
   describe '.add', ->
     beforeEach ->
-      plugin = new Items
+      plugin = new ItemsManager
       plugin.items = []
       add 'item1'
 
@@ -71,7 +71,7 @@ describe 'Items', ->
 
   describe '.removeAt', ->
     beforeEach ->
-      plugin = new Items
+      plugin = new ItemsManager
       plugin.items = [ 0, 1, 2, 3, 4 ]
       removeAt '2'
 
@@ -81,7 +81,7 @@ describe 'Items', ->
     item = null
 
     describe 'default behaviour', ->
-      beforeEach -> plugin = new Items
+      beforeEach -> plugin = new ItemsManager
 
       it 'returns null for null item', ->
         toString null, (result) -> item = result
@@ -92,7 +92,7 @@ describe 'Items', ->
         runs -> expect(item).toBe 'item'
 
     describe 'custom behaviour', ->
-      beforeEach -> plugin = new Items userOptions : toStringField : 'label'
+      beforeEach -> plugin = new ItemsManager userOptions : toStringField : 'label'
 
       it 'returns null for null item', ->
         toString null, (result) -> item = result
@@ -106,7 +106,7 @@ describe 'Items', ->
     item = null
 
     describe 'default behaviour', ->
-      beforeEach -> plugin = new Items
+      beforeEach -> plugin = new ItemsManager
 
       it 'returns null for null item', ->
         toValue null, (result) -> item = result
@@ -117,7 +117,7 @@ describe 'Items', ->
         runs -> expect(item).toBe 'item'
 
     describe 'custom behaviour', ->
-      beforeEach -> plugin = new Items userOptions : toValueField : 'id'
+      beforeEach -> plugin = new ItemsManager userOptions : toValueField : 'id'
 
       it 'returns null for null item', ->
         toValue null, (result) -> item = result
@@ -132,7 +132,7 @@ describe 'Items', ->
 
     describe 'default behaviour', ->
       beforeEach ->
-        plugin = new Items
+        plugin = new ItemsManager
         plugin.items = [ 'item1', 'item2' ]
 
       it 'returns null for null item', ->
@@ -149,7 +149,7 @@ describe 'Items', ->
 
     describe 'custom behaviour', ->
       beforeEach ->
-        plugin = new Items userOptions : toStringField : 'label'
+        plugin = new ItemsManager userOptions : toStringField : 'label'
         plugin.items = [
           { id : 'id1', label : 'item1' }
           { id : 'id2', label : 'item2' }
