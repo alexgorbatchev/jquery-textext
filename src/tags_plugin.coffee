@@ -38,25 +38,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       ItemManager.createFor @
 
-      @manager.on 'change.set', (items) => @setItems items
-      @manager.on 'change.add', (item) => @addItems item
-
-    setItems : (items, callback = ->) ->
-      @element.find('.textext-tags-tag').remove()
-
-      jobs = for item in items
-        do (item) => (done) => @addItem item, done
-
-      resistance.series jobs, (err, elements...) =>
-        @moveInputTo Number.MAX_VALUE, => callback err, elements
-
-    addItem : (item, callback = ->) ->
-      @createItemElement item, (err, element) =>
-        unless err?
-          @input.element.before element
-          @emit 'item.added', element
-
-        callback err, element
+      @manager.on 'set', (items) => @onItemsSet items
+      @manager.on 'add', (item) => @onItemAdded item
+      @manager.on 'remove', (index, item) => @onItemRemoved index, item
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -64,14 +48,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       element = $ element
       element = element.parents '.textext-tags-tag' unless element.is '.textext-tags-tag'
       @$('.textext-tags-tag').index element
-
-    removeItemByIndex : (index, callback) ->
-      # TODO hook up item manager
-
-      item = @$(".textext-tags-tag:eq(#{index})").remove()
-      nextTick =>
-        @emit 'item.removed', item
-        callback null, item
 
     createItemElement : (item, callback = ->) ->
       @manager.itemToString item, (err, value) =>
@@ -100,6 +76,29 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         nextTick callback
 
+    onItemsSet : (items, callback = ->) ->
+      @element.find('.textext-tags-tag').remove()
+
+      jobs = for item in items
+        do (item) => (done) => @onItemAdded item, done
+
+      resistance.series jobs, (err, elements...) =>
+        @moveInputTo Number.MAX_VALUE, => callback err, elements
+
+    onItemAdded : (item, callback = ->) ->
+      @createItemElement item, (err, element) =>
+        unless err?
+          @input.element.before element
+          @emit 'item.added', element
+
+        callback err, element
+
+    onItemRemoved : (index, item, callback) ->
+      item = @$(".textext-tags-tag:eq(#{index})").remove()
+      nextTick =>
+        @emit 'item.removed', item
+        callback and callback null, index, item
+
     onRightKey : (keyCode, keyName, callback = ->) ->
       if @input.empty()
         @moveInputTo @inputPosition() + 1, =>
@@ -110,16 +109,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onBackspaceKey : (keyCode, keyName, callback = ->) ->
       if @input.empty()
-        @removeItemByIndex @inputPosition() - 1, =>
-          callback()
+        @manager.removeItemByIndex @inputPosition() - 1, callback
       else
         nextTick callback
 
     onHotKey : (keyCode, keyName, callback = ->) ->
-      # TODO use manager
       unless @input.empty()
         item = @input.value()
-        @addItem item, =>
+        @manager.addItem item, =>
           @input.value ''
           callback()
       else
@@ -127,7 +124,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onRemoveTagClick : (e, callback = ->) ->
       e.preventDefault()
-      @removeItemByIndex @itemPosition(e.target), callback
+      @manager.removeItemByIndex @itemPosition(e.target), callback
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

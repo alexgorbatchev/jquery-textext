@@ -1,10 +1,10 @@
 { TagsPlugin, ItemManager, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  addItem           = (item) -> wait (done) -> plugin.addItem item, done
-  removeItemByIndex = (item) -> wait (done) -> plugin.removeItemByIndex item, done
-  setItems          = (items) -> wait (done) -> plugin.setItems items, done
-  moveInputTo       = (index) -> wait (done) -> plugin.moveInputTo index, done
+  onItemAdded   = (item) -> wait (done) -> plugin.onItemAdded item, done
+  onItemRemoved = (index, item) -> wait (done) -> plugin.onItemRemoved index, item, done
+  onItemsSet    = (items) -> wait (done) -> plugin.onItemsSet items, done
+  moveInputTo   = (index) -> wait (done) -> plugin.moveInputTo index, done
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
   expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'
@@ -34,15 +34,15 @@ describe 'TagsPlugin', ->
     it 'returns instance of `ItemManager` plugin', -> expect(plugin.manager instanceof ItemManager).toBeTruthy()
 
   describe '.itemPosition', ->
-    beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
+    beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
 
     it 'returns item position for element', ->
       item = plugin.$ '.textext-tags-tag:eq(2)'
       expect(plugin.itemPosition item).toBe 2
 
-  describe '.setItems', ->
+  describe '.onItemsSet', ->
     describe 'first time', ->
-      beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
+      beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
 
       it 'creates tag elements in order', -> expectItems 'item1 item2 item3 item4'
 
@@ -53,22 +53,22 @@ describe 'TagsPlugin', ->
       it 'moves input to the end of the list', -> expectInputToBeLast()
 
       describe 'second time', ->
-        beforeEach -> setItems [ 'new1', 'new2' ]
+        beforeEach -> onItemsSet [ 'new1', 'new2' ]
 
         it 'removes existing tag elements', -> expectItems 'new1 new2'
         it 'moves input to the end of the list', -> expectInputToBeLast()
 
-  describe '.addItem', ->
+  describe '.onItemAdded', ->
     describe 'no existing items', ->
-      beforeEach -> addItem 'item1'
+      beforeEach -> onItemAdded 'item1'
 
       it 'adds new item', -> expectItem('item1').toBeTruthy()
       it 'moves input to the end of the list', -> expectInputToBeLast()
 
     describe 'one existing item', ->
       beforeEach ->
-        setItems [ 'item1' ]
-        addItem 'item2'
+        onItemsSet [ 'item1' ]
+        onItemAdded 'item2'
 
       it 'adds new item', -> expectItem('item2').toBeTruthy()
       it 'moves input to the end of the list', -> expectInputToBeLast()
@@ -76,9 +76,9 @@ describe 'TagsPlugin', ->
 
     describe 'two existing items', ->
       beforeEach ->
-        setItems [ 'item1', 'item3' ]
+        onItemsSet [ 'item1', 'item3' ]
         moveInputTo 1
-        addItem 'item2'
+        onItemAdded 'item2'
 
       it 'adds item between first and second', -> expectItem('item2').toBeTruthy()
       it 'moves input after inserted item', -> expectInputToBeAt 2
@@ -88,32 +88,32 @@ describe 'TagsPlugin', ->
       it 'emits `item.added`', ->
         addedItem = null
         plugin.once 'item.added', (item) -> addedItem = item
-        runs -> plugin.addItem 'item', -> null
+        runs -> plugin.onItemAdded 'item', -> null
         waitsFor (-> addedItem), 250
         runs -> expect(addedItem.text()).toContain 'item'
 
-  describe '.removeItemByIndex', ->
-    describe 'one existing item', ->
+  describe '.onItemRemoved', ->
+    describe 'with one existing item', ->
       beforeEach ->
-        setItems [ 'item1' ]
-        removeItemByIndex 0
+        onItemsSet [ 'item1' ]
+        onItemRemoved 0
 
-      it 'removes existing item', -> expectItem('item1').toBeFalsy()
+      it 'removes the only item', -> expectItem('item1').toBeFalsy()
 
-    describe 'two existing items', ->
+    describe 'with two existing items', ->
       beforeEach ->
-        setItems [ 'item1', 'item3' ]
-        removeItemByIndex 1
+        onItemsSet [ 'item1', 'item3' ]
+        onItemRemoved 1
 
-      it 'removes existing item', -> expectItem('item3').toBeFalsy()
+      it 'removes one item', -> expectItem('item3').toBeFalsy()
 
     describe 'emitted event', ->
-      beforeEach -> setItems [ 'item1', 'item3' ]
+      beforeEach -> onItemsSet [ 'item1', 'item3' ]
 
       it 'emits `item.removed`', ->
         arg = null
         plugin.once 'item.removed', (item) -> arg = item
-        runs -> plugin.removeItemByIndex 0, -> null
+        runs -> plugin.onItemRemoved 0, -> null
         waitsFor (-> arg), 250
         runs -> expect(arg.text()).toContain 'item1'
 
@@ -121,7 +121,7 @@ describe 'TagsPlugin', ->
     items = 'item1 item2 item3 item4'.split /\s/g
 
     beforeEach ->
-      setItems items
+      onItemsSet items
 
     it 'moves input to the beginning of the item list', ->
       moveInputTo 0
@@ -137,7 +137,7 @@ describe 'TagsPlugin', ->
 
   describe '.onRightKey', ->
     beforeEach ->
-      setItems [ 'item1', 'item2', 'item3' ]
+      onItemsSet [ 'item1', 'item2', 'item3' ]
       moveInputTo 1
 
     describe 'when there is no text in the input field', ->
@@ -153,7 +153,7 @@ describe 'TagsPlugin', ->
 
   describe '.onLeftKey', ->
     beforeEach ->
-      setItems [ 'item1', 'item2', 'item3' ]
+      onItemsSet [ 'item1', 'item2', 'item3' ]
 
     describe 'when there is no text in the input field', ->
       beforeEach -> wait (done) -> plugin.onLeftKey null, null, done
@@ -185,7 +185,7 @@ describe 'TagsPlugin', ->
     beforeEach ->
       e = jQuery.Event 'click'
 
-      setItems [ 'item1', 'item2', 'item3', 'item4' ]
+      onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
       runs -> e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
       wait (done) -> plugin.onRemoveTagClick e, done
 

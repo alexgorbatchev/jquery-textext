@@ -3,23 +3,20 @@
 describe 'ItemManager', ->
   plugin = null
 
-  setItems = (value, callback) ->
+  setItems = (value) ->
     done = false
-    items = null
-    runs -> plugin.setItems value, (err, result) ->
-      items = result
-      done = true
+    runs -> plugin.setItems value, (err, result) -> done = true
     waitsFor (-> done), 250
-    runs -> callback items
 
-  addItem = (value, callback) ->
+  addItem = (value) ->
     done = false
-    items = null
-    runs -> plugin.addItem value, (err, result) ->
-      items = result
-      done = true
+    runs -> plugin.addItem value, (err, result) -> done = true
     waitsFor (-> done), 250
-    runs -> callback items
+
+  removeItemByIndex = (index) ->
+    done = false
+    runs -> plugin.removeItemByIndex index, (err, index, item) -> done = true
+    waitsFor (-> done), 250
 
   itemToString = (value, callback) ->
     done = false
@@ -60,7 +57,7 @@ describe 'ItemManager', ->
   describe '.setItems', ->
     beforeEach ->
       plugin = new ItemManager
-      setItems [ 'item1', 'item2' ], (result) -> null
+      setItems [ 'item1', 'item2' ]
 
     it 'set items', -> expect(plugin.items).toEqual [ 'item1', 'item2' ]
 
@@ -68,9 +65,17 @@ describe 'ItemManager', ->
     beforeEach ->
       plugin = new ItemManager
       plugin.items = []
-      addItem 'item1', (result) -> null
+      addItem 'item1'
 
     it 'adds item', -> expect(plugin.items).toEqual [ 'item1' ]
+
+  describe '.removeItemByIndex', ->
+    beforeEach ->
+      plugin = new ItemManager
+      plugin.items = [ 0, 1, 2, 3, 4 ]
+      removeItemByIndex '2'
+
+    it 'removes item', -> expect(plugin.items).toEqual [ 0, 1, 3, 4 ]
 
   describe '.itemToString', ->
     item = null
