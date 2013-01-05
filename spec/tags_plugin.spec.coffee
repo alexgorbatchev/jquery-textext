@@ -1,9 +1,11 @@
 { TagsPlugin, Items, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  onItemAdded   = (item) -> wait (done) -> plugin.onItemAdded item, done
-  onItemRemoved = (index, item) -> wait (done) -> plugin.onItemRemoved index, item, done
-  onItemsSet    = (items) -> wait (done) -> plugin.onItemsSet items, done
+  onItemAdded   = (item) -> waitForEvent plugin, 'tags.added', -> plugin.onItemAdded item
+  onItemRemoved = (index, item) -> waitForEvent plugin, 'tags.removed', -> plugin.onItemRemoved index, item
+  onItemsSet    = (items) -> waitForEvent plugin, 'tags.set', -> plugin.onItemsSet items
+  onRightKey    = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
+  onLeftKey    = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
   moveInputTo   = (index) -> wait (done) -> plugin.moveInputTo index, done
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
@@ -44,7 +46,7 @@ describe 'TagsPlugin', ->
     describe 'first time', ->
       beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
 
-      it 'creates tag elements in order', -> expectItems 'item1 item2 item3 item4'
+      it 'creates tag elements in order', -> console.log 'check'; expectItems 'item1 item2 item3 item4'
 
       it 'adds labels to tags', ->
         expectItem('item1').toBeTruthy()
@@ -59,13 +61,13 @@ describe 'TagsPlugin', ->
         it 'moves input to the end of the list', -> expectInputToBeLast()
 
   describe '.onItemAdded', ->
-    describe 'no existing items', ->
+    describe 'with no existing items', ->
       beforeEach -> onItemAdded 'item1'
 
       it 'adds new item', -> expectItem('item1').toBeTruthy()
       it 'moves input to the end of the list', -> expectInputToBeLast()
 
-    describe 'one existing item', ->
+    describe 'with one existing item', ->
       beforeEach ->
         onItemsSet [ 'item1' ]
         onItemAdded 'item2'
@@ -74,7 +76,7 @@ describe 'TagsPlugin', ->
       it 'moves input to the end of the list', -> expectInputToBeLast()
       it 'has items in order', -> expectItems 'item1 item2'
 
-    describe 'two existing items', ->
+    describe 'with two existing items', ->
       beforeEach ->
         onItemsSet [ 'item1', 'item3' ]
         moveInputTo 1
@@ -85,12 +87,7 @@ describe 'TagsPlugin', ->
       it 'has items in order', -> expectItems 'item1 item2 item3'
 
     describe 'emitted event', ->
-      it 'emits `item.added`', ->
-        addedItem = null
-        plugin.once 'item.added', (item) -> addedItem = item
-        runs -> plugin.onItemAdded 'item', -> null
-        waitsFor (-> addedItem), 250
-        runs -> expect(addedItem.text()).toContain 'item'
+      it 'emits `tags.added`', -> waitForEvent plugin, 'tags.added', -> plugin.onItemAdded 'item'
 
   describe '.onItemRemoved', ->
     describe 'with one existing item', ->
@@ -109,13 +106,7 @@ describe 'TagsPlugin', ->
 
     describe 'emitted event', ->
       beforeEach -> onItemsSet [ 'item1', 'item3' ]
-
-      it 'emits `item.removed`', ->
-        arg = null
-        plugin.once 'item.removed', (item) -> arg = item
-        runs -> plugin.onItemRemoved 0, -> null
-        waitsFor (-> arg), 250
-        runs -> expect(arg.text()).toContain 'item1'
+      it 'emits `tags.removed`', -> waitForEvent plugin, 'tags.removed', -> plugin.onItemRemoved 0, 'item'
 
   describe '.moveInputTo', ->
     items = 'item1 item2 item3 item4'.split /\s/g
@@ -141,57 +132,64 @@ describe 'TagsPlugin', ->
       moveInputTo 1
 
     describe 'when there is no text in the input field', ->
-      beforeEach -> wait (done) -> plugin.onRightKey null, null, done
-      it 'moves the input field', -> expectInputToBeAt 2
+      beforeEach ->
+        spyOn plugin, 'moveInputTo'
+        plugin.onRightKey()
+
+      it 'moves the input field', -> expect(plugin.moveInputTo).toHaveBeenCalled()
 
     describe 'when there is text in the input field', ->
-      beforeEach -> wait (done) ->
+      beforeEach ->
+        spyOn plugin, 'moveInputTo'
         input.value 'text'
-        plugin.onRightKey null, null, done
+        plugin.onRightKey()
 
-      it 'does not move the input field', -> expectInputToBeAt 1
+      it 'does not move the input field', -> expect(plugin.moveInputTo).not.toHaveBeenCalled()
 
   describe '.onLeftKey', ->
     beforeEach ->
       onItemsSet [ 'item1', 'item2', 'item3' ]
 
     describe 'when there is no text in the input field', ->
-      beforeEach -> wait (done) -> plugin.onLeftKey null, null, done
-      it 'moves the input field', -> expectInputToBeAt 2
+      beforeEach ->
+        spyOn plugin, 'moveInputTo'
+        plugin.onLeftKey()
+
+      it 'moves the input field', -> expect(plugin.moveInputTo).toHaveBeenCalled()
 
     describe 'when there is text in the input field', ->
-      beforeEach -> wait (done) ->
+      beforeEach ->
+        spyOn plugin, 'moveInputTo'
         input.value 'text'
-        plugin.onLeftKey null, null, done
+        plugin.onLeftKey()
 
-      it 'does not move the input field', -> expectInputToBeAt 3
+      it 'does not move the input field', -> expect(plugin.moveInputTo).not.toHaveBeenCalled()
 
   describe '.onHotKey', ->
-    describe 'when there is text', ->
-      beforeEach -> wait (done) ->
-        input.value 'item'
-        plugin.onHotKey null, null, done
+    beforeEach -> spyOn(plugin.items, 'fromString').andCallThrough()
 
-      it 'adds new item', -> expectItem('item').toBeTruthy()
-      it 'clears the input', -> expect(input.value()).toBeFalsy()
+    describe 'when there is text', ->
+      beforeEach ->
+        spyOn(plugin.items, 'add').andCallThrough()
+        input.value 'item'
+        plugin.onHotKey()
+
+      it 'adds new item', -> waitsFor -> plugin.items.add.wasCalled
+      it 'clears the input', -> waitsFor -> plugin.input.empty()
 
     describe 'when there is no text', ->
-      beforeEach -> wait (done) -> plugin.onHotKey null, null, done
-
-      it 'does not add new item', ->
-        expect(plugin.element.find('.textext-tags-tag').length).toBe 0
+      beforeEach -> plugin.onHotKey()
+      it 'does not add new item', -> expect(plugin.items.fromString).not.toHaveBeenCalled()
 
   describe '.onRemoveTagClick', ->
     beforeEach ->
-      e = jQuery.Event 'click'
-
       onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
-      runs -> e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
-      wait (done) -> plugin.onRemoveTagClick e, done
 
-    it 'removes item', -> expectItems 'item1 item2 item4'
+      runs ->
+        spyOn plugin.items, 'removeAt'
 
+        e = jQuery.Event 'click'
+        e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
+        plugin.onRemoveTagClick e
 
-
-
-
+    it 'removes item', -> expect(plugin.items.removeAt).toHaveBeenCalled()

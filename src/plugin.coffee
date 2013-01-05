@@ -33,7 +33,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           @emit.apply @, args
 
           # rebroadcasts events to siblings
-          for key, child of @plugins
+          for key, child of plugins
             child.emit.apply child, args if child isnt plugin
 
           plugin.onAny handler
@@ -56,10 +56,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         list = list.split /\s*,?\s+/g
 
         for name in list
-          constructor   = registery[name]
-          plugins[name] = new constructor
+          constructor = registery[name]
+          instance    = new constructor
             parent      : @
             userOptions : @options name
+
+          plugins[name] = instance
 
       plugins
 

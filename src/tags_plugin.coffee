@@ -24,10 +24,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element ?= $ @options 'html.container'
 
-      @on 'keys.press.left'                 , @onLeftKey
-      @on 'keys.press.right'                , @onRightKey
-      @on 'keys.press.backspace'            , @onBackspaceKey
-      @on "keys.press.#{@options 'hotKey'}" , @onHotKey
+      @on 'keys.press.left'                  , @onLeftKey
+      @on 'keys.press.right'                 , @onRightKey
+      @on 'keys.press.backspace'             , @onBackspaceKey
+      @on 'keys.press.' + @options('hotKey') , @onHotKey
+      @on 'items.set'                        , @onItemsSet
+      @on 'items.add'                        , @onItemAdded
+      @on 'items.remove'                     , @onItemRemoved
 
       @element.on 'click', 'a', (e) => @onRemoveTagClick(e)
 
@@ -36,11 +39,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @input = @getPlugin 'input'
 
-      Items.for @
+    init : ->
+      super()
 
-      @items.on 'set', (items) => @onItemsSet items
-      @items.on 'add', (item) => @onItemAdded item
-      @items.on 'remove', (index, item) => @onItemRemoved index, item
+      managers = @createPlugins @options('manager'), Items.defaults.registery
+      @items = instance for name, instance of managers
+      @handleEvents { @items }
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -57,7 +61,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         callback err, element
 
-    moveInputTo : (index, callback) ->
+    moveInputTo : (index, callback = ->) ->
       items = @$ '> .textext-tags-tag'
 
       if items.length
@@ -67,64 +71,52 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           @input.element.insertAfter items.last()
 
       nextTick callback
+      @emit 'tags.input.moved'
 
-    onLeftKey : (keyCode, keyName, callback = ->) ->
+    onLeftKey : (keyCode, keyName) ->
       if @input.empty()
-        @moveInputTo @inputPosition() - 1, =>
-          @input.focus()
-          callback()
-      else
-        nextTick callback
+        @moveInputTo @inputPosition() - 1, => @input.focus()
 
-    onItemsSet : (items, callback = ->) ->
+    onItemsSet : (items) ->
       @element.find('.textext-tags-tag').remove()
 
       jobs = for item in items
-        do (item) => (done) => @onItemAdded item, done
+        do (item) => (done) => @createItemElement item, done
 
       resistance.series jobs, (err, elements...) =>
-        @moveInputTo Number.MAX_VALUE, => callback err, elements
+        @element.append element for element in elements
+        @moveInputTo Number.MAX_VALUE
+        @emit 'tags.set', elements
 
-    onItemAdded : (item, callback = ->) ->
+    onItemAdded : (item) ->
       @createItemElement item, (err, element) =>
         unless err?
           @input.element.before element
-          @emit 'item.added', element
+          @emit 'tags.added', element
 
-        callback err, element
-
-    onItemRemoved : (index, item, callback) ->
+    onItemRemoved : (index, item) ->
       item = @$(".textext-tags-tag:eq(#{index})").remove()
       nextTick =>
-        @emit 'item.removed', item
-        callback and callback null, index, item
+        item.remove()
+        @emit 'tags.removed', item
 
-    onRightKey : (keyCode, keyName, callback = ->) ->
+    onRightKey : (keyCode, keyName) ->
       if @input.empty()
-        @moveInputTo @inputPosition() + 1, =>
-          @input.focus()
-          callback()
-      else
-        nextTick callback
+        @moveInputTo @inputPosition() + 1, => @input.focus()
 
-    onBackspaceKey : (keyCode, keyName, callback = ->) ->
+    onBackspaceKey : (keyCode, keyName) ->
       if @input.empty()
-        @items.removeAt @inputPosition() - 1, callback
-      else
-        nextTick callback
+        @items.removeAt @inputPosition() - 1
 
-    onHotKey : (keyCode, keyName, callback = ->) ->
+    onHotKey : (keyCode, keyName) ->
       unless @input.empty()
-        item = @input.value()
-        @items.add item, =>
-          @input.value ''
-          callback()
-      else
-        nextTick callback
+        @items.fromString @input.value(), (err, item) =>
+          unless err?
+            @items.add item, (err, item) => @input.value ''
 
-    onRemoveTagClick : (e, callback = ->) ->
+    onRemoveTagClick : (e) ->
       e.preventDefault()
-      @items.removeAt @itemPosition(e.target), callback
+      @items.removeAt @itemPosition(e.target)
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

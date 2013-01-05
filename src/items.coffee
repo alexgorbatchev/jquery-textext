@@ -9,37 +9,33 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
-    @for : (plugin) ->
-      name         = plugin.options 'manager'
-      constructor  = @defaults.registery[name]
-      instance     = new constructor parent : plugin, userOptions : plugin.options name
-      plugin.items = instance
 
     constructor : (opts = {}) ->
       super opts, Items.defaults
 
       @init()
 
-      @set @parent.options 'items' if @parent?
+      @items = []
+      # @set @parent.options 'items' if @parent?
 
     set : (items, callback) ->
       nextTick =>
         @items = items
         callback and callback null, items
-        @emit 'set', items
+        @emit 'items.set', items
 
     add : (item, callback) ->
       nextTick =>
         @items.push item
         callback and callback null, item
-        @emit 'add', item
+        @emit 'items.add', item
 
     removeAt : (index, callback) ->
       nextTick =>
         item = @items[index]
         @items.splice index, 1
-        callback and callback null, item
-        @emit 'remove', index, item
+        callback and callback null, index, item
+        @emit 'items.remove', index, item
 
     toString : (item, callback) ->
       nextTick =>
@@ -56,6 +52,18 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         result = result[field] if field and result
 
         callback and callback null, result
+
+    fromString : (string, callback) ->
+      nextTick =>
+        field  = @options 'toStringField'
+
+        result = if field and result
+          result = {}
+          result[field] = string
+        else
+          string
+
+        callback null, result
 
     find : (value, callback) ->
       nextTick =>

@@ -6,17 +6,17 @@ describe 'Items', ->
   set = (value) ->
     done = false
     runs -> plugin.set value, (err, result) -> done = true
-    waitsFor (-> done), 250
+    waitsFor -> done
 
   add = (value) ->
     done = false
     runs -> plugin.add value, (err, result) -> done = true
-    waitsFor (-> done), 250
+    waitsFor -> done
 
   removeAt = (index) ->
     done = false
     runs -> plugin.removeAt index, (err, index, item) -> done = true
-    waitsFor (-> done), 250
+    waitsFor -> done
 
   toString = (value, callback) ->
     done = false
@@ -24,7 +24,7 @@ describe 'Items', ->
     runs -> plugin.toString value, (err, result) ->
       item = result
       done = true
-    waitsFor (-> done), 250
+    waitsFor -> done
     runs -> callback item
 
   toValue = (value, callback) ->
@@ -33,7 +33,7 @@ describe 'Items', ->
     runs -> plugin.toValue value, (err, result) ->
       item = result
       done = true
-    waitsFor (-> done), 250
+    waitsFor -> done
     runs -> callback item
 
   find = (value, callback) ->
@@ -42,7 +42,7 @@ describe 'Items', ->
     runs -> plugin.find value, (err, result) ->
       item = result
       done = true
-    waitsFor (-> done), 250
+    waitsFor -> done
     runs -> callback item
 
   it 'is registered', -> expect(Items.getRegistered 'default').toBe Items
