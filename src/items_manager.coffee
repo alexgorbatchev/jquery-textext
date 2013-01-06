@@ -22,20 +22,20 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       nextTick =>
         @items = items
         callback and callback null, items
-        @emit 'items.set', items
+        @emit 'itemsmanager.set', items
 
     add : (item, callback) ->
       nextTick =>
         @items.push item
         callback and callback null, item
-        @emit 'items.add', item
+        @emit 'itemsmanager.add', item
 
     removeAt : (index, callback) ->
       nextTick =>
         item = @items[index]
         @items.splice index, 1
         callback and callback null, index, item
-        @emit 'items.remove', index, item
+        @emit 'itemsmanager.remove', index, item
 
     toString : (item, callback) ->
       nextTick =>

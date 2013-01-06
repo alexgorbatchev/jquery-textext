@@ -1,20 +1,19 @@
-{ TagsPlugin, ItemsManager, UIPlugin, Plugin } = $.fn.textext
+{ TagsPlugin, ItemsUIPlugin, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  onItemAdded   = (item) -> waitForEvent plugin, 'tags.added', -> plugin.onItemAdded item
-  onItemRemoved = (index, item) -> waitForEvent plugin, 'tags.removed', -> plugin.onItemRemoved index, item
-  onItemsSet    = (items) -> waitForEvent plugin, 'tags.set', -> plugin.onItemsSet items
+  onItemAdded   = (item) -> waitForEvent plugin, 'items.added', -> plugin.onItemAdded item
+  onItemRemoved = (index, item) -> waitForEvent plugin, 'items.removed', -> plugin.onItemRemoved index, item
+  onItemsSet    = (items) -> waitForEvent plugin, 'items.set', -> plugin.onItemsSet items
   onRightKey    = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
-  onLeftKey    = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
+  onLeftKey     = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
   moveInputTo   = (index) -> wait (done) -> plugin.moveInputTo index, done
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
   expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'
-  expectItem          = (item) -> expect(plugin.$(".textext-tags-tag:contains(#{item})").length > 0)
 
   expectItems = (items) ->
     actual = []
-    plugin.$('.textext-tags-tag .textext-tags-label').each -> actual.push $(@).text().replace(/^\s+|\s+$/g, '')
+    plugin.$('.textext-items-item .textext-items-label').each -> actual.push $(@).text().replace(/^\s+|\s+$/g, '')
     expect(actual.join ' ').toBe items
 
   plugin = parent = input = null
@@ -28,103 +27,61 @@ describe 'TagsPlugin', ->
   it 'has default options', -> expect(TagsPlugin.defaults).toBeTruthy()
 
   describe 'instance', ->
-    it 'is UIPlugin', -> expect(plugin instanceof UIPlugin).toBe true
+    it 'is ItemsUIPlugin', -> expect(plugin instanceof ItemsUIPlugin).toBe true
     it 'is TagsPlugin', -> expect(plugin instanceof TagsPlugin).toBe true
     it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
 
-  describe '.items', ->
-    it 'returns instance of `ItemsManager` plugin', -> expect(plugin.items instanceof ItemsManager).toBeTruthy()
+  describe '.updateInputPosition', ->
+    beforeEach ->
+      plugin.element.append $ '<div class="textext-items-item"/><div class="textext-items-item"/><div class="textext-items-item"/>'
+      plugin.updateInputPosition()
 
-  describe '.itemPosition', ->
-    beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
-
-    it 'returns item position for element', ->
-      item = plugin.$ '.textext-tags-tag:eq(2)'
-      expect(plugin.itemPosition item).toBe 2
-
-  describe '.onItemsSet', ->
-    describe 'first time', ->
-      beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
-
-      it 'creates tag elements in order', -> console.log 'check'; expectItems 'item1 item2 item3 item4'
-
-      it 'adds labels to tags', ->
-        expectItem('item1').toBeTruthy()
-        expectItem('item2').toBeTruthy()
-
-      it 'moves input to the end of the list', -> expectInputToBeLast()
-
-      describe 'second time', ->
-        beforeEach -> onItemsSet [ 'new1', 'new2' ]
-
-        it 'removes existing tag elements', -> expectItems 'new1 new2'
-        it 'moves input to the end of the list', -> expectInputToBeLast()
-
-  describe '.onItemAdded', ->
-    describe 'with no existing items', ->
-      beforeEach -> onItemAdded 'item1'
-
-      it 'adds new item', -> expectItem('item1').toBeTruthy()
-      it 'moves input to the end of the list', -> expectInputToBeLast()
-
-    describe 'with one existing item', ->
-      beforeEach ->
-        onItemsSet [ 'item1' ]
-        onItemAdded 'item2'
-
-      it 'adds new item', -> expectItem('item2').toBeTruthy()
-      it 'moves input to the end of the list', -> expectInputToBeLast()
-      it 'has items in order', -> expectItems 'item1 item2'
-
-    describe 'with two existing items', ->
-      beforeEach ->
-        onItemsSet [ 'item1', 'item3' ]
-        moveInputTo 1
-        onItemAdded 'item2'
-
-      it 'adds item between first and second', -> expectItem('item2').toBeTruthy()
-      it 'moves input after inserted item', -> expectInputToBeAt 2
-      it 'has items in order', -> expectItems 'item1 item2 item3'
-
-    describe 'emitted event', ->
-      it 'emits `tags.added`', -> waitForEvent plugin, 'tags.added', -> plugin.onItemAdded 'item'
-
-  describe '.onItemRemoved', ->
-    describe 'with one existing item', ->
-      beforeEach ->
-        onItemsSet [ 'item1' ]
-        onItemRemoved 0
-
-      it 'removes the only item', -> expectItem('item1').toBeFalsy()
-
-    describe 'with two existing items', ->
-      beforeEach ->
-        onItemsSet [ 'item1', 'item3' ]
-        onItemRemoved 1
-
-      it 'removes one item', -> expectItem('item3').toBeFalsy()
-
-    describe 'emitted event', ->
-      beforeEach -> onItemsSet [ 'item1', 'item3' ]
-      it 'emits `tags.removed`', -> waitForEvent plugin, 'tags.removed', -> plugin.onItemRemoved 0, 'item'
+    it 'moves input to be after all items', ->
+      expectInputToBeAt 3
 
   describe '.moveInputTo', ->
-    items = 'item1 item2 item3 item4'.split /\s/g
-
-    beforeEach ->
-      onItemsSet items
+    beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
 
     it 'moves input to the beginning of the item list', ->
       moveInputTo 0
       runs -> expectInputToBeAt 0
 
     it 'moves input to the end of the item list', ->
-      moveInputTo items.length
-      runs -> expectInputToBeAt items.length
+      moveInputTo 4
+      runs -> expectInputToBeAt 4
 
     it 'moves input to the end of the item list', ->
       moveInputTo 2
       runs -> expectInputToBeAt 2
+
+  describe '.onItemsSet', ->
+    describe 'first time', ->
+      beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
+      it 'moves input to the end of the list', -> expectInputToBeLast()
+
+  describe '.onItemAdded', ->
+    describe 'with no existing items', ->
+      beforeEach -> onItemAdded 'item1'
+      it 'moves input to the end of the list', -> expectInputToBeLast()
+
+    describe 'with one existing item', ->
+      beforeEach ->
+        onItemsSet [ 'item1' ]
+        onItemAdded 'item2'
+
+      it 'moves input to the end of the list', -> expectInputToBeLast()
+
+    describe 'with two existing items', ->
+      beforeEach ->
+        onItemsSet [ 'item1', 'item3' ]
+        moveInputTo 1
+        onItemAdded 'item2'
+        runs -> console.log plugin.element.html()
+
+      it 'keeps input after inserted item', ->
+        console.log plugin.element.html()
+        expectInputToBeAt 2
+      it 'has items in order', -> expectItems 'item1 item2 item3'
 
   describe '.onRightKey', ->
     beforeEach ->

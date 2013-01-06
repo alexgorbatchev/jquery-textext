@@ -1,10 +1,9 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { UIPlugin, Plugin, ItemsManager, resistance, nextTick } = module
+  { ItemsUIPlugin, Plugin, resistance, nextTick } = module
 
-  class TagsPlugin extends UIPlugin
+  class TagsPlugin extends ItemsUIPlugin
     @defaults =
       plugins    : 'input'
-      manager    : 'default'
       items      : []
       hotKey     : 'enter'
       splitPaste : /\s*,\s*/g
@@ -13,8 +12,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         container : '<div class="textext-tags"/>'
 
         item : '''
-          <div class="textext-tags-tag">
-            <span class="textext-tags-label"/>
+          <div class="textext-items-item">
+            <span class="textext-items-label"/>
             <a href="#">&times;</a>
           </div>
         '''
@@ -28,9 +27,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @on 'keys.press.right'                 , @onRightKey
       @on 'keys.press.backspace'             , @onBackspaceKey
       @on 'keys.press.' + @options('hotKey') , @onHotKey
-      @on 'items.set'                        , @onItemsSet
-      @on 'items.add'                        , @onItemAdded
-      @on 'items.remove'                     , @onItemRemoved
+      @on 'items.set'                        , @updateInputPosition
 
       @element.on 'click', 'a', (e) => @onRemoveTagClick(e)
 
@@ -39,30 +36,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @input = @getPlugin 'input'
 
-    init : ->
-      super()
-
-      managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
-      @items = instance for name, instance of managers
-      @handleEvents { @items }
-
     inputPosition : -> @$('> div').index @input.element
 
-    itemPosition : (element) ->
-      element = $ element
-      element = element.parents '.textext-tags-tag' unless element.is '.textext-tags-tag'
-      @$('.textext-tags-tag').index element
+    updateInputPosition : -> @moveInputTo Number.MAX_VALUE
 
-    createItemElement : (item, callback = ->) ->
-      @items.toString item, (err, value) =>
-        unless err?
-          element = $ @options 'html.item'
-          element.find('.textext-tags-label').html value
-
-        callback err, element
+    addItemElement : (element) -> @input.element.before element
 
     moveInputTo : (index, callback = ->) ->
-      items = @$ '> .textext-tags-tag'
+      items = @$ '> .textext-items-item'
 
       if items.length
         if index < items.length
@@ -76,29 +57,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     onLeftKey : (keyCode, keyName) ->
       if @input.empty()
         @moveInputTo @inputPosition() - 1, => @input.focus()
-
-    onItemsSet : (items) ->
-      @element.find('.textext-tags-tag').remove()
-
-      jobs = for item in items
-        do (item) => (done) => @createItemElement item, done
-
-      resistance.series jobs, (err, elements...) =>
-        @element.append element for element in elements
-        @moveInputTo Number.MAX_VALUE
-        @emit 'tags.set', elements
-
-    onItemAdded : (item) ->
-      @createItemElement item, (err, element) =>
-        unless err?
-          @input.element.before element
-          @emit 'tags.added', element
-
-    onItemRemoved : (index, item) ->
-      item = @$(".textext-tags-tag:eq(#{index})").remove()
-      nextTick =>
-        item.remove()
-        @emit 'tags.removed', item
 
     onRightKey : (keyCode, keyName) ->
       if @input.empty()
