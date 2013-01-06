@@ -6,7 +6,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       plugins : 'keys'
 
       html :
-        input : '''
+        element : '''
           <div class="textext-input">
             <input type="text">
           </div>
@@ -14,11 +14,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, InputPlugin.defaults
-
-      @element ?= $ @options 'html.input'
-
       @init()
-      @appendToParent()
 
     input : -> @$ 'input'
     value : -> @input().val.apply @input(), arguments

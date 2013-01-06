@@ -12,11 +12,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, ItemsManager.defaults
-
       @init()
 
-      @items = []
-      # @set @parent.options 'items' if @parent?
+      # @items = []
+      @set @parent.options 'items' if @parent?
 
     set : (items, callback) ->
       nextTick =>

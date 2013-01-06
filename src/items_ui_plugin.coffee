@@ -15,8 +15,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : (opts = {}, pluginDefaults = {}) ->
       super opts, $.extend({}, ItemsUIPlugin.defaults, pluginDefaults)
 
-      @element ?= opts.element
-
       @on 'itemsmanager.set'    , @onItemsSet
       @on 'itemsmanager.add'    , @onItemAdded
       @on 'itemsmanager.remove' , @onItemRemoved
@@ -44,6 +42,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onItemsSet : (items) ->
       @element.find('.textext-items-item').remove()
+
+      return unless items?
 
       jobs = for item in items
         do (item) => (done) => @createItemElement item, done

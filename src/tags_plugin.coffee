@@ -9,7 +9,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       splitPaste : /\s*,\s*/g
 
       html :
-        container : '<div class="textext-tags"/>'
+        element : '<div class="textext-tags"/>'
 
         item : '''
           <div class="textext-items-item">
@@ -20,8 +20,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, TagsPlugin.defaults
-
-      @element ?= $ @options 'html.container'
+      @init()
 
       @on 'keys.press.left'                  , @onLeftKey
       @on 'keys.press.right'                 , @onRightKey
@@ -30,10 +29,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @on 'items.set'                        , @updateInputPosition
 
       @element.on 'click', 'a', (e) => @onRemoveTagClick(e)
-
-      @init()
-      @appendToParent()
-
       @input = @getPlugin 'input'
 
     inputPosition : -> @$('> div').index @input.element

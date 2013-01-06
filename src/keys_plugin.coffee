@@ -17,7 +17,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, KeysPlugin.defaults
-
       @init()
 
       @downKeys = {}
