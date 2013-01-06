@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, nextTick } = module
+  { Plugin, resistance, nextTick } = module
 
   class ItemsManager extends Plugin
     @defaults =
@@ -64,6 +64,22 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           string
 
         callback null, result
+
+    search : (query, callback) ->
+      nextTick =>
+        results = []
+        jobs = []
+
+        for item in @items
+          do (item) =>
+            jobs.push (done) =>
+              @toString item, (err, string) =>
+                if string.indexOf(query) is 0
+                  results.push item
+
+                done err, string
+
+        resistance.series jobs, (err) -> callback err, results
 
     find : (value, callback) ->
       nextTick =>
