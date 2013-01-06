@@ -55,11 +55,13 @@ describe 'ItemsManager', ->
     it 'is ItemsManager', -> expect(plugin instanceof ItemsManager).toBe true
 
   describe '.set', ->
-    beforeEach ->
-      plugin = new ItemsManager
-      set [ 'item1', 'item2' ]
+    it 'does not do anything with null', ->
+      set null
+      runs -> expect(plugin.items).toEqual []
 
-    it 'set items', -> expect(plugin.items).toEqual [ 'item1', 'item2' ]
+    it 'set items from array', ->
+      set [ 'item1', 'item2' ]
+      runs -> expect(plugin.items).toEqual [ 'item1', 'item2' ]
 
   describe '.add', ->
     beforeEach ->

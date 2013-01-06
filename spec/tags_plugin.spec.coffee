@@ -1,12 +1,12 @@
 { TagsPlugin, ItemsUIPlugin, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  onItemAdded   = (item) -> waitForEvent plugin, 'items.added', -> plugin.onItemAdded item
-  onItemRemoved = (index, item) -> waitForEvent plugin, 'items.removed', -> plugin.onItemRemoved index, item
-  onItemsSet    = (items) -> waitForEvent plugin, 'items.set', -> plugin.onItemsSet items
-  onRightKey    = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
-  onLeftKey     = -> waitForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
-  moveInputTo   = (index) -> wait (done) -> plugin.moveInputTo index, done
+  onItemAdded   = (item) -> waitsForEvent plugin, 'items.added', -> plugin.onItemAdded item
+  onItemRemoved = (index, item) -> waitsForEvent plugin, 'items.removed', -> plugin.onItemRemoved index, item
+  onItemsSet    = (items) -> waitsForEvent plugin, 'items.set', -> plugin.onItemsSet items
+  onRightKey    = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
+  onLeftKey     = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
+  moveInputTo   = (index) -> waitsForCallback (done) -> plugin.moveInputTo index, done
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
   expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'
@@ -21,7 +21,11 @@ describe 'TagsPlugin', ->
   beforeEach ->
     parent = new UIPlugin element : $ '<div class="parent">'
     plugin = new TagsPlugin parent : parent
-    input = plugin.getPlugin 'input'
+    input  = plugin.getPlugin 'input'
+
+    ready = false
+    plugin.once 'items.set', -> ready = true
+    waitsFor -> ready
 
   it 'is registered', -> expect(Plugin.getRegistered 'tags').toBe TagsPlugin
   it 'has default options', -> expect(TagsPlugin.defaults).toBeTruthy()
@@ -32,61 +36,57 @@ describe 'TagsPlugin', ->
     it 'adds itself to parent plugin', -> expect(parent.element).toContain plugin.element
 
   describe '.updateInputPosition', ->
-    beforeEach ->
+    it 'moves input to be after all items', ->
       plugin.element.append $ '<div class="textext-items-item"/><div class="textext-items-item"/><div class="textext-items-item"/>'
       plugin.updateInputPosition()
-
-    it 'moves input to be after all items', ->
       expectInputToBeAt 3
 
   describe '.moveInputTo', ->
     beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
 
     it 'moves input to the beginning of the item list', ->
-      moveInputTo 0
+      runs -> moveInputTo 0
       runs -> expectInputToBeAt 0
 
     it 'moves input to the end of the item list', ->
-      moveInputTo 4
+      runs -> moveInputTo 4
       runs -> expectInputToBeAt 4
 
-    it 'moves input to the end of the item list', ->
-      moveInputTo 2
+    it 'moves input to the middle of the item list', ->
+      runs -> moveInputTo 2
       runs -> expectInputToBeAt 2
 
   describe '.onItemsSet', ->
     describe 'first time', ->
-      beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
-      it 'moves input to the end of the list', -> expectInputToBeLast()
+      it 'moves input to the end of the list', ->
+        runs -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
+        runs -> expectInputToBeLast()
 
   describe '.onItemAdded', ->
     describe 'with no existing items', ->
-      beforeEach -> onItemAdded 'item1'
-      it 'moves input to the end of the list', -> expectInputToBeLast()
+      it 'moves input to the end of the list', ->
+        runs -> onItemAdded 'item1'
+        runs -> expectInputToBeLast()
 
     describe 'with one existing item', ->
-      beforeEach ->
-        onItemsSet [ 'item1' ]
-        onItemAdded 'item2'
-
-      it 'moves input to the end of the list', -> expectInputToBeLast()
+      it 'moves input to the end of the list', ->
+        runs -> onItemsSet [ 'item1' ]
+        runs -> onItemAdded 'item2'
+        runs -> expectInputToBeLast()
 
     describe 'with two existing items', ->
       beforeEach ->
-        onItemsSet [ 'item1', 'item3' ]
-        moveInputTo 1
-        onItemAdded 'item2'
-        runs -> console.log plugin.element.html()
+        runs -> onItemsSet [ 'item1', 'item3' ]
+        runs -> moveInputTo 1
+        runs -> onItemAdded 'item2'
 
-      it 'keeps input after inserted item', ->
-        console.log plugin.element.html()
-        expectInputToBeAt 2
+      it 'keeps input after inserted item', -> expectInputToBeAt 2
       it 'has items in order', -> expectItems 'item1 item2 item3'
 
   describe '.onRightKey', ->
     beforeEach ->
-      onItemsSet [ 'item1', 'item2', 'item3' ]
-      moveInputTo 1
+      runs -> onItemsSet [ 'item1', 'item2', 'item3' ]
+      runs -> moveInputTo 1
 
     describe 'when there is no text in the input field', ->
       beforeEach ->
@@ -104,8 +104,7 @@ describe 'TagsPlugin', ->
       it 'does not move the input field', -> expect(plugin.moveInputTo).not.toHaveBeenCalled()
 
   describe '.onLeftKey', ->
-    beforeEach ->
-      onItemsSet [ 'item1', 'item2', 'item3' ]
+    beforeEach -> onItemsSet [ 'item1', 'item2', 'item3' ]
 
     describe 'when there is no text in the input field', ->
       beforeEach ->

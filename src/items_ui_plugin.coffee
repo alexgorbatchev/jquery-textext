@@ -25,6 +25,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items = instance for name, instance of managers
       @handleEvents { @items }
 
+      @items.set @options 'items'
+
     addItemElement : (element) -> @element.append element
 
     itemPosition : (element) ->

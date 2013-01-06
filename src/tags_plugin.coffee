@@ -38,7 +38,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     inputPosition : -> @$('> div').index @input.element
 
-    updateInputPosition : -> @moveInputTo Number.MAX_VALUE
+    updateInputPosition : (items) -> @moveInputTo Number.MAX_VALUE
 
     addItemElement : (element) -> @input.element.before element
 
