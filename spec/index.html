@@ -12,6 +12,7 @@
   <script type="text/javascript" src="vendor/jquery.js"></script>
   <script type="text/javascript" src="vendor/coffee-script.js"></script>
 
+  <!-- CORE -->
   <script type="text/javascript" src="build/textext.jquery.js"></script>
   <script type="text/javascript" src="build/vendor/eventemitter2.js"></script>
   <script type="text/javascript" src="build/vendor/watch.js"></script>
@@ -20,19 +21,28 @@
   <script type="text/javascript" src="build/plugin.js"></script>
   <script type="text/javascript" src="build/items_manager.js"></script>
   <script type="text/javascript" src="build/ui_plugin.js"></script>
+  <script type="text/javascript" src="build/items_ui_plugin.js"></script>
   <script type="text/javascript" src="build/textext.js"></script>
-  <script type="text/javascript" src="build/keys_plugin.js"></script>
-  <script type="text/javascript" src="build/tags_plugin.js"></script>
-  <script type="text/javascript" src="build/input_plugin.js"></script>
 
   <script type="text/coffeescript" src="textext.spec.coffee"></script>
   <script type="text/coffeescript" src="utils.spec.coffee"></script>
   <script type="text/coffeescript" src="plugin.spec.coffee"></script>
-  <script type="text/coffeescript" src="ui_plugin.spec.coffee"></script>
-  <script type="text/coffeescript" src="keys_plugin.spec.coffee"></script>
-  <script type="text/coffeescript" src="tags_plugin.spec.coffee"></script>
-  <script type="text/coffeescript" src="input_plugin.spec.coffee"></script>
   <script type="text/coffeescript" src="items_manager.spec.coffee"></script>
+  <script type="text/coffeescript" src="ui_plugin.spec.coffee"></script>
+  <script type="text/coffeescript" src="items_ui_plugin.spec.coffee"></script>
+
+  <!-- PLUGINS -->
+  <script type="text/javascript" src="build/keys_plugin.js"></script>
+  <script type="text/coffeescript" src="keys_plugin.spec.coffee"></script>
+
+  <script type="text/javascript" src="build/input_plugin.js"></script>
+  <script type="text/coffeescript" src="input_plugin.spec.coffee"></script>
+
+  <script type="text/javascript" src="build/tags_plugin.js"></script>
+  <script type="text/coffeescript" src="tags_plugin.spec.coffee"></script>
+
+  <script type="text/javascript" src="build/autocomplete_plugin.js"></script>
+  <script type="text/coffeescript" src="autocomplete_plugin.spec.coffee"></script>
 
   <script type="text/coffeescript">
     do ->
@@ -44,14 +54,19 @@
       env.addReporter(reporter)
       env.specFilter = (spec) -> reporter.specFilter(spec)
 
-      window.waitForEvent = window.expectEvent = (target, event, trigger, timeout = 250) ->
+      window.waitsForEvent = window.expectEvent = (target, event, trigger, timeout = 250) ->
         fired = false
-        handler = ->  fired = true
+        handler = -> fired = true
         target.on event, handler
+        trigger()
 
-        runs -> trigger()
         waitsFor (-> fired), "`#{event}` event to be emitted", timeout
         runs -> target.off event, handler
+
+      window.waitsForCallback = (fn) ->
+        done = false
+        runs -> fn -> done = true
+        waitsFor -> done
 
       _waitsFor = window.waitsFor
 
@@ -59,28 +74,10 @@
         args.push 250
         _waitsFor.apply window, args
 
-      window.wait = (fn) ->
-        done = false
-        runs -> fn -> done = true
-        waitsFor -> done
-
       # beforeEach ->
       #   @addMatchers
 
-      $ ->
-        # $('body').append '<input id="example">'
-        # $('#example').textext plugins : 'tags'
-
-        setTimeout ->
-          $('body > *:first').before '<input id="example">'
-
-          try
-            $('#example').textext plugins : 'tags'
-          catch e
-            console.error e.stack
-        , 1000
-
-        env.execute()
+      env.execute()
   </script>
 
 </head>
