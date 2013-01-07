@@ -80,21 +80,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         resistance.series jobs, (err) -> callback err, results
 
-    find : (value, callback) ->
-      nextTick =>
-        field  = @options 'toStringField'
-        result = null
-
-        for item in @items
-          compare = item
-          compare = compare[field] if field and compare
-
-          if compare is value
-            result = item
-            break
-
-        callback and callback null, result
-
     isValid : ->
 
   ItemsManager.register 'default', ItemsManager

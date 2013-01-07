@@ -23,6 +23,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items = instance for name, instance of managers
       @handleEvents { @items }
 
+    init : ->
+      super()
       @items.set @options 'items'
 
     addItemElement : (element) -> @element.append element

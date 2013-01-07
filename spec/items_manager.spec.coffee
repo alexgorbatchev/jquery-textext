@@ -36,15 +36,6 @@ describe 'ItemsManager', ->
     waitsFor -> done
     runs -> callback item
 
-  find = (value, callback) ->
-    done = false
-    item = null
-    runs -> plugin.find value, (err, result) ->
-      item = result
-      done = true
-    waitsFor -> done
-    runs -> callback item
-
   beforeEach -> plugin = new ItemsManager
 
   it 'is registered', -> expect(ItemsManager.getRegistered 'default').toBe ItemsManager
@@ -124,49 +115,19 @@ describe 'ItemsManager', ->
         runs -> expect(item).toBe 'id'
 
   describe '.search', ->
-    beforeEach -> plugin.items = [ 'item1', 'item2', 'foo', 'bar' ]
-
-    it 'finds items by matching string', ->
+    it 'returns all items when search string is empty', ->
       foundItems = null
-      runs -> plugin.search 'item', (err, items) -> foundItems = items
-      waitsFor -> foundItems
+      runs ->
+        plugin.items = [ 'item1', 'item2', 'foo', 'bar' ]
+        plugin.search '', (err, items) -> foundItems = items
+      waitsFor -> foundItems?
+      runs -> expect(foundItems).toEqual [ 'item1', 'item2', 'foo', 'bar' ]
+
+    it 'returns items which match the search string', ->
+      foundItems = null
+      runs ->
+        plugin.items = [ 'item1', 'item2', 'foo', 'bar' ]
+        plugin.search 'item', (err, items) -> foundItems = items
+      waitsFor -> foundItems?
       runs -> expect(foundItems).toEqual [ 'item1', 'item2' ]
 
-  describe '.find', ->
-    items = item = null
-
-    describe 'default behaviour', ->
-      beforeEach -> plugin.items = [ 'item1', 'item2' ]
-
-      it 'returns null for null item', ->
-        runs -> find null, (result) -> item = result
-        runs -> expect(item).toBe null
-
-      it 'returns string value when found', ->
-        runs -> find 'item1', (result) -> item = result
-        runs -> expect(item).toBe 'item1'
-
-      it 'returns null when not found', ->
-        runs -> find 'unknown', (result) -> item = result
-        runs -> expect(item).toBe null
-
-    describe 'custom behaviour', ->
-      beforeEach ->
-        plugin.userOptions = toStringField : 'label'
-        plugin.items = [
-          { id : 'id1', label : 'item1' }
-          { id : 'id2', label : 'item2' }
-          { id : 'id3', label : 'item2' }
-        ]
-
-      it 'returns null for null item', ->
-        runs -> find null, (result) -> item = result
-        runs -> expect(item).toBe null
-
-      it 'returns first object that matches value using `toStringField`', ->
-        runs -> find 'item2', (result) -> item = result
-        runs -> expect(item).toEqual { id : 'id2', label : 'item2' }
-
-      it 'returns null when not found', ->
-        runs -> find 'unknown', (result) -> item = result
-        runs -> expect(item).toBe null
