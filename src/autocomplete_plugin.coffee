@@ -32,20 +32,23 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     selectedIndex : ->
       items    = @$ '.textext-items-item'
-      selected = @$ '.textext-items-item.selected'
+      selected = items.filter '.selected'
 
       items.index selected
 
     select : (index) ->
-      @$('.textext-items-item')
-        .removeClass('selected')
-        .eq(index)
-        .addClass('selected')
+      items = @$('.textext-items-item')
+      newItem = items.eq index
+
+      if newItem.length
+        items.removeClass('selected')
+
+        if index >= 0
+          newItem.addClass('selected')
 
     show : (callback) ->
       @invalidate (err, items) =>
         @element.show =>
-          @select 0
           callback err, items
 
     hide : (callback) ->
@@ -59,10 +62,16 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @setItems items, callback
 
     onUpKey : (keyCode, keyName) ->
+      if @visible()
+        index = @selectedIndex() - 1
+        @select index
+        @parent.focus() if index is -1
 
     onDownKey : (keyCode, keyName) ->
-      unless @visible()
-        @show =>
+      if @visible()
+        @select @selectedIndex() + 1
+      else
+        @show => @select 0
 
     onHotKey : (keyCode, keyName) ->
       # unless @input.empty()

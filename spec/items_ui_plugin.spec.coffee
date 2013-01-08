@@ -80,5 +80,5 @@ describe 'ItemsUIPlugin', ->
     describe 'emitted event', ->
       it 'emits `items.removed`', ->
         runs -> setItems [ 'item1', 'item3' ]
-        waitsForEvent plugin, 'items.removed', -> plugin.removeItemAt 0, 'item'
+        waitsForEvent plugin, 'items.removed', -> plugin.removeItemAt 0
 
