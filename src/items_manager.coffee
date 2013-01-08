@@ -12,29 +12,24 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, ItemsManager.defaults
+      @items = []
       @init()
-
-      # @items = []
-      @set @parent.options 'items' if @parent?
 
     set : (items, callback) ->
       nextTick =>
         @items = items or []
-        @emit 'itemsmanager.set', items
-        callback and callback null, items
+        callback null, items
 
     add : (item, callback) ->
       nextTick =>
         @items.push item
-        @emit 'itemsmanager.add', item
-        callback and callback null, item
+        callback null, item
 
     removeAt : (index, callback) ->
       nextTick =>
         item = @items[index]
         @items.splice index, 1
-        @emit 'itemsmanager.remove', index, item
-        callback and callback null, index, item
+        callback null, item
 
     toString : (item, callback) ->
       nextTick =>
@@ -50,7 +45,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         result = item
         result = result[field] if field and result
 
-        callback and callback null, result
+        callback null, result
 
     fromString : (string, callback) ->
       nextTick =>

@@ -1,12 +1,12 @@
 { TagsPlugin, ItemsUIPlugin, UIPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  onItemAdded   = (item) -> waitsForEvent plugin, 'items.added', -> plugin.onItemAdded item
-  onItemRemoved = (index, item) -> waitsForEvent plugin, 'items.removed', -> plugin.onItemRemoved index, item
-  onItemsSet    = (items) -> waitsForEvent plugin, 'items.set', -> plugin.onItemsSet items
-  onRightKey    = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
-  onLeftKey     = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
-  moveInputTo   = (index) -> waitsForCallback (done) -> plugin.moveInputTo index, done
+  addItem     = (item) -> waitsForEvent plugin, 'items.added', -> plugin.addItem item
+  setItems    = (items) -> waitsForEvent plugin, 'items.set', -> plugin.setItems items
+  moveInputTo = (index) -> waitsForCallback (done) -> plugin.moveInputTo index, done
+
+  onRightKey = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
+  onLeftKey  = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
 
   expectInputToBeLast = -> expect(plugin.$('> div:last')).toBe '.textext-input'
   expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").toBe '.textext-input'
@@ -42,7 +42,7 @@ describe 'TagsPlugin', ->
       expectInputToBeAt 3
 
   describe '.moveInputTo', ->
-    beforeEach -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
+    beforeEach -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
 
     it 'moves input to the beginning of the item list', ->
       runs -> moveInputTo 0
@@ -56,36 +56,36 @@ describe 'TagsPlugin', ->
       runs -> moveInputTo 2
       runs -> expectInputToBeAt 2
 
-  describe '.onItemsSet', ->
+  describe '.setItems', ->
     describe 'first time', ->
       it 'moves input to the end of the list', ->
-        runs -> onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
+        runs -> setItems [ 'item1', 'item2', 'item3', 'item4' ]
         runs -> expectInputToBeLast()
 
-  describe '.onItemAdded', ->
+  describe '.addItem', ->
     describe 'with no existing items', ->
       it 'moves input to the end of the list', ->
-        runs -> onItemAdded 'item1'
+        runs -> addItem 'item1'
         runs -> expectInputToBeLast()
 
     describe 'with one existing item', ->
       it 'moves input to the end of the list', ->
-        runs -> onItemsSet [ 'item1' ]
-        runs -> onItemAdded 'item2'
+        runs -> setItems [ 'item1' ]
+        runs -> addItem 'item2'
         runs -> expectInputToBeLast()
 
     describe 'with two existing items', ->
       beforeEach ->
-        runs -> onItemsSet [ 'item1', 'item3' ]
+        runs -> setItems [ 'item1', 'item3' ]
         runs -> moveInputTo 1
-        runs -> onItemAdded 'item2'
+        runs -> addItem 'item2'
 
       it 'keeps input after inserted item', -> expectInputToBeAt 2
       it 'has items in order', -> expectItems 'item1 item2 item3'
 
   describe '.onRightKey', ->
     beforeEach ->
-      runs -> onItemsSet [ 'item1', 'item2', 'item3' ]
+      runs -> setItems [ 'item1', 'item2', 'item3' ]
       runs -> moveInputTo 1
 
     describe 'when there is no text in the input field', ->
@@ -104,7 +104,7 @@ describe 'TagsPlugin', ->
       it 'does not move the input field', -> expect(plugin.moveInputTo).not.toHaveBeenCalled()
 
   describe '.onLeftKey', ->
-    beforeEach -> onItemsSet [ 'item1', 'item2', 'item3' ]
+    beforeEach -> setItems [ 'item1', 'item2', 'item3' ]
 
     describe 'when there is no text in the input field', ->
       beforeEach ->
@@ -139,7 +139,7 @@ describe 'TagsPlugin', ->
 
   describe '.onRemoveTagClick', ->
     beforeEach ->
-      onItemsSet [ 'item1', 'item2', 'item3', 'item4' ]
+      setItems [ 'item1', 'item2', 'item3', 'item4' ]
 
       runs ->
         spyOn plugin.items, 'removeAt'

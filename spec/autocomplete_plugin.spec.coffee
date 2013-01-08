@@ -3,7 +3,8 @@
 describe 'AutocompletePlugin', ->
   html = -> console.log plugin.element.html()
 
-  setItems = (items) -> waitsForEvent plugin, 'items.set', -> plugin.items.set items
+  setItems       = (items) -> waitsForCallback (done) -> plugin.setItems items, done
+
   expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).toBe '.selected'
 
   # expectItem = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})").length > 0)
@@ -98,7 +99,7 @@ describe 'AutocompletePlugin', ->
         plugin.onDownKey()
         waitsFor -> plugin.select.wasCalled
 
-      it 'selects the first item', -> expectSelected 0
+      it 'selects the first item', -> expectSelected 'item1'
 
       describe 'dropdown', ->
         it 'is visible', -> expect(plugin.visible()).toBe true
@@ -109,9 +110,7 @@ describe 'AutocompletePlugin', ->
         runs -> plugin.onDownKey()
         waitsFor -> plugin.select.wasCalled
 
-      it 'selects the first item in the dropdown', ->
-        runs -> html()
-        expectSelected 0
+      it 'selects the first item in the dropdown', -> expectSelected 'item1'
 
       describe 'dropdown', ->
         it 'is visible', -> expect(plugin.visible()).toBe true

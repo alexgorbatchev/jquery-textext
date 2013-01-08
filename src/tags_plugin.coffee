@@ -59,17 +59,20 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onBackspaceKey : (keyCode, keyName) ->
       if @input.empty()
-        @items.removeAt @inputPosition() - 1
+        @items.removeAt @inputPosition() - 1, (err, index, item) => @removeItemAt index unless err?
 
     onHotKey : (keyCode, keyName) ->
       unless @input.empty()
         @items.fromString @input.value(), (err, item) =>
           unless err?
-            @items.add item, (err, item) => @input.value ''
+            @items.add item, (err, item) =>
+              unless err?
+                @input.value ''
+                @addItem item
 
     onRemoveTagClick : (e) ->
       e.preventDefault()
-      @items.removeAt @itemPosition(e.target)
+      @items.removeAt @itemPosition(e.target), (err, index, item) => @removeItemAt index unless err?
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

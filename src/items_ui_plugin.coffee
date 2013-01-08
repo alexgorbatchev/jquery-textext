@@ -15,17 +15,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : (opts = {}, pluginDefaults = {}) ->
       super opts, $.extend({}, ItemsUIPlugin.defaults, pluginDefaults)
 
-      @on 'itemsmanager.set'    , @onItemsSet
-      @on 'itemsmanager.add'    , @onItemAdded
-      @on 'itemsmanager.remove' , @onItemRemoved
-
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
       @handleEvents { @items }
 
     init : ->
       super()
-      @items.set @options 'items'
+
+      @items.set @options('items'), (err, items) =>
+        @setItems items
 
     addItemElement : (element) -> @element.append element
 
@@ -42,28 +40,40 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         callback err, element
 
-    onItemsSet : (items) ->
-      @element.find('.textext-items-item').remove()
+    setItems : (items, callback = ->) ->
+      @items.set items, (err, items) =>
+        return callback err, items if err?
 
-      return unless items?
+        @element.find('.textext-items-item').remove()
 
-      jobs = for item in items
-        do (item) => (done) => @createItemElement item, done
+        jobs = for item in items
+          do (item) => (done) => @createItemElement item, done
 
-      resistance.series jobs, (err, elements...) =>
-        @addItemElement element for element in elements
-        @emit 'items.set', elements
+        resistance.series jobs, (err, elements...) =>
+          unless err?
+            @addItemElement element for element in elements
 
-    onItemAdded : (item) ->
-      @createItemElement item, (err, element) =>
-        unless err?
-          @addItemElement element
+          @emit 'items.set', elements
+          callback err, elements
+
+    addItem : (item, callback = ->) ->
+      @items.add item, (err, item) =>
+        return callback err, items if err?
+
+        @createItemElement item, (err, element) =>
+          unless err?
+            @addItemElement element
+
           @emit 'items.added', element
+          callback err, element
 
-    onItemRemoved : (index, item) ->
-      item = @$(".textext-items-item:eq(#{index})").remove()
-      nextTick =>
-        item.remove()
-        @emit 'items.removed', item
+    removeItemAt : (index, callback = ->) ->
+      @items.removeAt index, (err, item) =>
+        return callback err, items if err?
+
+        element = @$(".textext-items-item:eq(#{index})")
+        element.remove()
+        @emit 'items.removed', element
+        callback null, element
 
   module.ItemsUIPlugin = ItemsUIPlugin

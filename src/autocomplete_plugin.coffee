@@ -56,8 +56,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     invalidate : (callback) ->
       @items.search @parent.value(), (err, items) =>
-        @items.set items, (err, items) =>
-          callback err, items
+        @setItems items, callback
 
     onUpKey : (keyCode, keyName) ->
 
