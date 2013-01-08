@@ -1,3 +1,8 @@
+# Version 2.0 in development
+
+Please note that there's version 2.0 in active development. Checkout the #2.0.0-wip 
+branch for more fun action! CoffeeScript and full Jasmine coverage - fun stuff!
+
 ## About
 
 TextExt is a plugin for jQuery which is designed to provide functionality such
