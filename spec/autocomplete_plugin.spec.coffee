@@ -3,83 +3,71 @@
 describe 'AutocompletePlugin', ->
   html = -> console.log plugin.element.html()
 
-  setItems = (items) -> waitsForCallback (done) -> plugin.setItems items, done
+  expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).to.match '.selected'
 
-  expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).toBe '.selected'
+  downKey = (done) ->
+    plugin.onDownKey()
+    expect(-> plugin.select.called).to.happen.and.notify done
 
-  downKey = (times = 1) ->
-    runs -> spyOn(plugin, 'select').andCallThrough()
-    runs ->
-      for i in [1..times]
-        runs -> plugin.onDownKey()
-        waitsFor -> plugin.select.wasCalled
-
-  upKey = (times = 1) ->
-    runs ->
-      if plugin.select.wasCalled is false
-        spyOn(plugin, 'select').andCallThrough()
-    runs ->
-      for i in [1..times]
-        runs -> plugin.onUpKey()
-        waitsFor -> plugin.select.wasCalled
-
-  # expectItem = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})").length > 0)
+  upKey = (done) ->
+    plugin.onUpKey()
+    expect(-> plugin.select.called).to.happen.and.notify done
 
   expectItems = (items) ->
     actual = []
     plugin.$('.textext-items-item .textext-items-label').each -> actual.push $(@).text().replace(/^\s+|\s+$/g, '')
-    expect(actual.join ' ').toBe items
+    expect(actual.join ' ').to.equal items
 
   plugin = input = null
 
-  beforeEach ->
+  beforeEach (done) ->
     input = new InputPlugin
     plugin = new AutocompletePlugin parent : input
 
-    ready = false
-    plugin.once 'items.set', -> ready = true
-    waitsFor -> ready
+    plugin.once 'items.set', -> done()
 
-  it 'is registered', -> expect(Plugin.getRegistered 'autocomplete').toBe AutocompletePlugin
-  it 'has default options', -> expect(AutocompletePlugin.defaults).toBeTruthy()
+  it 'is registered', -> expect(Plugin.getRegistered 'autocomplete').to.equal AutocompletePlugin
+  it 'has default options', -> expect(AutocompletePlugin.defaults).to.be.ok
 
   describe 'instance', ->
-    it 'is UIPlugin', -> expect(plugin instanceof UIPlugin).toBe true
-    it 'is AutocompletePlugin', -> expect(plugin instanceof AutocompletePlugin).toBe true
+    it 'is UIPlugin', -> expect(plugin).to.be.instanceof UIPlugin
+    it 'is AutocompletePlugin', -> expect(plugin).to.be.instanceof AutocompletePlugin
 
     describe 'with parent', ->
-      it 'adds itself to parent', -> expect(plugin.element.parent()).toBe input.element
+      it 'adds itself to parent', -> expect(plugin.element.parent()).to.be input.element
       it 'only works with InputPlugin', ->
         parent = new UIPlugin element : $ '<div>'
-        expect(-> new AutocompletePlugin parent : parent).toThrow message : 'Expects InputPlugin parent'
+        expect(-> new AutocompletePlugin parent : parent).to.throw 'Expects InputPlugin parent'
 
   describe '.items', ->
-    it 'returns instance of `ItemsManager` plugin', -> expect(plugin.items instanceof ItemsManager).toBeTruthy()
+    it 'returns instance of `ItemsManager` plugin', -> expect(plugin.items).to.be.instanceof ItemsManager
 
   describe '.visible', ->
     it 'returns `true` when dropdown is visible', ->
       plugin.element.show()
-      expect(plugin.visible()).toBe true
+      expect(plugin.visible()).to.be.true
 
     it 'returns `false` when dropdown is not visible', ->
       plugin.element.hide()
-      expect(plugin.visible()).toBe false
+      expect(plugin.visible()).to.be.false
 
   describe '.show', ->
-    it 'shows the dropdown', ->
-      waitsForCallback (done) -> plugin.show done
-      runs -> expect(plugin.visible()).toBe true
+    it 'shows the dropdown', (done) ->
+      plugin.show ->
+        expect(plugin.visible()).to.be.true
+        done()
 
   describe '.hide', ->
-    beforeEach -> waitsForCallback (done) -> plugin.hide done
+    beforeEach (done) -> plugin.hide done
 
-    it 'hides the dropdown', -> expect(plugin.visible()).toBe false
-    it 'deselects selected item', -> expect(plugin.selectedIndex()).toBe -1
+    it 'hides the dropdown', -> expect(plugin.visible()).to.be.false
+    it 'deselects selected item', -> expect(plugin.selectedIndex()).to.equal -1
 
   describe '.select', ->
-    beforeEach ->
-      setItems [ 'item1', 'item2', 'foo', 'bar' ]
-      runs -> plugin.element.show()
+    beforeEach (done) ->
+      plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], ->
+        plugin.element.show()
+        done()
 
     it 'selects first element by index', ->
       plugin.select 0
@@ -90,83 +78,96 @@ describe 'AutocompletePlugin', ->
       expectSelected 'foo'
 
   describe '.selectedIndex', ->
-    beforeEach -> setItems [ 'item1', 'item2', 'foo', 'bar' ]
+    beforeEach (done) -> plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], done
 
     describe 'when dropdown is not visible', ->
-      it 'returns -1', -> expect(plugin.selectedIndex()).toBe -1
+      it 'returns -1', -> expect(plugin.selectedIndex()).to.equal -1
 
     describe 'when dropdown is visible', ->
       it 'returns 0 when first item is selected', ->
         plugin.$('.textext-items-item:eq(0)').addClass 'selected'
-        expect(plugin.selectedIndex()).toBe 0
+        expect(plugin.selectedIndex()).to.equal 0
 
       it 'returns 3 when fourth item is selected', ->
         plugin.$('.textext-items-item:eq(3)').addClass 'selected'
-        expect(plugin.selectedIndex()).toBe 3
+        expect(plugin.selectedIndex()).to.equal 3
 
   describe '.onDownKey', ->
-    beforeEach -> setItems [ 'item1', 'item2', 'foo', 'bar' ]
+    beforeEach (done) ->
+      spy plugin, 'select'
+      plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], done
 
     describe 'when there is text', ->
-      beforeEach ->
+      beforeEach (done) ->
         input.value 'item'
-        downKey()
+        downKey done
 
       describe 'dropdown', ->
-        it 'is visible', -> expect(plugin.visible()).toBe true
+        it 'is visible', -> expect(plugin.visible()).to.be.true
         it 'has items matching text', -> expectItems 'item1 item2'
 
     describe 'when there is no text', ->
-      beforeEach -> downKey()
+      beforeEach (done) -> downKey done
 
       describe 'dropdown', ->
-        it 'is visible', -> expect(plugin.visible()).toBe true
+        it 'is visible', -> expect(plugin.visible()).to.be.true
         it 'has all original items', -> expectItems 'item1 item2 foo bar'
 
     describe 'pressing once', ->
-      it 'selects the first item', ->
-        downKey 1
-        runs -> expectSelected 'item1'
+      it 'selects the first item', (done) ->
+        downKey ->
+          expectSelected 'item1'
+          done()
 
     describe 'pressing twice', ->
-      it 'selects the the second item', ->
-        downKey 2
-        runs -> expectSelected 'item2'
+      it 'selects the the second item', (done) ->
+        downKey -> downKey ->
+          expectSelected 'item2'
+          done()
 
     describe 'pressing three times', ->
-      it 'selects the the third item', ->
-        downKey 3
-        runs -> expectSelected 'foo'
+      it 'selects the the third item', (done) ->
+        downKey -> downKey -> downKey ->
+          expectSelected 'foo'
+          done()
 
     describe 'pressing four times', ->
-      it 'selects the the fourth item', ->
-        downKey 4
-        runs -> expectSelected 'bar'
+      it 'selects the the fourth item', (done) ->
+        downKey -> downKey -> downKey -> downKey ->
+          expectSelected 'bar'
+          done()
 
     describe 'pressing five times', ->
-      it 'keeps selection on the the fourth item', ->
-        downKey 5
-        runs -> expectSelected 'bar'
+      it 'keeps selection on the the fourth item', (done) ->
+        downKey -> downKey -> downKey -> downKey -> downKey ->
+          expectSelected 'bar'
+          done()
 
   describe '.onUpKey', ->
-    beforeEach ->
-      setItems [ 'item1', 'item2', 'foo', 'bar' ]
-      downKey 3
-      runs -> expectSelected 'foo'
+    beforeEach (done) ->
+      spy plugin, 'select'
+
+      plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], ->
+        downKey -> downKey -> downKey ->
+          expectSelected 'foo'
+          done()
 
     describe 'pressing once', ->
-      it 'selects the first item', ->
-        upKey 1
-        runs -> expectSelected 'item2'
+      it 'selects the first item', (done) ->
+        upKey ->
+          expectSelected 'item2'
+          done()
 
     describe 'pressing twice', ->
-      it 'selects the the second item', ->
-        upKey 2
-        runs -> expectSelected 'item1'
+      it 'selects the the second item', (done) ->
+        upKey -> upKey ->
+          expectSelected 'item1'
+          done()
 
     describe 'pressing three times', ->
-      it 'goes back into the input', ->
-        spyOn input, 'focus'
-        upKey 3
-        waitsFor -> input.focus.wasCalled
-        runs -> expect(plugin.selectedIndex()).toBe -1
+      it 'goes back into the input', (done) ->
+        spy input, 'focus'
+
+        upKey -> upKey -> upKey ->
+          expect(plugin.selectedIndex()).to.equal -1
+          expect(-> input.focus.called).to.happen.and.notify done

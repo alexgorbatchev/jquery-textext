@@ -4,15 +4,21 @@
 [submodule "vendor/eventemitter2"]
 	path = vendor/eventemitter2
 	url = git://github.com/hij1nx/EventEmitter2.git
-[submodule "vendor/jasmine"]
-	path = vendor/jasmine
-	url = git://github.com/pivotal/jasmine.git
 [submodule "vendor/watchjs"]
 	path = vendor/watchjs
 	url = git://github.com/melanke/Watch.JS.git
-[submodule "vendor/jasmine-jquery"]
-	path = vendor/jasmine-jquery
-	url = git://github.com/velesin/jasmine-jquery.git
 [submodule "vendor/resistance"]
 	path = vendor/resistance
 	url = git://github.com/jgallen23/resistance.git
+[submodule "vendor/mocha"]
+	path = vendor/mocha
+	url = https://github.com/visionmedia/mocha.git
+[submodule "vendor/chai"]
+	path = vendor/chai
+	url = git://github.com/chaijs/chai.git
+[submodule "vendor/chai-jquery"]
+	path = vendor/chai-jquery
+	url = git://github.com/chaijs/chai-jquery.git
+[submodule "vendor/sinon-chai"]
+	path = vendor/sinon-chai
+	url = git://github.com/domenic/sinon-chai.git

@@ -4,13 +4,19 @@
 <head>
   <title>Jasmine Spec Runner</title>
 
-  <link rel="stylesheet" type="text/css" href="vendor/jasmine.css">
-
-  <script type="text/javascript" src="vendor/jasmine.js"></script>
-  <script type="text/javascript" src="vendor/jasmine-html.js"></script>
-  <script type="text/javascript" src="vendor/jasmine-jquery.js"></script>
   <script type="text/javascript" src="vendor/jquery.js"></script>
   <script type="text/javascript" src="vendor/coffee-script.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="vendor/mocha.css">
+  <script type="text/javascript" src="vendor/mocha.js"></script>
+  <script type="text/javascript" src="vendor/chai.js"></script>
+  <script type="text/javascript" src="vendor/chai-jquery.js"></script>
+  <script type="text/javascript" src="vendor/sinon-chai.js"></script>
+  <script type="text/javascript" src="vendor/sinon.js"></script>
+
+  <script>
+    mocha.setup('bdd')
+  </script>
 
   <!-- CORE -->
   <script type="text/javascript" src="build/textext.jquery.js"></script>
@@ -46,44 +52,40 @@
 
   <script type="text/coffeescript">
     do ->
-      env = jasmine.getEnv()
-      env.updateInterval = 1000
+      window.expect = chai.expect
+      window.should = chai.should
+      window.spy = sinon.spy
 
-      reporter = new jasmine.HtmlReporter()
+      Assertion = chai.Assertion
 
-      env.addReporter(reporter)
-      env.specFilter = (spec) -> reporter.specFilter(spec)
+      Assertion.addChainableMethod 'happen'
+        , ->
+          null
+        , ->
+          @__flags.waitForHappen = true
 
-      window.waitsForEvent = window.expectEvent = (target, event, trigger, timeout = 250) ->
-        fired = false
-        handler = -> fired = true
-        target.on event, handler
-        trigger()
+      Assertion.addChainableMethod 'notify', (done) ->
+        next = =>
+          id = setTimeout =>
+            result = @_obj()
 
-        waitsFor (-> fired), "`#{event}` event to be emitted", timeout
-        runs -> target.off event, handler
+            if result
+              done()
+            else if not runner.test.timedOut
+              next()
+          , 0
 
-      window.waitsForCallback = (fn) ->
-        done = false
-        runs -> fn -> done = true
-        waitsFor -> done
-
-      _waitsFor = window.waitsFor
-
-      window.waitsFor = (args...) ->
-        args.push 250
-        _waitsFor.apply window, args
-
-      # beforeEach ->
-      #   @addMatchers
+        next() if @__flags.waitForHappen
 
       $.fx.off = true
-      env.execute()
+
+      runner = mocha.run()
   </script>
 
 </head>
 
 <body>
+  <div id="mocha"></div>
 </body>
 </html>
 

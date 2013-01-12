@@ -41,7 +41,11 @@
     $('#autocomplete01').textext({
       plugins : 'input',
       input : {
-        plugins : 'autocomplete'
+        plugins : 'autocomplete',
+
+        autocomplete : {
+          items : [ 'hello', 'world' ]
+        }
       }
     });
   </script>

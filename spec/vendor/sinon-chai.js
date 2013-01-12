@@ -1,0 +1,1 @@
+../../vendor/sinon-chai/lib/sinon-chai.js

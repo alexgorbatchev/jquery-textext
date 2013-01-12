@@ -1,0 +1,1 @@
+../../vendor/sinon-1.5.2.js

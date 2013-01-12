@@ -30,14 +30,19 @@ describe 'Plugin', ->
       plugin.plugins = { child1, child2 }
       plugin.handleEvents()
 
-    it 'broadcasts events to all siblings', -> expectEvent child2, 'event', -> child1.emit 'event'
-    it 'bubbles events up', -> expectEvent topLevel, 'event', -> child2.emit 'event'
+    it 'broadcasts events to all siblings', (done) ->
+      child2.on 'event', done
+      child1.emit 'event'
+
+    it 'bubbles events up', (done) ->
+      topLevel.on 'event', done
+      child2.emit 'event'
 
   describe '.getPlugin', ->
     beforeEach -> plugin.plugins = { child1, child2 }
 
-    it 'returns plugin when found', -> expect(plugin.getPlugin 'child1').toBe child1
-    it 'returns null when not found', -> expect(plugin.getPlugin 'unknown').toBe undefined
+    it 'returns plugin when found', -> expect(plugin.getPlugin 'child1').to.equal child1
+    it 'returns null when not found', -> expect(plugin.getPlugin 'unknown').to.equal undefined
 
   describe '.options', ->
     beforeEach ->
@@ -46,9 +51,9 @@ describe 'Plugin', ->
         userOptions    : { host : 'localhost', blank : '' }
         defaultOptions : { path : '/usr', blank : 'fallback' }
 
-    it 'returns default option value', -> expect(plugin.options 'path').toEqual '/usr'
-    it 'returns user option value', -> expect(plugin.options 'host').toEqual 'localhost'
-    it 'uses *defined* empty value', -> expect(plugin.options 'blank').toEqual ''
+    it 'returns default option value', -> expect(plugin.options 'path').to.equal '/usr'
+    it 'returns user option value', -> expect(plugin.options 'host').to.equal 'localhost'
+    it 'uses *defined* empty value', -> expect(plugin.options 'blank').to.equal ''
 
   describe '.createPlugins', ->
     plugin1 = plugin2 = null
@@ -64,10 +69,10 @@ describe 'Plugin', ->
       { plugin1, plugin2 } = plugin.createPlugins 'plugin2 plugin1'
 
     it 'creates plugins', ->
-      expect(plugin2 instanceof Plugin2).toBe true
-      expect(plugin1 instanceof Plugin1).toBe true
+      expect(plugin2).to.be.instanceof Plugin2
+      expect(plugin1).to.be.instanceof Plugin1
 
-    it 'passes options to plugin instances', -> expect(plugin2.options('host')).toBe 'localhost'
+    it 'passes options to plugin instances', -> expect(plugin2.options('host')).to.equal 'localhost'
 
   describe '.init', ->
     beforeEach ->
@@ -79,6 +84,6 @@ describe 'Plugin', ->
       plugin.init()
 
     it 'creates plugins', ->
-      expect(plugin.plugins.plugin1 instanceof Plugin1).toBe true
-      expect(plugin.plugins.plugin2 instanceof Plugin2).toBe true
-      expect(plugin.plugins.plugin3 instanceof Plugin3).toBe true
+      expect(plugin.plugins.plugin1).to.be.instanceof Plugin1
+      expect(plugin.plugins.plugin2).to.be.instanceof Plugin2
+      expect(plugin.plugins.plugin3).to.be.instanceof Plugin3
