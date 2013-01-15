@@ -15,16 +15,21 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         46  : { name : 'delete' }
         108 : { name : 'numpadEnter' }
 
+      html :
+        element : '<div class="textext-keys"/>'
+
     constructor : (opts = {}) ->
       super opts, KeysPlugin.defaults
-      @init()
 
       @downKeys = {}
 
-      element = opts.element or @parent.element
-      element = element.find 'input' unless element.is ':input'?
+      input = opts.element
 
-      element
+      unless input
+        input = @parent.element
+        input = input.find 'input'
+
+      input
         .keydown((e) => @onKeyDown e.keyCode)
         .keyup((e) => @onKeyUp e.keyCode)
 

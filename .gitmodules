@@ -1,9 +1,6 @@
 [submodule "doc"]
 	path = doc
 	url = git@github.com:alexgorbatchev/jquery-textext-doc.git
-[submodule "vendor/eventemitter2"]
-	path = vendor/eventemitter2
-	url = git://github.com/hij1nx/EventEmitter2.git
 [submodule "vendor/watchjs"]
 	path = vendor/watchjs
 	url = git://github.com/melanke/Watch.JS.git

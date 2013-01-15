@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { UIPlugin, Plugin } = module
+  { Plugin } = module
 
-  class InputPlugin extends UIPlugin
+  class InputPlugin extends Plugin
     @defaults =
       plugins : 'keys'
 
@@ -14,7 +14,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, InputPlugin.defaults
-      @init()
 
     input : -> @$ 'input'
     value : -> @input().val.apply @input(), arguments

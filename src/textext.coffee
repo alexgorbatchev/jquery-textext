@@ -4,18 +4,17 @@ do (window, $ = jQuery, module = $.fn.textext) ->
   class TextExt extends Plugin
     @defaults =
       html :
-        container : '<div class="textext">'
+        element : '<div class="textext">'
 
     constructor : (opts = {}) ->
       @sourceElement = opts.element
+      opts.element = null
 
       super opts, TextExt.defaults
-
-      @element = $ @options 'html.container'
 
       @sourceElement.hide()
       @sourceElement.after @element
 
-      @init()
+    addToParent : -> null
 
   module.TextExt = TextExt

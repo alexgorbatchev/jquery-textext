@@ -1,4 +1,4 @@
-{ InputPlugin, UIPlugin, Plugin } = $.fn.textext
+{ InputPlugin, Plugin } = $.fn.textext
 
 describe 'InputPlugin', ->
   plugin = null
@@ -9,7 +9,7 @@ describe 'InputPlugin', ->
   it 'has default options', -> expect(InputPlugin.defaults).to.be.ok
 
   describe 'instance', ->
-    it 'is UIPlugin', -> expect(plugin).to.be.instanceof UIPlugin
+    it 'is Plugin', -> expect(plugin).to.be.instanceof Plugin
     it 'is InputPlugin', -> expect(plugin).to.be.instanceof InputPlugin
 
   describe '.input', ->

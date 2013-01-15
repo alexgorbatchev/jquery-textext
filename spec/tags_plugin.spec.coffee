@@ -1,15 +1,8 @@
-{ TagsPlugin, ItemsUIPlugin, UIPlugin, Plugin } = $.fn.textext
+{ TagsPlugin, ItemsPlugin, Plugin } = $.fn.textext
 
 describe 'TagsPlugin', ->
-  addItem     = (item) -> waitsForEvent plugin, 'items.added', -> plugin.addItem item
-  setItems    = (items) -> waitsForEvent plugin, 'items.set', -> plugin.setItems items
-  moveInputTo = (index) -> waitsForCallback (done) -> plugin.moveInputTo index, done
-
-  onRightKey = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onRightKey()
-  onLeftKey  = -> waitsForEvent plugin, 'tags.input.moved', -> plugin.onLeftKey()
-
-  expectInputToBeLast = -> expect(plugin.$('> div:last')).to.be '.textext-input'
-  expectInputToBeAt   = (index) -> expect(plugin.$ "> div:eq(#{index})").to.be '.textext-input'
+  expectInputToBeLast = -> expect(plugin.$('.textext-items-item, .textext-input').last()).to.be '.textext-input'
+  expectInputToBeAt   = (index) -> expect(plugin.$('.textext-items-item, .textext-input').get(index)).to.be '.textext-input'
 
   expectItems = (items) ->
     actual = []
@@ -18,18 +11,18 @@ describe 'TagsPlugin', ->
 
   plugin = parent = input = null
 
-  beforeEach (done) ->
-    parent = new UIPlugin element : $ '<div class="parent">'
+  beforeEach ->
+    parent = new Plugin element : $ '<div class="parent">'
     plugin = new TagsPlugin parent : parent
     input  = plugin.getPlugin 'input'
 
-    plugin.once 'items.set', -> done()
+    # plugin.on 'items.set', -> done()
 
   it 'is registered', -> expect(Plugin.getRegistered 'tags').to.equal TagsPlugin
   it 'has default options', -> expect(TagsPlugin.defaults).to.be.ok
 
   describe 'instance', ->
-    it 'is ItemsUIPlugin', -> expect(plugin).to.be.instanceof ItemsUIPlugin
+    it 'is ItemsPlugin', -> expect(plugin).to.be.instanceof ItemsPlugin
     it 'is TagsPlugin', -> expect(plugin).to.be.instanceof TagsPlugin
     it 'adds itself to parent plugin', -> expect(plugin.element.parent()).to.be parent.element
 
@@ -37,6 +30,7 @@ describe 'TagsPlugin', ->
     it 'moves input to be after all items', ->
       plugin.element.append $ '<div class="textext-items-item"/><div class="textext-items-item"/><div class="textext-items-item"/>'
       plugin.updateInputPosition()
+      console.log plugin.element.html()
       expectInputToBeAt 3
 
   describe '.moveInputTo', ->

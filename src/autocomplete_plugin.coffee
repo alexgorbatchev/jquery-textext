@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsUIPlugin, InputPlugin, Plugin, resistance, nextTick } = module
+  { ItemsPlugin, InputPlugin, Plugin, resistance, nextTick } = module
 
-  class AutocompletePlugin extends ItemsUIPlugin
+  class AutocompletePlugin extends ItemsPlugin
     @defaults =
       items  : []
       hotKey : 'enter'
@@ -17,7 +17,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, AutocompletePlugin.defaults
-      @init()
 
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'

@@ -1,6 +1,6 @@
-{ ItemsUIPlugin, ItemsManager, UIPlugin, Plugin } = $.fn.textext
+{ ItemsPlugin, ItemsManager, Plugin } = $.fn.textext
 
-describe 'ItemsUIPlugin', ->
+describe 'ItemsPlugin', ->
   addItem      = (item) -> waitsForCallback (done) -> plugin.addItem item, done
   removeItemAt = (index, item) -> waitsForCallback (done) -> plugin.removeItemAt index, done
   expectItem   = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})").length > 0)
@@ -13,13 +13,13 @@ describe 'ItemsUIPlugin', ->
   plugin = null
 
   beforeEach ->
-    plugin = new ItemsUIPlugin element : $ '<div>'
+    plugin = new ItemsPlugin element : $ '<div>'
 
-  it 'has default options', -> expect(ItemsUIPlugin.defaults).to.be.ok
+  it 'has default options', -> expect(ItemsPlugin.defaults).to.be.ok
 
   describe 'instance', ->
-    it 'is UIPlugin', -> expect(plugin).to.be.instanceof UIPlugin
-    it 'is ItemsUIPlugin', -> expect(plugin).to.be.instanceof ItemsUIPlugin
+    it 'is Plugin', -> expect(plugin).to.be.instanceof Plugin
+    it 'is ItemsPlugin', -> expect(plugin).to.be.instanceof ItemsPlugin
 
   describe '.items', ->
     it 'returns instance of `ItemsManager` plugin', -> expect(plugin.items).to.be.instanceof ItemsManager

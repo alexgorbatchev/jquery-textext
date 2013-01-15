@@ -1,54 +1,56 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { EventEmitter2, opts } = module
+  { opts } = module
 
-  class Plugin extends EventEmitter2
+  class Plugin
     @defaults =
       plugins   : ''
       registery : {}
 
+      html :
+        element : '<div/>'
+
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
 
-    constructor : ({ @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
-      super wildcard : true
-
+    constructor : ({ @element, @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
       @plugins        = null
       @defaultOptions ?= $.extend true, {}, Plugin.defaults, pluginDefaults
+
+      @insureElement()
+      @addToParent()
+
+      @plugins = @createPlugins @options 'plugins'
+
+    $ : (selector) -> @element.find selector
+    emit : (event, args...) -> @element.trigger event, args
+    getPlugin : (name) -> @plugins[name]
+
+    on : (event, selector, handler) ->
+      if typeof selector is 'function' and not handler
+        handler = selector
+        selector = null
+
+      @element.on event, selector, (e, args...) =>
+        args.push e
+        handler.apply @, args
 
     options : (key) ->
       value = opts(@userOptions, key)
       value = opts(@defaultOptions, key) if value is undefined
       value
 
-    handleEvents : (plugins = @plugins) ->
-      handle = (plugin) =>
-        handler = (args...) =>
-          event = plugin.event
-          args.unshift event
+    insureElement : ->
+      unless @element?
+        html = @options 'html.element'
+        @element = $ html if html?
 
-          # turn current plugin event handler so that we don't stuck in emit loop
-          plugin.offAny handler
+      throw { name : 'Plugin', message : 'Needs element' } unless @element
 
-          # bubbles event up
-          @emit.apply @, args
+      @element.addClass 'textext-plugin'
 
-          # rebroadcasts events to siblings
-          for key, child of plugins
-            child.emit.apply child, args if child isnt plugin
+    addToParent : -> @parent?.element.append @element
 
-          plugin.onAny handler
-
-        plugin.onAny handler
-
-      handle plugin for name, plugin of plugins
-
-    init : ->
-      @plugins = @createPlugins @options 'plugins'
-      @handleEvents @plugins
-
-      @emit 'init.after'
-
-    createPlugins : (list, registery) ->
+    createPlugins : (list = '', registery) ->
       registery ?= @options 'registery'
       plugins   = {}
 
@@ -64,7 +66,5 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           plugins[name] = instance
 
       plugins
-
-    getPlugin : (name) -> @plugins[name]
 
   module.Plugin = Plugin

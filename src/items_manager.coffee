@@ -7,13 +7,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       toStringField : null
       toValueField  : null
 
+      html :
+        element : '<div class="textext-items-manager"/>'
+
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
 
     constructor : (opts = {}) ->
       super opts, ItemsManager.defaults
       @items = []
-      @init()
 
     set : (items, callback) ->
       nextTick =>

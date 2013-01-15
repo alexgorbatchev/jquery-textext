@@ -5,7 +5,7 @@
         "less"                : "*",
         "coffee-script"       : "*",
         "jasmine-node"        : "*",
-        "simple-http-server"  : "*",
+        "node-static"         : "*",
         "grunt"               : "*",
         "grunt-contrib-copy"  : "*",
         "grunt-contrib-watch" : "*",

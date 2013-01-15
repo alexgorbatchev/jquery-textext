@@ -10,39 +10,21 @@ describe 'Plugin', ->
     plugin2 : Plugin2
     plugin3 : Plugin3
 
-  parent = plugin = child1 = child2 = null
+  parent = plugin = null
 
   beforeEach ->
     parent = new Plugin
     plugin = new Plugin parent : parent
-    child1 = new Plugin
-    child2 = new Plugin
-
-  describe 'events', ->
-    topLevel = null
-
-    beforeEach ->
-      topLevel = new Plugin
-
-      topLevel.plugins = midlevel : plugin
-      topLevel.handleEvents()
-
-      plugin.plugins = { child1, child2 }
-      plugin.handleEvents()
-
-    it 'broadcasts events to all siblings', (done) ->
-      child2.on 'event', done
-      child1.emit 'event'
-
-    it 'bubbles events up', (done) ->
-      topLevel.on 'event', done
-      child2.emit 'event'
 
   describe '.getPlugin', ->
-    beforeEach -> plugin.plugins = { child1, child2 }
+    child = null
 
-    it 'returns plugin when found', -> expect(plugin.getPlugin 'child1').to.equal child1
-    it 'returns null when not found', -> expect(plugin.getPlugin 'unknown').to.equal undefined
+    beforeEach ->
+      child = new Plugin
+      plugin.plugins = { child }
+
+    it 'returns plugin when found', -> expect(plugin.getPlugin 'child').to.equal child
+    it 'returns null when not found', -> expect(plugin.getPlugin 'unknown').to.not.be.ok
 
   describe '.options', ->
     beforeEach ->
@@ -73,17 +55,3 @@ describe 'Plugin', ->
       expect(plugin1).to.be.instanceof Plugin1
 
     it 'passes options to plugin instances', -> expect(plugin2.options('host')).to.equal 'localhost'
-
-  describe '.init', ->
-    beforeEach ->
-      plugin = new Plugin
-        userOptions :
-          plugins   : 'plugin1 plugin3 plugin2'
-          registery : availablePlugins
-
-      plugin.init()
-
-    it 'creates plugins', ->
-      expect(plugin.plugins.plugin1).to.be.instanceof Plugin1
-      expect(plugin.plugins.plugin2).to.be.instanceof Plugin2
-      expect(plugin.plugins.plugin3).to.be.instanceof Plugin3

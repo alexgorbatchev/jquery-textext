@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { UIPlugin, ItemsManager, resistance, nextTick } = module
+  { Plugin, ItemsManager, resistance, nextTick } = module
 
-  class ItemsUIPlugin extends UIPlugin
+  class ItemsPlugin extends Plugin
     @defaults =
       manager : 'default'
 
@@ -13,17 +13,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         '''
 
     constructor : (opts = {}, pluginDefaults = {}) ->
-      super opts, $.extend({}, ItemsUIPlugin.defaults, pluginDefaults)
+      super opts, $.extend({}, ItemsPlugin.defaults, pluginDefaults)
 
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
-      @handleEvents { @items }
-
-    init : ->
-      super()
-
-      @items.set @options('items'), (err, items) =>
-        @setItems items
 
     addItemElement : (element) -> @element.append element
 
@@ -76,4 +69,4 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @emit 'items.removed', element
         callback null, element
 
-  module.ItemsUIPlugin = ItemsUIPlugin
+  module.ItemsPlugin = ItemsPlugin

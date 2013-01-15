@@ -1,7 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsUIPlugin, Plugin, resistance, nextTick } = module
+  { ItemsPlugin, Plugin, resistance, nextTick } = module
 
-  class TagsPlugin extends ItemsUIPlugin
+  class TagsPlugin extends ItemsPlugin
     @defaults =
       plugins    : 'input'
       items      : []
@@ -20,16 +20,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, TagsPlugin.defaults
-      @init()
+      @input = @getPlugin 'input'
 
+      @on 'click', 'a', @onRemoveTagClick
+
+      @on 'items.set'                        , @updateInputPosition
       @on 'keys.press.left'                  , @onLeftKey
       @on 'keys.press.right'                 , @onRightKey
       @on 'keys.press.backspace'             , @onBackspaceKey
       @on 'keys.press.' + @options('hotKey') , @onHotKey
-      @on 'items.set'                        , @updateInputPosition
-
-      @element.on 'click', 'a', (e) => @onRemoveTagClick(e)
-      @input = @getPlugin 'input'
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -59,7 +58,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onBackspaceKey : (keyCode, keyName) ->
       if @input.empty()
-        @items.removeAt @inputPosition() - 1, (err, index, item) => @removeItemAt index unless err?
+        @items.removeAt index = @inputPosition() - 1, (err, item) => @removeItemAt index unless err?
 
     onHotKey : (keyCode, keyName) ->
       unless @input.empty()
@@ -72,7 +71,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onRemoveTagClick : (e) ->
       e.preventDefault()
-      @items.removeAt @itemPosition(e.target), (err, index, item) => @removeItemAt index unless err?
+      @items.removeAt index = @itemPosition(), (err, item) => @removeItemAt index unless err?
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

@@ -1,4 +1,4 @@
-{ AutocompletePlugin, InputPlugin, ItemsManager, UIPlugin, Plugin } = $.fn.textext
+{ AutocompletePlugin, InputPlugin, ItemsManager, Plugin } = $.fn.textext
 
 describe 'AutocompletePlugin', ->
   html = -> console.log plugin.element.html()
@@ -20,23 +20,23 @@ describe 'AutocompletePlugin', ->
 
   plugin = input = null
 
-  beforeEach (done) ->
+  beforeEach ->
     input = new InputPlugin
     plugin = new AutocompletePlugin parent : input
 
-    plugin.once 'items.set', -> done()
+    # plugin.once 'items.set', -> done()
 
   it 'is registered', -> expect(Plugin.getRegistered 'autocomplete').to.equal AutocompletePlugin
   it 'has default options', -> expect(AutocompletePlugin.defaults).to.be.ok
 
   describe 'instance', ->
-    it 'is UIPlugin', -> expect(plugin).to.be.instanceof UIPlugin
+    it 'is Plugin', -> expect(plugin).to.be.instanceof Plugin
     it 'is AutocompletePlugin', -> expect(plugin).to.be.instanceof AutocompletePlugin
 
     describe 'with parent', ->
       it 'adds itself to parent', -> expect(plugin.element.parent()).to.be input.element
       it 'only works with InputPlugin', ->
-        parent = new UIPlugin element : $ '<div>'
+        parent = new Plugin element : $ '<div>'
         expect(-> new AutocompletePlugin parent : parent).to.throw 'Expects InputPlugin parent'
 
   describe '.items', ->
