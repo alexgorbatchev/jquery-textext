@@ -24,11 +24,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @on 'click', 'a', @onRemoveTagClick
 
-      @on 'items.set'                        , @updateInputPosition
-      @on 'keys.press.left'                  , @onLeftKey
-      @on 'keys.press.right'                 , @onRightKey
-      @on 'keys.press.backspace'             , @onBackspaceKey
-      @on 'keys.press.' + @options('hotKey') , @onHotKey
+      @on 'items:set'                        , @updateInputPosition
+      @on 'keys:press:left'                  , @onLeftKey
+      @on 'keys:press:right'                 , @onRightKey
+      @on 'keys:press:backspace'             , @onBackspaceKey
+      @on 'keys:press:' + @options('hotKey') , @onHotKey
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -46,21 +46,20 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           @input.element.insertAfter items.last()
 
       nextTick callback
-      @emit 'tags.input.moved'
 
-    onLeftKey : (keyCode, keyName) ->
+    onLeftKey : ->
       if @input.empty()
         @moveInputTo @inputPosition() - 1, => @input.focus()
 
-    onRightKey : (keyCode, keyName) ->
+    onRightKey : ->
       if @input.empty()
         @moveInputTo @inputPosition() + 1, => @input.focus()
 
-    onBackspaceKey : (keyCode, keyName) ->
+    onBackspaceKey : ->
       if @input.empty()
         @items.removeAt index = @inputPosition() - 1, (err, item) => @removeItemAt index unless err?
 
-    onHotKey : (keyCode, keyName) ->
+    onHotKey : ->
       unless @input.empty()
         @items.fromString @input.value(), (err, item) =>
           unless err?

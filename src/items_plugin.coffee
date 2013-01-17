@@ -49,7 +49,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           unless err?
             @addItemElement element for element in elements
 
-          @emit 'items.set', elements
+          @emit 'items:set', elements
           callback err, elements
 
     addItem : (item, callback = ->) ->
@@ -60,7 +60,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           unless err?
             @addItemElement element
 
-          @emit 'items.added', element
+          @emit 'items:added', element
           callback err, element
 
     removeItemAt : (index, callback = ->) ->
@@ -69,7 +69,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         element = @$(".textext-items-item:eq(#{index})")
         element.remove()
-        @emit 'items.removed', element
+        @emit 'items:removed', element
         callback null, element
 
   module.ItemsPlugin = ItemsPlugin

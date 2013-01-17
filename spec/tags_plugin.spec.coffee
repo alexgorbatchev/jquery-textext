@@ -30,7 +30,6 @@ describe 'TagsPlugin', ->
     it 'moves input to be after all items', ->
       plugin.element.append $ '<div class="textext-items-item"/><div class="textext-items-item"/><div class="textext-items-item"/>'
       plugin.updateInputPosition()
-      console.log plugin.element.html()
       expectInputToBeAt 3
 
   describe '.moveInputTo', ->

@@ -21,10 +21,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @parent.on 'keys.press.up'                    , @onUpKey, @
-      @parent.on 'keys.press.down'                  , @onDownKey, @
-      @parent.on 'keys.press.' + @options('hotKey') , @onHotKey, @
-      @parent.on 'keys.press.esc'                   , @onEscKey, @
+      @parent.on 'keys:down'                       , @onKeyDown, @
+      @parent.on 'keys:down:up'                    , @onUpKey, @
+      @parent.on 'keys:down:down'                  , @onDownKey, @
+      @parent.on 'keys:down:right'                 , @onRightKey, @
+      @parent.on 'keys:down:esc'                   , @onEscKey, @
+      @parent.on 'keys:down:' + @options('hotKey') , @onHotKey, @
 
       @element.css 'display', 'none'
 
@@ -61,21 +63,28 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items.search @parent.value(), (err, items) =>
         @setItems items, callback
 
-    onUpKey : (keyCode, keyName) ->
+    onUpKey : ->
       if @visible()
         index = @selectedIndex() - 1
         @select index
         @parent.focus() if index is -1
 
-    onDownKey : (keyCode, keyName) ->
+    onDownKey : ->
       if @visible()
         @select @selectedIndex() + 1
       else
         @show => @select 0
 
-    onEscKey : (keyCode, keyName) ->
+    onRightKey : ->
+      if @visible and not @parent.empty() and @parent.caretAtEnd()
+        @complete => @invalidate => null
+
+    onEscKey : ->
       if @visible()
         @hide => @parent.focus()
+
+    onKeyDown : (keyCode) ->
+      console.log keyCode
 
 
   # add plugin to the registery so that it is usable by TextExt

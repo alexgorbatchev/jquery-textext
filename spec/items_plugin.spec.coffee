@@ -63,10 +63,9 @@ describe 'ItemsPlugin', ->
       it 'adds new item', -> expectItem('item2').to.be.ok
       it 'has items in order', -> expectItems 'item1 item2'
 
-    describe 'emitted event', ->
-      it 'emits `items.added`', (done) ->
-        plugin.on 'items.added', -> done()
-        plugin.addItem 'item'
+    it 'emits `items:added`', (done) ->
+      plugin.on 'items:added', -> done()
+      plugin.addItem 'item'
 
   describe '.removeItemAt', ->
     describe 'with one existing item', ->
@@ -83,9 +82,8 @@ describe 'ItemsPlugin', ->
             expectItem('item3').to.not.be.ok
             done()
 
-    describe 'emitted event', ->
-      it 'emits `items.removed`', (done) ->
-        plugin.setItems [ 'item1', 'item3' ], ->
-          plugin.on 'items.removed', -> done()
-          plugin.removeItemAt 0, -> null
+    it 'emits `items:removed`', (done) ->
+      plugin.setItems [ 'item1', 'item3' ], ->
+        plugin.on 'items:removed', -> done()
+        plugin.removeItemAt 0, -> null
 

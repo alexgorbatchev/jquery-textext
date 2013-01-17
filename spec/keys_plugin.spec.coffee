@@ -18,35 +18,31 @@ describe 'KeysPlugin', ->
     it 'is Plugin', -> expect(plugin).to.be.instanceof Plugin
     it 'is KeysPlugins', -> expect(plugin).to.be.instanceof KeysPlugin
 
-  describe 'key down event', ->
-    it 'fires for known keys', (done) ->
-      plugin.on 'keys.down.knownkey', -> done()
-      plugin.onKeyDown 500
+  describe 'when known key is down', ->
+    beforeEach -> plugin.onKeyDown 500
 
-    it 'fires for unknown keys', (done) ->
-      plugin.on 'keys.down.code.600', -> done()
-      plugin.onKeyDown 600
-
+    it 'fires specific down event', (done) -> plugin.on 'keys:down:knownkey', -> done()
+    it 'fires generic down event', (done) -> plugin.on 'keys:down', -> done()
     it 'traps for known keys', -> expect(plugin.onKeyDown 501).to.be.false
 
-  describe 'key up event', ->
-    it 'fires for known keys', (done) ->
-      plugin.on 'keys.up.knownkey', -> done()
-      plugin.onKeyUp 500
-
-    it 'fires for unknown keys', (done) ->
-      plugin.on 'keys.up.code.600', -> done()
-      plugin.onKeyUp 600
-
-    it 'traps for known keys', -> expect(plugin.onKeyUp 501).to.be.false
-
-  describe 'key press event', ->
-    it 'fires for known keys', (done) ->
-      plugin.on 'keys.press.knownkey', -> done()
+  describe 'when known key is pressed', ->
+    beforeEach ->
       plugin.onKeyDown 500
       plugin.onKeyUp 500
 
-    it 'fires for unknown keys', (done) ->
-      plugin.on 'keys.press.code.600', -> done()
+    it 'fires specific press event', (done) -> plugin.on 'keys:press:knownkey', -> done()
+    it 'fires generic press event', (done) -> plugin.on 'keys:press', -> done()
+
+  describe 'when unknown key is down', ->
+    beforeEach -> plugin.onKeyDown 600
+
+    it 'fires specific down event', (done) -> plugin.on 'keys:down:code:600', -> done()
+    it 'fires generic down event', (done) -> plugin.on 'keys:down', -> done()
+
+  describe 'when unknown key is pressed', ->
+    beforeEach ->
       plugin.onKeyDown 600
       plugin.onKeyUp 600
+
+    it 'fires specific press event', (done) -> plugin.on 'keys:press:code:600', -> done()
+    it 'fires generic press event', (done) -> plugin.on 'keys:press', -> done()

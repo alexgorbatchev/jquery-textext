@@ -22,6 +22,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     empty : -> @value().length is 0
     focus : -> @input().focus()
     caretPosition : -> @input().get(0).selectionStart
+    caretAtEnd : -> @caretPosition() is @value().length
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'input', InputPlugin

@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin } = module
+  { Plugin, nextTick } = module
 
   class KeysPlugin extends Plugin
     @defaults =
@@ -34,19 +34,30 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         .keyup((e) => @onKeyUp e.keyCode)
 
     key : (keyCode) ->
-      @options("keys.#{keyCode}") or name : "code.#{keyCode}"
+      @options("keys.#{keyCode}") or name : "code:#{keyCode}"
 
     onKeyDown : (keyCode) ->
       @downKeys[keyCode] = true
       key = @key keyCode
-      @emit "keys.down.#{key.name}", keyCode
+
+      nextTick =>
+        @emit "keys:down", keyCode
+        @emit "keys:down:#{key.name}", keyCode
+
       key.trap isnt true
 
     onKeyUp : (keyCode) ->
       key = @key keyCode
-      @emit "keys.up.#{key.name}", keyCode, key.name
-      @emit "keys.press.#{key.name}", keyCode, key.name if @downKeys[keyCode]
-      @downKeys[keyCode] = false
+
+      nextTick =>
+        @emit "keys:up", keyCode
+        @emit "keys:up:#{key.name}", keyCode
+
+        if @downKeys[keyCode]
+          @emit "keys:press", keyCode
+          @emit "keys:press:#{key.name}", keyCode
+          @downKeys[keyCode] = false
+
       key.trap isnt true
 
   # add plugin to the registery so that it is usable by TextExt
