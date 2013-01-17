@@ -4,6 +4,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
   class ItemsPlugin extends Plugin
     @defaults =
       manager : 'default'
+      items : []
 
       html :
         item : '''
@@ -17,6 +18,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
+
+      @setItems @options 'items'
 
     addItemElement : (element) -> @element.append element
 

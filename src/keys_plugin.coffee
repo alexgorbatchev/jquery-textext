@@ -7,7 +7,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         8   : { name : 'backspace' }
         9   : { name : 'tab' }
         13  : { name : 'enter', trap : true }
-        27  : { name : 'escape', trap : true }
+        27  : { name : 'esc', trap : true }
         37  : { name : 'left' }
         38  : { name : 'up', trap : true }
         39  : { name : 'right' }

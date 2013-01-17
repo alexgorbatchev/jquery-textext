@@ -29,7 +29,11 @@
   <input id="tags01" />
   <script>
     $('#tags01').textext({
-      plugins : 'tags'
+      plugins : 'tags',
+
+      tags : {
+        items : [ 'hello', 'world' ]
+      }
     })
   </script>
 
@@ -38,6 +42,7 @@
   <script>
     $('#autocomplete01').textext({
       plugins : 'input',
+
       input : {
         plugins : 'autocomplete',
 

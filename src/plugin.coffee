@@ -25,14 +25,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     emit : (event, args...) -> @element.trigger event, args
     getPlugin : (name) -> @plugins[name]
 
-    on : (event, selector, handler) ->
-      if typeof selector is 'function' and not handler
-        handler = selector
+    on : (event, selector, handler, context) ->
+      if typeof selector is 'function'
+        [ handler, context ] = [ selector, handler ]
         selector = null
 
       @element.on event, selector, (e, args...) =>
         args.push e
-        handler.apply @, args
+        handler.apply context or @, args
 
     options : (key) ->
       value = opts(@userOptions, key)

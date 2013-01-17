@@ -3,7 +3,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class InputPlugin extends Plugin
     @defaults =
-      plugins : 'keys'
+      plugins : ''
 
       html :
         element : '''
@@ -14,6 +14,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, InputPlugin.defaults
+
+      @plugins['keys'] = @createPlugins 'keys'
 
     input : -> @$ 'input'
     value : -> @input().val.apply @input(), arguments

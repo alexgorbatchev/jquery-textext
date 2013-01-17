@@ -21,9 +21,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @on 'keys.press.up'                    , @onUpKey
-      @on 'keys.press.down'                  , @onDownKey
-      @on 'keys.press.' + @options('hotKey') , @onHotKey
+      @parent.on 'keys.press.up'                    , @onUpKey, @
+      @parent.on 'keys.press.down'                  , @onDownKey, @
+      @parent.on 'keys.press.' + @options('hotKey') , @onHotKey, @
+      @parent.on 'keys.press.esc'                   , @onEscKey, @
 
       @element.css 'display', 'none'
 
@@ -72,11 +73,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         @show => @select 0
 
-    onHotKey : (keyCode, keyName) ->
-      # unless @input.empty()
-      #   @items.fromString @input.value(), (err, item) =>
-      #     unless err?
-      #       @items.add item, (err, item) => @input.value ''
+    onEscKey : (keyCode, keyName) ->
+      if @visible()
+        @hide => @parent.focus()
+
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin

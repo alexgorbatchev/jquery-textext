@@ -13,6 +13,10 @@ describe 'AutocompletePlugin', ->
     plugin.onUpKey()
     expect(-> plugin.select.called).to.happen.and.notify done
 
+  escKey = (done) ->
+    plugin.onEscKey()
+    expect(-> plugin.hide.called).to.happen.and.notify done
+
   expectItems = (items) ->
     actual = []
     plugin.$('.textext-items-item .textext-items-label').each -> actual.push $(@).text().replace(/^\s+|\s+$/g, '')
@@ -171,3 +175,15 @@ describe 'AutocompletePlugin', ->
         upKey -> upKey -> upKey ->
           expect(plugin.selectedIndex()).to.equal -1
           expect(-> input.focus.called).to.happen.and.notify done
+
+  describe '.onEscKey', ->
+    beforeEach (done) ->
+      spy plugin, 'hide'
+      plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], -> plugin.show(-> done())
+
+    it 'closes the drop down', (done) ->
+      escKey -> expect(-> plugin.hide.called).to.happen.and.notify done
+
+    it 'focuses on the input field', (done) ->
+      spy input, 'focus'
+      escKey -> expect(-> input.focus.called).to.happen.and.notify done
