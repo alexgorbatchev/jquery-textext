@@ -7,15 +7,15 @@ describe 'AutocompletePlugin', ->
 
   downKey = (done) ->
     plugin.onDownKey()
-    expect(-> plugin.select.called).to.happen.and.notify done
+    expect(plugin.select).to.be.called done
 
   upKey = (done) ->
     plugin.onUpKey()
-    expect(-> plugin.select.called).to.happen.and.notify done
+    expect(plugin.select).to.be.called done
 
   escKey = (done) ->
     plugin.onEscKey()
-    expect(-> plugin.hide.called).to.happen.and.notify done
+    expect(plugin.hide).to.be.called done
 
   expectItems = (items) ->
     actual = []
@@ -174,7 +174,7 @@ describe 'AutocompletePlugin', ->
 
         upKey -> upKey -> upKey ->
           expect(plugin.selectedIndex()).to.equal -1
-          expect(-> input.focus.called).to.happen.and.notify done
+          expect(input.focus).to.be.called done
 
   describe '.onEscKey', ->
     beforeEach (done) ->
@@ -182,8 +182,15 @@ describe 'AutocompletePlugin', ->
       plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], -> plugin.show(-> done())
 
     it 'closes the drop down', (done) ->
-      escKey -> expect(-> plugin.hide.called).to.happen.and.notify done
+      escKey -> expect(plugin.hide).to.be.called done
 
     it 'focuses on the input field', (done) ->
       spy input, 'focus'
-      escKey -> expect(-> input.focus.called).to.happen.and.notify done
+      escKey -> expect(input.focus).to.be.called done
+
+  describe '.onAnyKeyDown', ->
+
+    it 'respects `minLength` option', ->
+      spy plugin, 'invalidate'
+
+    beforeEach ->

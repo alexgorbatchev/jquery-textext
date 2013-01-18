@@ -85,7 +85,7 @@ describe 'TagsPlugin', ->
         spy plugin, 'moveInputTo'
         plugin.onRightKey()
 
-      it 'moves the input field', (done) -> expect(-> plugin.moveInputTo).to.happen.and.notify done
+      it 'moves the input field', (done) -> expect(plugin.moveInputTo).to.be.called done
 
     describe 'when there is text in the input field', ->
       beforeEach ->
@@ -93,7 +93,7 @@ describe 'TagsPlugin', ->
         input.value 'text'
         plugin.onRightKey()
 
-      it 'does not move the input field', (done) -> expect(-> plugin.moveInputTo).to.not.happen.and.notify done
+      it 'does not move the input field', (done) -> expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onLeftKey', ->
     beforeEach (done) ->
@@ -104,7 +104,7 @@ describe 'TagsPlugin', ->
         spy plugin, 'moveInputTo'
         plugin.onLeftKey()
 
-      it 'moves the input field', (done) -> expect(-> plugin.moveInputTo).to.happen.and.notify done
+      it 'moves the input field', (done) -> expect(plugin.moveInputTo).to.be.called done
 
     describe 'when there is text in the input field', ->
       beforeEach ->
@@ -112,23 +112,24 @@ describe 'TagsPlugin', ->
         input.value 'text'
         plugin.onLeftKey()
 
-      it 'does not move the input field', (done) -> expect(-> plugin.moveInputTo).to.not.happen.and.notify done
+      it 'does not move the input field', (done) -> expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onHotKey', ->
-    beforeEach -> spy(plugin.items, 'fromString')
-
     describe 'when there is text', ->
       beforeEach ->
         spy plugin.items, 'add'
         input.value 'item'
         plugin.onHotKey()
 
-      it 'adds new item', (done) -> expect(-> plugin.items.add.called).to.happen.and.notify done
+      it 'adds new item', (done) -> expect(plugin.items.add).to.be.called done
       it 'clears the input', -> expect(plugin.input.empty()).to.be.false
 
     describe 'when there is no text', ->
-      beforeEach -> plugin.onHotKey()
-      it 'does not add new item', (done) -> expect(-> plugin.items.fromString).to.happen.and.notify done
+      beforeEach ->
+        spy plugin.items, 'fromString'
+        plugin.onHotKey()
+
+      it 'does not add new item', (done) -> expect(plugin.items.fromString).to.not.be.called done
 
   describe '.onRemoveTagClick', ->
     beforeEach ->
@@ -139,4 +140,4 @@ describe 'TagsPlugin', ->
         e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
         plugin.onRemoveTagClick e
 
-    it 'removes item', (done) -> expect(-> plugin.items.removeAt).to.happen.and.notify done
+    it 'removes item', (done) -> expect(plugin.items.removeAt).to.be.called done

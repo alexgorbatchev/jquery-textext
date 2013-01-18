@@ -29,6 +29,7 @@
   <script type="text/javascript" src="build/items_plugin.js"></script>
   <script type="text/javascript" src="build/textext.js"></script>
 
+
   <script type="text/coffeescript" src="textext.spec.coffee"></script>
   <script type="text/coffeescript" src="utils.spec.coffee"></script>
   <script type="text/coffeescript" src="plugin.spec.coffee"></script>
@@ -48,38 +49,7 @@
   <script type="text/javascript" src="build/autocomplete_plugin.js"></script>
   <script type="text/coffeescript" src="autocomplete_plugin.spec.coffee"></script>
 
-  <script type="text/coffeescript">
-    do ->
-      window.expect = chai.expect
-      window.should = chai.should
-      window.spy = sinon.spy
-
-      Assertion = chai.Assertion
-
-      Assertion.addChainableMethod 'happen'
-        , ->
-          null
-        , ->
-          @__flags.waitForHappen = true
-
-      Assertion.addChainableMethod 'notify', (done) ->
-        next = =>
-          id = setTimeout =>
-            result = @_obj()
-
-            if result
-              done()
-            else if not runner.test.timedOut
-              next()
-          , 0
-
-        next() if @__flags.waitForHappen
-
-      $.fx.off = true
-
-      runner = mocha.run()
-  </script>
-
+  <script type="text/coffeescript" src="spec.coffee"></script>
 </head>
 
 <body>
