@@ -4,6 +4,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
   class AutocompletePlugin extends ItemsPlugin
     @defaults =
       items  : []
+      minLength : 2
       hotKey : 'enter'
 
       html :
@@ -21,7 +22,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @parent.on 'keys:down'                       , @onKeyDown, @
+      @parent.on 'keys:down'                       , @onAnyKeyDown, @
       @parent.on 'keys:down:up'                    , @onUpKey, @
       @parent.on 'keys:down:down'                  , @onDownKey, @
       @parent.on 'keys:down:right'                 , @onRightKey, @
@@ -83,9 +84,18 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @visible()
         @hide => @parent.focus()
 
-    onKeyDown : (keyCode) ->
-      console.log keyCode
+    onAnyKeyDown : (keyCode) ->
+      value = @parent.value()
 
+      update = =>
+        console.log '>>>', keyCode
+
+      return if value < @options 'minLength'
+
+      if @visible()
+        @invalidate update
+      else
+        @show update
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin

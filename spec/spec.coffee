@@ -12,7 +12,10 @@ do ->
 
     next = =>
       setTimeout =>
-        if (negate and not object.called) or object.called
+        result = object.called
+        result = not result if negate
+
+        if result
           done()
         else if not runner.test.timedOut
           next()

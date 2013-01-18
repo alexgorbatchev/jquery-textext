@@ -189,8 +189,19 @@ describe 'AutocompletePlugin', ->
       escKey -> expect(input.focus).to.be.called done
 
   describe '.onAnyKeyDown', ->
+    it 'respects `minLength` option', (done) ->
+      spy plugin, 'show'
+      input.value '1'
+      plugin.onAnyKeyDown 'd'.charCodeAt 0
+      expect(plugin.show).to.not.be.called done
 
-    it 'respects `minLength` option', ->
-      spy plugin, 'invalidate'
+    it 'shows the dropdown', (done) ->
+      spy plugin, 'show'
+      input.value 'wor'
 
-    beforeEach ->
+      plugin.setItems [ 'hello', 'world' ], ->
+        plugin.onAnyKeyDown 'r'.charCodeAt 0
+        expectItems 'world'
+        expect(plugin.show).to.be.called done
+
+    # beforeEach ->
