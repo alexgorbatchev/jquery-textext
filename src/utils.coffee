@@ -25,4 +25,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   nextTick = (task) -> setTimeout task, 0
 
-  $.extend module, { opts, prop, nextTick }
+  throttle = (fn, context, delay = 200) ->
+    id = null
+
+    (args...) ->
+      clearTimeout id
+      id = setTimeout (-> fn.apply context or null, args), delay
+
+  $.extend module, { opts, prop, throttle, nextTick }

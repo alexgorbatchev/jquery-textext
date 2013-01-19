@@ -37,7 +37,7 @@ describe 'AutocompletePlugin', ->
     it 'is Plugin', -> expect(plugin).to.be.instanceof Plugin
     it 'is AutocompletePlugin', -> expect(plugin).to.be.instanceof AutocompletePlugin
 
-    describe 'with parent', ->
+    describe 'parent', ->
       it 'adds itself to parent', -> expect(plugin.element.parent()).to.be input.element
       it 'only works with InputPlugin', ->
         parent = new Plugin element : $ '<div>'
@@ -189,19 +189,33 @@ describe 'AutocompletePlugin', ->
       escKey -> expect(input.focus).to.be.called done
 
   describe '.onAnyKeyDown', ->
-    it 'respects `minLength` option', (done) ->
+    R = 'r'.charCodeAt 0
+
+    beforeEach (done) ->
       spy plugin, 'show'
-      input.value '1'
-      plugin.onAnyKeyDown 'd'.charCodeAt 0
+      plugin.setItems [ 'hello', 'world' ], -> done()
+
+    it 'does not do anything on ESC key', (done) ->
+      plugin.onAnyKeyDown 27
+      expect(plugin.show).to.not.be.called done
+
+    it 'shows all items when there is user deletes all text from input box', (done) ->
+      input.value ''
+      plugin.onAnyKeyDown 8
+      plugin.on 'items:display', ->
+        expectItems 'hello world'
+        expect(plugin.show).to.be.called done
+
+    it 'respects `minLength` option when there is value in the input box', (done) ->
+      input.value 'w'
+      plugin.userOptions.minLength = 2
+      plugin.onAnyKeyDown R
       expect(plugin.show).to.not.be.called done
 
     it 'shows the dropdown', (done) ->
-      spy plugin, 'show'
       input.value 'wor'
 
-      plugin.setItems [ 'hello', 'world' ], ->
-        plugin.onAnyKeyDown 'r'.charCodeAt 0
+      plugin.onAnyKeyDown R
+      plugin.on 'items:display', ->
         expectItems 'world'
         expect(plugin.show).to.be.called done
-
-    # beforeEach ->

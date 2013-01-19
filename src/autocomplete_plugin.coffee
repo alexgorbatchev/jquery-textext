@@ -1,11 +1,12 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsPlugin, InputPlugin, Plugin, resistance, nextTick } = module
+  { ItemsPlugin, InputPlugin, Plugin, throttle } = module
 
   class AutocompletePlugin extends ItemsPlugin
     @defaults =
-      items  : []
-      minLength : 2
-      hotKey : 'enter'
+      items     : []
+      minLength : 1
+      throttle  : 500
+      hotKey    : 'enter'
 
       html :
         element : '<div class="textext-autocomplete"/>'
@@ -22,7 +23,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @parent.on 'keys:down'                       , @onAnyKeyDown, @
+      @parent.on 'keys:down'                       , throttle @onAnyKeyDown, @, @options 'throttle'
       @parent.on 'keys:down:up'                    , @onUpKey, @
       @parent.on 'keys:down:down'                  , @onDownKey, @
       @parent.on 'keys:down:right'                 , @onRightKey, @
@@ -51,18 +52,18 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     show : (callback) ->
       @invalidate (err, items) =>
-        @element.show =>
+        @element.show 0, =>
           callback err, items
 
     hide : (callback) ->
-      @element.hide =>
+      @element.hide 0, =>
         @element.css 'display', 'none'
         @select -1
         callback()
 
     invalidate : (callback) ->
       @items.search @parent.value(), (err, items) =>
-        @setItems items, callback
+        @displayItems items, callback
 
     onUpKey : ->
       if @visible()
@@ -85,17 +86,17 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @hide => @parent.focus()
 
     onAnyKeyDown : (keyCode) ->
+      return if keyCode is 27
+
       value = @parent.value()
+      return if value.length and value.length < @options 'minLength'
 
-      update = =>
-        console.log '>>>', keyCode
-
-      return if value < @options 'minLength'
+      done = => null
 
       if @visible()
-        @invalidate update
+        @invalidate done
       else
-        @show update
+        @show done
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin

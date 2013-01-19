@@ -14,6 +14,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : ({ @element, @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
       @plugins        = null
+      @userOptions    ?= {}
       @defaultOptions ?= $.extend true, {}, Plugin.defaults, pluginDefaults
 
       @insureElement()

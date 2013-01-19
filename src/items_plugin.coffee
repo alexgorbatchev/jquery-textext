@@ -36,21 +36,24 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         callback err, element
 
+    displayItems : (items, callback = ->) ->
+      @element.find('.textext-items-item').remove()
+
+      jobs = for item in items
+        do (item) => (done) => @createItemElement item, done
+
+      resistance.series jobs, (err, elements...) =>
+        unless err?
+          @addItemElement element for element in elements
+
+        @emit 'items:display', elements
+        callback err, elements
+
     setItems : (items, callback = ->) ->
       @items.set items, (err, items) =>
         return callback err, items if err?
-
-        @element.find('.textext-items-item').remove()
-
-        jobs = for item in items
-          do (item) => (done) => @createItemElement item, done
-
-        resistance.series jobs, (err, elements...) =>
-          unless err?
-            @addItemElement element for element in elements
-
-          @emit 'items:set', elements
-          callback err, elements
+        @emit 'items:set', items
+        @displayItems items, callback
 
     addItem : (item, callback = ->) ->
       @items.add item, (err, item) =>

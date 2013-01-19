@@ -31,11 +31,12 @@ describe 'ItemsPlugin', ->
         expect(plugin.itemPosition item).to.equal 2
         done()
 
-  describe '.setItems', ->
+  describe '.displayItems', ->
     describe 'first time', ->
       beforeEach (done) ->
-        plugin.setItems [ 'item1', 'item2', 'item3', 'item4' ], done
+        plugin.displayItems [ 'item1', 'item2', 'item3', 'item4' ], done
 
+      it 'does not change items', -> expect(plugin.items.items).to.deep.equal []
       it 'creates item elements in order', -> expectItems 'item1 item2 item3 item4'
 
       it 'adds labels to items', ->
@@ -44,9 +45,16 @@ describe 'ItemsPlugin', ->
 
       describe 'second time', ->
         it 'removes existing item elements', (done) ->
-          plugin.setItems [ 'new1', 'new2' ], ->
+          plugin.displayItems [ 'new1', 'new2' ], ->
             expectItems 'new1 new2'
             done()
+
+  describe '.setItems', ->
+    beforeEach (done) ->
+      plugin.setItems [ 'item1', 'item2', 'item3', 'item4' ], done
+
+    it 'changes items', -> expect(plugin.items.items).to.deep.equal [ 'item1', 'item2', 'item3', 'item4' ]
+    it 'creates item elements in order', -> expectItems 'item1 item2 item3 item4'
 
   describe '.addItem', ->
     describe 'with no existing items', ->
