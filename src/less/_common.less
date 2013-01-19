@@ -2,20 +2,25 @@
 @selected : #6D84B4;
 @font     : 11px "lucida grande",tahoma,verdana,arial,sans-serif;
 
+.input_font() {
+  font        : @font;
+  line-height : 13px;
+}
+
 .border_box() {
-    -webkit-box-sizing : border-box;
-    -moz-box-sizing    : border-box;
-    box-sizing         : border-box;
+  -webkit-box-sizing : border-box;
+  -moz-box-sizing    : border-box;
+  box-sizing         : border-box;
 }
 
 .shadow(@_) {
-    -webkit-box-shadow : @arguments;
-    -moz-box-shadow    : @arguments;
-    box-shadow         : @arguments;
+  -webkit-box-shadow : @arguments;
+  -moz-box-shadow    : @arguments;
+  box-shadow         : @arguments;
 }
 
 .round_corners(@_) {
-    -webkit-border-radius : @arguments;
-    -moz-border-radius    : @arguments;
-    border-radius         : @arguments;
+  -webkit-border-radius : @arguments;
+  -moz-border-radius    : @arguments;
+  border-radius         : @arguments;
 }

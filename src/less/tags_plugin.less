@@ -1,0 +1,47 @@
+@import '_common';
+
+@tag_color : #E2E6F0;
+
+.textext .textext-tags {
+  .input_font;
+  .border_box;
+
+  overflow      : auto;
+  margin-bottom : -2px;
+
+  .textext-input {
+    width    : 100%;
+    float    : left;
+    margin   : 1px 2px 1px 0px;
+    height   : 16px;
+    overflow : hidden;
+  }
+
+  .textext-items-item {
+    .round_corners(2px);
+    .border_box;
+
+    float : left;
+    position   : relative;
+    border     : 1px solid #9DACCC;
+    background : @tag_color;
+    color      : #000;
+    padding    : 0px 17px 0px 3px;
+    margin     : 0 2px 2px 0px;
+    cursor     : pointer;
+    height     : 16px;
+
+    a {
+      position   : absolute;
+      right      : 3px;
+      top        : 2px;
+      width      : 11px;
+      height     : 11px;
+      display    : block;
+      background : url("../images/close.png") 0 0 no-repeat;
+
+      &:hover { background-position: 0 -11px; }
+      &:active { background-position: 0 -22px; }
+    }
+  }
+}

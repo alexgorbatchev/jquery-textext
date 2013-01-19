@@ -1,28 +1,14 @@
 @import '_common';
 
-.text-core {
-    position : relative;
+.textext {
+  .border_box;
 
-    .text-wrap {
-        position   : absolute;
-        background : #fff;
-
-        textarea, input {
-            .border_box;
-            .round_corners(0px);
-            border      : 1px solid @border;
-            outline     : none;
-            resize      : none;
-            position    : absolute;
-            z-index     : 1;
-            background  : none;
-            overflow    : hidden;
-            margin      : 0;
-            padding     : 3px 5px 4px 5px;
-            white-space : nowrap;
-            font        : @font;
-            line-height : 13px;
-            height      : auto;
-        }
-    }
+  position   : relative;
+  overflow   : auto;
+  display    : inline-block;
+  border     : 1px solid @border;
+  background : none;
+  margin     : 0;
+  padding    : 2px;
+  width      : 100%;
 }
