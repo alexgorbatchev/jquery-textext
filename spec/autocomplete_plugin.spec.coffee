@@ -3,7 +3,7 @@
 describe 'AutocompletePlugin', ->
   html = -> console.log plugin.element.html()
 
-  expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).to.match '.selected'
+  expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).to.match '.textext-items-selected'
 
   downKey = (done) ->
     plugin.onDownKey()
@@ -89,11 +89,11 @@ describe 'AutocompletePlugin', ->
 
     describe 'when dropdown is visible', ->
       it 'returns 0 when first item is selected', ->
-        plugin.$('.textext-items-item:eq(0)').addClass 'selected'
+        plugin.$('.textext-items-item:eq(0)').addClass 'textext-items-selected'
         expect(plugin.selectedIndex()).to.equal 0
 
       it 'returns 3 when fourth item is selected', ->
-        plugin.$('.textext-items-item:eq(3)').addClass 'selected'
+        plugin.$('.textext-items-item:eq(3)').addClass 'textext-items-selected'
         expect(plugin.selectedIndex()).to.equal 3
 
   describe '.onDownKey', ->
@@ -188,34 +188,21 @@ describe 'AutocompletePlugin', ->
       spy input, 'focus'
       escKey -> expect(input.focus).to.be.called done
 
-  describe '.onAnyKeyDown', ->
-    R = 'r'.charCodeAt 0
-
+  describe '.onInputChange', ->
     beforeEach (done) ->
       spy plugin, 'show'
       plugin.setItems [ 'hello', 'world' ], -> done()
 
-    it 'does not do anything on ESC key', (done) ->
-      plugin.onAnyKeyDown 27
-      expect(plugin.show).to.not.be.called done
-
-    it 'shows all items when there is user deletes all text from input box', (done) ->
-      input.value ''
-      plugin.onAnyKeyDown 8
-      plugin.on 'items:display', ->
-        expectItems 'hello world'
-        expect(plugin.show).to.be.called done
-
     it 'respects `minLength` option when there is value in the input box', (done) ->
       input.value 'w'
       plugin.userOptions.minLength = 2
-      plugin.onAnyKeyDown R
+      plugin.onInputChange()
       expect(plugin.show).to.not.be.called done
 
     it 'shows the dropdown', (done) ->
       input.value 'wor'
 
-      plugin.onAnyKeyDown R
+      plugin.onInputChange()
       plugin.on 'items:display', ->
         expectItems 'world'
         expect(plugin.show).to.be.called done

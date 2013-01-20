@@ -17,16 +17,33 @@
   <script type="text/javascript" src="build/textext.js"></script>
 
   <!-- PLUGINS -->
+  <link rel="stylesheet" type="text/css" href="build/css/textext.css"/>
+
   <script type="text/javascript" src="build/keys_plugin.js"></script>
+
   <script type="text/javascript" src="build/input_plugin.js"></script>
+  <link rel="stylesheet" type="text/css" href="build/css/input_plugin.css"/>
+
   <script type="text/javascript" src="build/tags_plugin.js"></script>
+  <link rel="stylesheet" type="text/css" href="build/css/tags_plugin.css"/>
+
   <script type="text/javascript" src="build/autocomplete_plugin.js"></script>
+  <link rel="stylesheet" type="text/css" href="build/css/autocomplete_plugin.css"/>
+
+  <style>
+    .container {
+      width : 300px;
+    }
+  </style>
 </head>
 
 <body>
 
   <h1>Tags 01</h1>
-  <input id="tags01" />
+  <div class="container">
+    <input id="tags01" />
+  </div>
+
   <script>
     $('#tags01').textext({
       plugins : 'tags',
@@ -38,7 +55,10 @@
   </script>
 
   <h1>Autocomplete 01</h1>
-  <input id="autocomplete01" />
+  <div class="container">
+    <input id="autocomplete01" />
+  </div>
+
   <script>
     $('#autocomplete01').textext({
       plugins : 'input',

@@ -6,6 +6,7 @@
   .input_font;
   .border_box;
 
+  padding       : 3px;
   overflow      : auto;
   margin-bottom : -2px;
 
@@ -13,28 +14,29 @@
     width    : 100%;
     float    : left;
     margin   : 1px 2px 1px 0px;
-    height   : 16px;
+    padding  : 0;
+    height   : 17px;
     overflow : hidden;
   }
 
   .textext-items-item {
     .round_corners(2px);
     .border_box;
+    .border;
 
     float : left;
     position   : relative;
-    border     : 1px solid #9DACCC;
     background : @tag_color;
     color      : #000;
-    padding    : 0px 17px 0px 3px;
+    padding    : 1px 18px 1px 4px;
     margin     : 0 2px 2px 0px;
     cursor     : pointer;
-    height     : 16px;
+    height     : 17px;
 
     a {
       position   : absolute;
       right      : 3px;
-      top        : 2px;
+      top        : 3px;
       width      : 11px;
       height     : 11px;
       display    : block;

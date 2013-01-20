@@ -24,11 +24,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @input = @getPlugin 'input'
 
       @on 'click', 'a', @onRemoveTagClick
+      @on 'keys:down:left', @onLeftKey
+      @on 'keys:down:right', @onRightKey
+      @on 'keys:down:backspace', @onBackspaceKey
+      @on 'keys:down:' + @options('hotKey') , @onHotKey
       @on 'items:set', @updateInputPosition
-      @on 'keys:press:left', @onLeftKey
-      @on 'keys:press:right', @onRightKey
-      @on 'keys:press:backspace', @onBackspaceKey
-      @on 'keys:press:' + @options('hotKey') , @onHotKey
       @on 'items:display', @invalidateInputBox
       @on 'items:add', @invalidateInputBox
       @on 'items:remove', @invalidateInputBox

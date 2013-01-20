@@ -21,8 +21,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : (opts = {}) ->
       super opts, KeysPlugin.defaults
 
-      @downKeys = {}
-
       input = opts.element
 
       unless input
@@ -30,35 +28,39 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         input = input.find 'input'
 
       input
-        .keydown((e) => e.preventDefault() if @onKeyDown e.keyCode)
-        .keyup((e) => e.preventDefault() if @onKeyUp e.keyCode)
+        .keydown((e) => @onKeyDown e.keyCode)
+        .keyup((e) => @onKeyUp e.keyCode)
+        .keypress((e) => @onKeyPress e.keyCode)
 
     key : (keyCode) ->
       @options("keys.#{keyCode}") or name : "code:#{keyCode}"
 
     onKeyDown : (keyCode) ->
-      @downKeys[keyCode] = true
       key = @key keyCode
 
       nextTick =>
-        @emit "keys:down", keyCode
+        @emit 'keys:down', keyCode
         @emit "keys:down:#{key.name}", keyCode
 
-      key.trap is true
+      key.trap isnt true
 
     onKeyUp : (keyCode) ->
       key = @key keyCode
 
       nextTick =>
-        @emit "keys:up", keyCode
+        @emit 'keys:up', keyCode
         @emit "keys:up:#{key.name}", keyCode
 
-        if @downKeys[keyCode]
-          @emit "keys:press", keyCode
-          @emit "keys:press:#{key.name}", keyCode
-          @downKeys[keyCode] = false
+      key.trap isnt true
 
-      key.trap is true
+    onKeyPress : (keyCode) ->
+      key = @key keyCode
+
+      nextTick =>
+        @emit 'keys:press', keyCode
+        @emit "keys:press:#{key.name}", keyCode
+
+      key.trap isnt true
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'keys', KeysPlugin

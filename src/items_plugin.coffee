@@ -32,6 +32,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items.toString item, (err, value) =>
         unless err?
           element = $ @options 'html.item'
+          element.data 'item', item
           element.find('.textext-items-label').html value
 
         callback err, element

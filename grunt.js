@@ -28,13 +28,15 @@ module.exports = function(grunt)
                     compress : true
                 },
                 files : {
-                    'build/css/textext.itemmanager.ajax.css'    : 'src/less/textext.itemmanager.ajax.less',
-                    'build/css/textext.css'                     : 'src/less/textext.less',
-                    'build/css/textext.plugin.arrow.css'        : 'src/less/textext.plugin.arrow.less',
-                    'build/css/textext.plugin.autocomplete.css' : 'src/less/textext.plugin.autocomplete.less',
-                    'build/css/textext.plugin.focus.css'        : 'src/less/textext.plugin.focus.less',
-                    'build/css/textext.plugin.prompt.css'       : 'src/less/textext.plugin.prompt.less',
-                    'build/css/textext.plugin.tags.css'         : 'src/less/textext.plugin.tags.less'
+                    'build/css/textext.css'             : 'src/less/textext.less',
+                    'build/css/input_plugin.css'        : 'src/less/input_plugin.less',
+                    'build/css/tags_plugin.css'         : 'src/less/tags_plugin.less',
+                    'build/css/autocomplete_plugin.css' : 'src/less/autocomplete_plugin.less',
+
+                    // 'build/css/itemmanager.ajax.css'    : 'src/less/itemmanager.ajax.less',
+                    // 'build/css/arrow_plugin.css'        : 'src/less/arrow_plugin.less',
+                    // 'build/css/focus_plugin.css'        : 'src/less/focus_plugin.less',
+                    // 'build/css/prompt_plugin.css'       : 'src/less/prompt_plugin.less',
                 }
             }
         },

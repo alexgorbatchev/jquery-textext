@@ -1,0 +1,31 @@
+@import '_common';
+
+.textext .textext-autocomplete {
+  .border_box;
+  .input_font;
+  .box_border;
+
+  padding    : 0;
+  position   : absolute;
+  top : 100%;
+  margin-top: -1px;
+  left       : 0;
+  z-index    : 3;
+  background : #fff;
+  width      : 100%;
+  padding    : 1px;
+  overflow-x : hidden;
+  overflow-y : auto;
+
+  .textext-items-item {
+    .border_box;
+
+    padding : 3px 4px;
+    cursor  : pointer;
+
+    &.textext-items-selected {
+      color      : #fff;
+      background : @selected;
+    }
+  }
+}

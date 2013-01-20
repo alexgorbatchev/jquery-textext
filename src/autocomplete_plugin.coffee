@@ -23,7 +23,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @parent.on 'keys:down'                       , throttle @onAnyKeyDown, @, @options 'throttle'
+      @parent.on 'input:change'                    , throttle @onInputChange, @, @options 'throttle'
       @parent.on 'keys:down:up'                    , @onUpKey, @
       @parent.on 'keys:down:down'                  , @onDownKey, @
       @parent.on 'keys:down:right'                 , @onRightKey, @
@@ -36,7 +36,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     selectedIndex : ->
       items    = @$ '.textext-items-item'
-      selected = items.filter '.selected'
+      selected = items.filter '.textext-items-selected'
 
       items.index selected
 
@@ -45,10 +45,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       newItem = items.eq index
 
       if newItem.length
-        items.removeClass('selected')
+        items.removeClass('textext-items-selected')
 
         if index >= 0
-          newItem.addClass('selected')
+          newItem.addClass('textext-items-selected')
 
     show : (callback) ->
       @invalidate (err, items) =>
@@ -65,6 +65,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items.search @parent.value(), (err, items) =>
         @displayItems items, callback
 
+    complete : (callback) ->
+      selected = @$ '.textext-items-selected'
+      item = selected.data 'item'
+
+      @items.toString item, (err, value) =>
+        @parent.value value
+        callback()
+
     onUpKey : ->
       if @visible()
         index = @selectedIndex() - 1
@@ -77,18 +85,22 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         @show => @select 0
 
-    onRightKey : ->
-      if @visible and not @parent.empty() and @parent.caretAtEnd()
-        @complete => @invalidate => null
-
     onEscKey : ->
       if @visible()
         @hide => @parent.focus()
 
-    onAnyKeyDown : (keyCode) ->
-      return if keyCode is 27
+    onRightKey : ->
+      if @visible and not @parent.empty() and @parent.caretAtEnd() and @selectedIndex() is -1
+        @select 0
+        @complete => @hide => null
 
+    onHotKey : (keyCode) ->
+      if @visible and not @parent.empty() and @selectedIndex() isnt -1
+        @complete => @hide => null
+
+    onInputChange : (keyCode) ->
       value = @parent.value()
+
       return if value.length and value.length < @options 'minLength'
 
       done = => null
