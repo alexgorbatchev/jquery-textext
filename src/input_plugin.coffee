@@ -16,6 +16,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super opts, InputPlugin.defaults
 
       @plugins['keys'] = @createPlugins 'keys'
+      @lastValue = @value()
 
       @on 'keys:down', @onKeyDown, @
 

@@ -96,6 +96,17 @@ describe 'AutocompletePlugin', ->
         plugin.$('.textext-items-item:eq(3)').addClass 'textext-items-selected'
         expect(plugin.selectedIndex()).to.equal 3
 
+  describe '.complete', ->
+    beforeEach (done) -> plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], done
+
+    it 'uses selected item to set the value', (done) ->
+      expect(input.value()).to.be ''
+      plugin.$('.textext-items-item:eq(1)').addClass 'textext-items-selected'
+
+      plugin.complete =>
+        expect(input.value()).to.be 'item2'
+        done()
+
   describe '.onDownKey', ->
     beforeEach (done) ->
       spy plugin, 'select'

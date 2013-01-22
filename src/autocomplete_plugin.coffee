@@ -95,10 +95,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @complete => @hide => null
 
     onHotKey : (keyCode) ->
-      if @visible and not @parent.empty() and @selectedIndex() isnt -1
+      if @visible and @selectedIndex() isnt -1
         @complete => @hide => null
 
-    onInputChange : (keyCode) ->
+    onInputChange : ->
       value = @parent.value()
 
       return if value.length and value.length < @options 'minLength'

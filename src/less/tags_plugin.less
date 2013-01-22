@@ -6,25 +6,25 @@
   .input_font;
   .border_box;
 
+  width         : 100%;
   padding       : 3px;
-  overflow      : auto;
   margin-bottom : -2px;
+  display       : inline-block;
 
-  .textext-input {
+  > .textext-input {
     width    : 100%;
     float    : left;
     margin   : 1px 2px 1px 0px;
     padding  : 0;
     height   : 17px;
-    overflow : hidden;
   }
 
-  .textext-items-item {
+  > .textext-items-item {
     .round_corners(2px);
     .border_box;
     .border;
 
-    float : left;
+    float      : left;
     position   : relative;
     background : @tag_color;
     color      : #000;
