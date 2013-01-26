@@ -30,10 +30,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     createItemElement : (item, callback = ->) ->
       @items.toString item, (err, value) =>
-        unless err?
-          element = $ @options 'html.item'
-          element.data 'item', item
-          element.find('.textext-items-label').html value
+        element = $ @options 'html.item'
+        element.data 'item', item
+        element.find('.textext-items-label').html value
 
         callback err, element
 
@@ -44,36 +43,30 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         do (item) => (done) => @createItemElement item, done
 
       resistance.series jobs, (err, elements...) =>
-        unless err?
-          @addItemElement element for element in elements
+        @addItemElement element for element in elements
 
-        @emit 'items:display', elements
-        callback err, elements
+        @emit 'items.display', [ elements ], (err) =>
+          callback err, elements
 
     setItems : (items, callback = ->) ->
       @items.set items, (err, items) =>
-        return callback err, items if err?
-        @emit 'items:set', items
-        @displayItems items, callback
+        @emit 'items.set', [ items ], (err) =>
+          @displayItems items, callback
 
     addItem : (item, callback = ->) ->
       @items.add item, (err, item) =>
-        return callback err, items if err?
-
         @createItemElement item, (err, element) =>
-          unless err?
-            @addItemElement element
+          @addItemElement element
 
-          @emit 'items:add', element
-          callback err, element
+          @emit 'items.add', [ element ], (err) =>
+            callback err, element
 
     removeItemAt : (index, callback = ->) ->
       @items.removeAt index, (err, item) =>
-        return callback err, items if err?
-
         element = @$(".textext-items-item:eq(#{index})")
         element.remove()
-        @emit 'items:remove', element
-        callback null, element
+
+        @emit 'items.remove', [ element ], (err) =>
+          callback err, element
 
   module.ItemsPlugin = ItemsPlugin

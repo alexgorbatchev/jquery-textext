@@ -81,55 +81,63 @@ describe 'TagsPlugin', ->
       plugin.setItems [ 'item1', 'item2', 'item3' ], -> plugin.moveInputTo 1, done
 
     describe 'when there is no text in the input field', ->
-      beforeEach ->
-        spy plugin, 'moveInputTo'
-        plugin.onRightKey()
+      beforeEach -> spy plugin, 'moveInputTo'
 
-      it 'moves the input field', (done) -> expect(plugin.moveInputTo).to.be.called done
+      it 'moves the input field', (done) ->
+        plugin.onRightKey 0, ->
+          expect(plugin.moveInputTo).to.be.called done
 
     describe 'when there is text in the input field', ->
       beforeEach ->
         spy plugin, 'moveInputTo'
         input.value 'text'
-        plugin.onRightKey()
 
-      it 'does not move the input field', (done) -> expect(plugin.moveInputTo).to.not.be.called done
+      it 'does not move the input field', (done) ->
+        plugin.onRightKey 0, ->
+          expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onLeftKey', ->
     beforeEach (done) ->
       plugin.setItems [ 'item1', 'item2', 'item3' ], done
 
     describe 'when there is no text in the input field', ->
-      beforeEach ->
-        spy plugin, 'moveInputTo'
-        plugin.onLeftKey()
+      beforeEach -> spy plugin, 'moveInputTo'
 
-      it 'moves the input field', (done) -> expect(plugin.moveInputTo).to.be.called done
+      it 'moves the input field', (done) ->
+        plugin.onLeftKey 0, ->
+          expect(plugin.moveInputTo).to.be.called done
 
     describe 'when there is text in the input field', ->
       beforeEach ->
         spy plugin, 'moveInputTo'
         input.value 'text'
-        plugin.onLeftKey()
 
-      it 'does not move the input field', (done) -> expect(plugin.moveInputTo).to.not.be.called done
+      it 'does not move the input field', (done) ->
+        plugin.onLeftKey 0, ->
+          expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onHotKey', ->
     describe 'when there is text', ->
       beforeEach ->
         spy plugin.items, 'add'
         input.value 'item'
-        plugin.onHotKey()
 
-      it 'adds new item', (done) -> expect(plugin.items.add).to.be.called done
-      it 'clears the input', -> expect(plugin.input.empty()).to.be.false
+      it 'adds new item', (done) ->
+        plugin.onHotKey 0, ->
+          expect(plugin.items.add).to.be.called done
+
+      it 'clears the input', (done) ->
+        plugin.onHotKey 0, ->
+          expect(plugin.input.empty()).to.be.true
+          done()
 
     describe 'when there is no text', ->
       beforeEach ->
         spy plugin.items, 'fromString'
-        plugin.onHotKey()
 
-      it 'does not add new item', (done) -> expect(plugin.items.fromString).to.not.be.called done
+      it 'does not add new item', (done) ->
+        plugin.onHotKey 0, ->
+          expect(plugin.items.fromString).to.not.be.called done
 
   describe '.onRemoveTagClick', ->
     beforeEach ->
@@ -138,6 +146,6 @@ describe 'TagsPlugin', ->
       plugin.setItems [ 'item1', 'item2', 'item3', 'item4' ], ->
         e = jQuery.Event 'click'
         e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
-        plugin.onRemoveTagClick e
+        plugin.$onRemoveTagClick e
 
     it 'removes item', (done) -> expect(plugin.items.removeAt).to.be.called done

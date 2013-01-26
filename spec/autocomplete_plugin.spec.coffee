@@ -3,19 +3,10 @@
 describe 'AutocompletePlugin', ->
   html = -> console.log plugin.element.html()
 
+  onDownKey = (done) -> plugin.onDownKey 0, done
+  onUpKey = (done) -> plugin.onUpKey 0, done
+
   expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).to.match '.textext-items-selected'
-
-  downKey = (done) ->
-    plugin.onDownKey()
-    expect(plugin.select).to.be.called done
-
-  upKey = (done) ->
-    plugin.onUpKey()
-    expect(plugin.select).to.be.called done
-
-  escKey = (done) ->
-    plugin.onEscKey()
-    expect(plugin.hide).to.be.called done
 
   expectItems = (items) ->
     actual = []
@@ -27,8 +18,6 @@ describe 'AutocompletePlugin', ->
   beforeEach ->
     input = new InputPlugin
     plugin = new AutocompletePlugin parent : input
-
-    # plugin.once 'items.set', -> done()
 
   it 'is registered', -> expect(Plugin.getRegistered 'autocomplete').to.equal AutocompletePlugin
   it 'has default options', -> expect(AutocompletePlugin.defaults).to.be.ok
@@ -109,20 +98,19 @@ describe 'AutocompletePlugin', ->
 
   describe '.onDownKey', ->
     beforeEach (done) ->
-      spy plugin, 'select'
       plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], done
 
     describe 'when there is text', ->
       beforeEach (done) ->
         input.value 'item'
-        downKey done
+        onDownKey done
 
       describe 'dropdown', ->
         it 'is visible', -> expect(plugin.visible()).to.be.true
         it 'has items matching text', -> expectItems 'item1 item2'
 
     describe 'when there is no text', ->
-      beforeEach (done) -> downKey done
+      beforeEach (done) -> onDownKey done
 
       describe 'dropdown', ->
         it 'is visible', -> expect(plugin.visible()).to.be.true
@@ -130,90 +118,83 @@ describe 'AutocompletePlugin', ->
 
     describe 'pressing once', ->
       it 'selects the first item', (done) ->
-        downKey ->
+        onDownKey ->
           expectSelected 'item1'
           done()
 
     describe 'pressing twice', ->
       it 'selects the the second item', (done) ->
-        downKey -> downKey ->
+        onDownKey -> onDownKey ->
           expectSelected 'item2'
           done()
 
     describe 'pressing three times', ->
       it 'selects the the third item', (done) ->
-        downKey -> downKey -> downKey ->
+        onDownKey -> onDownKey -> onDownKey ->
           expectSelected 'foo'
           done()
 
     describe 'pressing four times', ->
       it 'selects the the fourth item', (done) ->
-        downKey -> downKey -> downKey -> downKey ->
+        onDownKey -> onDownKey -> onDownKey -> onDownKey ->
           expectSelected 'bar'
           done()
 
     describe 'pressing five times', ->
       it 'keeps selection on the the fourth item', (done) ->
-        downKey -> downKey -> downKey -> downKey -> downKey ->
+        onDownKey -> onDownKey -> onDownKey -> onDownKey -> onDownKey ->
           expectSelected 'bar'
           done()
 
   describe '.onUpKey', ->
     beforeEach (done) ->
-      spy plugin, 'select'
-
       plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], ->
-        downKey -> downKey -> downKey ->
+        onDownKey -> onDownKey -> onDownKey ->
           expectSelected 'foo'
           done()
 
     describe 'pressing once', ->
       it 'selects the first item', (done) ->
-        upKey ->
+        onUpKey ->
           expectSelected 'item2'
           done()
 
     describe 'pressing twice', ->
       it 'selects the the second item', (done) ->
-        upKey -> upKey ->
+        onUpKey -> onUpKey ->
           expectSelected 'item1'
           done()
 
     describe 'pressing three times', ->
       it 'goes back into the input', (done) ->
-        spy input, 'focus'
-
-        upKey -> upKey -> upKey ->
+        onUpKey -> onUpKey -> onUpKey ->
           expect(plugin.selectedIndex()).to.equal -1
-          expect(input.focus).to.be.called done
+          done()
 
   describe '.onEscKey', ->
     beforeEach (done) ->
-      spy plugin, 'hide'
       plugin.setItems [ 'item1', 'item2', 'foo', 'bar' ], -> plugin.show(-> done())
 
     it 'closes the drop down', (done) ->
-      escKey -> expect(plugin.hide).to.be.called done
-
-    it 'focuses on the input field', (done) ->
-      spy input, 'focus'
-      escKey -> expect(input.focus).to.be.called done
+      plugin.onEscKey 0, ->
+        expect(plugin.visible()).to.be.false
+        done()
 
   describe '.onInputChange', ->
     beforeEach (done) ->
-      spy plugin, 'show'
       plugin.setItems [ 'hello', 'world' ], -> done()
 
     it 'respects `minLength` option when there is value in the input box', (done) ->
       input.value 'w'
       plugin.userOptions.minLength = 2
-      plugin.onInputChange()
-      expect(plugin.show).to.not.be.called done
+      plugin.onInputChange ->
+        expect(plugin.visible()).to.be.false
+        done()
 
     it 'shows the dropdown', (done) ->
       input.value 'wor'
 
-      plugin.onInputChange()
-      plugin.on 'items:display', ->
+      plugin.onInputChange ->
         expectItems 'world'
-        expect(plugin.show).to.be.called done
+        expect(plugin.visible()).to.be.true
+        done()

@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { opts } = module
+  { EventQueue, opts } = module
 
   class Plugin
     @defaults =
@@ -12,8 +12,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @register : (name, constructor) -> @defaults.registery[name] = constructor
     @getRegistered : (name) -> @defaults.registery[name]
 
-    constructor : ({ @element, @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
+    constructor : ({ @element, @queue, @parent, @userOptions, @defaultOptions } = {}, pluginDefaults = {}) ->
       @plugins        = null
+      @queue          ?= new EventQueue
       @userOptions    ?= {}
       @defaultOptions ?= $.extend true, {}, Plugin.defaults, pluginDefaults
 
@@ -23,17 +24,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @plugins = @createPlugins @options 'plugins'
 
     $ : (selector) -> @element.find selector
-    emit : (event, args...) -> @element.trigger event, args
+    on : (args...) -> @queue.on.apply @queue, args
+    emit : (args...) -> @queue.emit.apply @queue, args
     getPlugin : (name) -> @plugins[name]
-
-    on : (event, selector, handler, context) ->
-      if typeof selector is 'function'
-        [ handler, context ] = [ selector, handler ]
-        selector = null
-
-      @element.on event, selector, (e, args...) =>
-        args.push e
-        handler.apply context or @, args
 
     options : (key) ->
       value = opts(@userOptions, key)
@@ -62,6 +55,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
           constructor = registery[name]
           instance    = new constructor
             parent      : @
+            queue       : @queue
             userOptions : @options name
 
           plugins[name] = instance

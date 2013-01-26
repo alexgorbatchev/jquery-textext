@@ -18,23 +18,23 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @plugins['keys'] = @createPlugins 'keys'
       @lastValue = @value()
 
-      @on 'keys:down', @onKeyDown, @
+      @on @, 'keys.down': @onKeyDown
 
-    input : -> @$ 'input'
-    value : -> @input().val.apply @input(), arguments
-    empty : -> @value().length is 0
-    focus : -> @input().focus()
-    hasFocus : -> @input().is ':focus'
+    input         : -> @$ 'input'
+    value         : -> @input().val.apply @input(), arguments
+    empty         : -> @value().length is 0
+    focus         : -> @input().focus()
+    hasFocus      : -> @input().is ':focus'
     caretPosition : -> @input().get(0).selectionStart
-    caretAtEnd : -> @caretPosition() is @value().length
+    caretAtEnd    : -> @caretPosition() is @value().length
 
-    onKeyDown : ->
+    onKeyDown : (keyCode, next) ->
       value = @value()
 
-      return if value is @lastValue
+      return next() if value is @lastValue
 
       @lastValue = value
-      @emit 'input:change'
+      @emit 'input.change', next
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'input', InputPlugin

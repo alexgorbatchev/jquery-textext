@@ -23,16 +23,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super opts, TagsPlugin.defaults
       @input = @getPlugin 'input'
 
-      @on 'click', 'a', @onRemoveTagClick
-      @on 'keys:down:left', @onLeftKey
-      @on 'keys:down:right', @onRightKey
-      @on 'keys:down:backspace', @onBackspaceKey
-      @on 'keys:down:' + @options('hotKey') , @onHotKey
-      @on 'items:set', @updateInputPosition
-      @on 'items:display', @invalidateInputBox
-      @on 'items:add', @invalidateInputBox
-      @on 'items:remove', @invalidateInputBox
-      @on 'items:set', @invalidateInputBox
+      @element.on 'click', 'a', @$onRemoveTagClick
+
+      @on @,
+        'keys.down.left'      : @onLeftKey
+        'keys.down.right'     : @onRightKey
+        'keys.down.backspace' : @onBackspaceKey
+        # 'items.set'           : @updateInputPosition
+        'items.display'       : @invalidateInputBox
+        'items.add'           : @invalidateInputBox
+        'items.remove'        : @invalidateInputBox
+        'items.set'           : @invalidateInputBox
+
+      @on @, 'keys.down.' + @options('hotKey'), @onHotKey
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -40,7 +43,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     addItemElement : (element) -> @input.element.before element
 
-    invalidateInputBox : ->
+    invalidateInputBox : (args..., next) ->
       elements     = @$ '> .textext-items-item, > .textext-input'
       input        = elements.filter '.textext-input'
       parent       = @parent.element
@@ -67,6 +70,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         avgWidth()
 
       input.width width
+      next()
 
     moveInputTo : (index, callback = ->) ->
       items = @$ '> .textext-items-item'
@@ -77,32 +81,43 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         else
           @input.element.insertAfter items.last()
 
-        @invalidateInputBox()
+        @invalidateInputBox callback
+      else
+        nextTick callback
 
-      nextTick callback
-
-    onLeftKey : ->
+    onLeftKey : (keyCode, next) ->
       if @input.empty()
-        @moveInputTo @inputPosition() - 1, => @input.focus()
+        @moveInputTo @inputPosition() - 1, =>
+          @input.focus()
+          next()
+      else
+        next()
 
-    onRightKey : ->
+    onRightKey : (keyCode, next) ->
       if @input.empty()
-        @moveInputTo @inputPosition() + 1, => @input.focus()
+        @moveInputTo @inputPosition() + 1, =>
+          @input.focus()
+          next()
+      else
+        next()
 
-    onBackspaceKey : ->
+    onBackspaceKey : (keyCode, next) ->
       if @input.empty()
-        @items.removeAt index = @inputPosition() - 1, (err, item) => @removeItemAt index unless err?
+        @items.removeAt index = @inputPosition() - 1, (err, item) =>
+          @removeItemAt index, next
+      else
+        next()
 
-    onHotKey : ->
+    onHotKey : (keyCode, next) ->
       unless @input.empty()
         @items.fromString @input.value(), (err, item) =>
-          unless err?
-            @items.add item, (err, item) =>
-              unless err?
-                @input.value ''
-                @addItem item
+          @items.add item, (err, item) =>
+            @input.value ''
+            @addItem item, next
+      else
+        next()
 
-    onRemoveTagClick : (e) ->
+    $onRemoveTagClick : (e) =>
       e.preventDefault()
       @items.removeAt index = @itemPosition(e.target), (err, item) => @removeItemAt index unless err?
 

@@ -23,12 +23,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @parent.on 'input:change'                    , throttle @onInputChange, @, @options 'throttle'
-      @parent.on 'keys:down:up'                    , @onUpKey, @
-      @parent.on 'keys:down:down'                  , @onDownKey, @
-      @parent.on 'keys:down:right'                 , @onRightKey, @
-      @parent.on 'keys:down:esc'                   , @onEscKey, @
-      @parent.on 'keys:down:' + @options('hotKey') , @onHotKey, @
+      @parent.on @,
+        'input.change'    : throttle @onInputChange, @, @options 'throttle'
+        'keys.down.up'    : @onUpKey
+        'keys.down.down'  : @onDownKey
+        'keys.down.right' : @onRightKey
+        'keys.down.esc'   : @onEscKey
+
+      @parent.on @, 'keys.down.' + @options('hotKey'), @onHotKey
 
       @element.css 'display', 'none'
 
@@ -73,42 +75,53 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @parent.value value
         callback()
 
-    onUpKey : ->
+    onUpKey : (keyCode, next) ->
       if @visible()
         index = @selectedIndex() - 1
         @select index
         @parent.focus() if index is -1
 
-    onDownKey : ->
+      next()
+
+    onDownKey : (keyCode, next) ->
       if @visible()
         @select @selectedIndex() + 1
+        next()
       else
-        @show => @select 0
+        @show =>
+          @select 0
+          next()
 
-    onEscKey : ->
+    onEscKey : (keyCode, next) ->
       if @visible()
-        @hide => @parent.focus()
+        @hide =>
+          @parent.focus()
+          next()
+      else
+        next()
 
-    onRightKey : ->
+    onRightKey : (keyCode, next) ->
       if @visible and not @parent.empty() and @parent.caretAtEnd() and @selectedIndex() is -1
         @select 0
-        @complete => @hide => null
+        @complete => @hide next
+      else
+        next()
 
-    onHotKey : (keyCode) ->
+    onHotKey : (keyCode, next) ->
       if @visible and @selectedIndex() isnt -1
-        @complete => @hide => null
+        @complete => @hide next
+      else
+        next()
 
-    onInputChange : ->
+    onInputChange : (next) ->
       value = @parent.value()
 
-      return if value.length and value.length < @options 'minLength'
-
-      done = => null
+      return next() if value.length and value.length < @options 'minLength'
 
       if @visible()
-        @invalidate done
+        @invalidate next
       else
-        @show done
+        @show next
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin
