@@ -1,6 +1,14 @@
-{ opts } = $.fn.textext
+{ opts, template } = $.fn.textext
 
 describe 'utils', ->
+  describe '.template', ->
+    it 'renders a template', (done) ->
+      name = 'Alex'
+      template 'Hello <%= name %>', { name : 'Alex' }, (err, result) ->
+        expect(err).to.be.undefined
+        expect(result).to.equal 'Hello Alex'
+        done()
+
   describe '.opts', ->
     hash =
       version : 1

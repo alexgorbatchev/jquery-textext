@@ -1,71 +1,55 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
   class EventQueue
     constructor : ->
-      @events = {}
-      @queue = []
+      @events  = {}
+      @queue   = []
+      @timeout = 500
 
-    on : (args...) ->
-      switch args.length
-        when 1 then [ events ] = args
-
-        when 2
-          [ context, events ] = args
-          [ event, handler ] = args
-
-          if typeof event is 'string' and typeof handler is 'function'
-            context = null
-            events = {}
-            events[event] = handler
-
-        when 3
-          [ context, event, handler ] = args
-          events = {}
-          events[event] = handler
-
-      if context? and typeof context isnt 'object'
-        throw 'Context is not an object'
+    on : (opts) ->
+      { event, events, handler, context } = opts
+      events ?= {}
+      events[event] = handler if event? and handler?
 
       for event, handler of events
         list = @events[event] ?= []
         list.push { context, handler }
 
-    emit : (event, args = [], callback = ->) ->
-      if typeof args is 'function'
-        callback = args
-        args = []
+    emit : (opts) ->
+      console.log opts
 
-      console.log '>', event, args
-      @queue.push { event, args, callback }
+      @queue.push opts
       @next() if @queue.length is 1
 
     next : ->
-      { event, args, callback } = @queue[0] or {}
-
+      { event, args, done } = eventToHandle or @queue[0] or {}
       return unless event?
 
-      console.log event, args
-      handlers = @events[event] or []
-      index    = 0
-      results  = []
+      handlers  = @events[event] or []
+      args      ?= []
+      results   = []
+      index     = 0
+      timeoutId = 0
 
       nextHandler = (err, handlerResults...) =>
-        advance = =>
-          callback and callback err, results
-          @queue.shift()
-          @next()
+        clearTimeout timeoutId
+        results.push handlerResults
+        if err? then nextInQueue(err) else iterate()
 
-        results.push handlerResults if index > 0
+      nextInQueue = (err) =>
+        done and done err, results
+        console.log @queue
+        @queue.shift()
+        @next()
 
-        return advance() if err?
-
-        { handler, context } = handlers[index] or {}
+      iterate = =>
+        { handler, context } = handlers[index++] or {}
 
         if handler?
-          index++
+          timeoutId = setTimeout (-> throw new Error "Next not called for `#{event}` by `#{handler}`"), @timeout
           handler.apply context or handler, args.concat [ nextHandler ]
         else
-          advance()
+          nextInQueue()
 
-      nextHandler()
+      iterate()
 
   module.EventQueue = EventQueue

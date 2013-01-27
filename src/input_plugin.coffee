@@ -18,7 +18,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @plugins['keys'] = @createPlugins 'keys'
       @lastValue = @value()
 
-      @on @, 'keys.down': @onKeyDown
+      @on event: 'keys.down', handler: @onKeyDown
 
     input         : -> @$ 'input'
     value         : -> @input().val.apply @input(), arguments
@@ -34,7 +34,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       return next() if value is @lastValue
 
       @lastValue = value
-      @emit 'input.change', next
+      @emit event: 'input.change'
+      next()
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'input', InputPlugin

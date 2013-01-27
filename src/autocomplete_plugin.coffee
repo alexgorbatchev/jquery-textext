@@ -13,7 +13,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         item : '''
           <div class="textext-items-item">
-            <span class="textext-items-label"/>
+            <span class="textext-items-label"><%= label %></span>
           </div>
         '''
 
@@ -23,14 +23,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       if @parent? and not (@parent instanceof InputPlugin)
         throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
 
-      @parent.on @,
-        'input.change'    : throttle @onInputChange, @, @options 'throttle'
-        'keys.down.up'    : @onUpKey
-        'keys.down.down'  : @onDownKey
-        'keys.down.right' : @onRightKey
-        'keys.down.esc'   : @onEscKey
+      @parent.on
+        context : @
+        events  :
+          'input.change'    : throttle @onInputChange, @, @options 'throttle'
+          'keys.down.up'    : @onUpKey
+          'keys.down.down'  : @onDownKey
+          'keys.down.right' : @onRightKey
+          'keys.down.esc'   : @onEscKey
 
-      @parent.on @, 'keys.down.' + @options('hotKey'), @onHotKey
+      @parent.on
+        context : @
+        event   : 'keys.down.' + @options('hotKey')
+        handler : @onHotKey
 
       @element.css 'display', 'none'
 
@@ -113,7 +118,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         next()
 
-    onInputChange : (next) ->
+    onInputChange : (next1) ->
+      next = ->
+        console.log 'NEXT'
+        next1()
+
       value = @parent.value()
 
       return next() if value.length and value.length < @options 'minLength'

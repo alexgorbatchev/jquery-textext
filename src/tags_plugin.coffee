@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsPlugin, Plugin, resistance, nextTick } = module
+  { ItemsPlugin, Plugin, nextTick } = module
 
   class TagsPlugin extends ItemsPlugin
     @defaults =
@@ -12,11 +12,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       html :
         element : '<div class="textext-tags"/>'
 
-        item : '''
-          <div class="textext-items-item">
-            <span class="textext-items-label"/>
-            <a href="#"></a>
-          </div>
+        items : '''
+          <%= items.length %>
+          <% for(var i = 0; i < items.length; i++) { %>
+            <div class="textext-items-item">
+              <script type="text/json"><%= items[i].json %></script>
+              <span class="textext-items-label"><%= items[i].label %></span>
+              <a href="#"></a>
+            </div>
+          <% } %>
         '''
 
     constructor : (opts = {}) ->
@@ -25,7 +29,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element.on 'click', 'a', @$onRemoveTagClick
 
-      @on @,
+      @on events:
         'keys.down.left'      : @onLeftKey
         'keys.down.right'     : @onRightKey
         'keys.down.backspace' : @onBackspaceKey
@@ -35,7 +39,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         'items.remove'        : @invalidateInputBox
         'items.set'           : @invalidateInputBox
 
-      @on @, 'keys.down.' + @options('hotKey'), @onHotKey
+      @on event: 'keys.down.' + @options('hotKey'), handler: @onHotKey
 
     inputPosition : -> @$('> div').index @input.element
 

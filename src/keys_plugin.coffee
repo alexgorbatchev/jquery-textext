@@ -39,8 +39,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       key = @key keyCode
 
       nextTick =>
-        @emit 'keys.down', [ keyCode ]
-        @emit "keys.down.#{key.name}", [ keyCode ]
+        @emit event: 'keys.down', args: [ keyCode ]
+        @emit event: "keys.down.#{key.name}", args: [ keyCode ]
 
       key.trap isnt true
 
@@ -48,8 +48,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       key = @key keyCode
 
       nextTick =>
-        @emit 'keys.up', [ keyCode ]
-        @emit "keys.up.#{key.name}", [ keyCode ]
+        @emit event: 'keys.up', args: [ keyCode ]
+        @emit event: "keys.up.#{key.name}", args: [ keyCode ]
 
       key.trap isnt true
 
@@ -57,8 +57,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       key = @key keyCode
 
       nextTick =>
-        @emit 'keys.press', [ keyCode ]
-        @emit "keys.press.#{key.name}", [ keyCode ]
+        @emit event: 'keys.press', args: [ keyCode ]
+        @emit event: "keys.press.#{key.name}", args: [ keyCode ]
 
       key.trap isnt true
 

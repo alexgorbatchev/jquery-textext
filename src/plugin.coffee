@@ -24,9 +24,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @plugins = @createPlugins @options 'plugins'
 
     $ : (selector) -> @element.find selector
-    on : (args...) -> @queue.on.apply @queue, args
-    emit : (args...) -> @queue.emit.apply @queue, args
     getPlugin : (name) -> @plugins[name]
+
+    on : (opts) ->
+      opts.context ?= @
+      @queue.on opts
+
+    emit : (opts) ->
+      opts.context ?= @
+      @queue.emit opts
 
     options : (key) ->
       value = opts(@userOptions, key)

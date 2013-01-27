@@ -72,7 +72,7 @@ describe 'ItemsPlugin', ->
       it 'has items in order', -> expectItems 'item1 item2'
 
     it 'emits `items.add`', (done) ->
-      plugin.on 'items.add', -> done()
+      plugin.on event: 'items.add', handler: (next) -> next(); done()
       plugin.addItem 'item'
 
   describe '.removeItemAt', ->
@@ -92,6 +92,6 @@ describe 'ItemsPlugin', ->
 
     it 'emits `items.remove`', (done) ->
       plugin.setItems [ 'item1', 'item3' ], ->
-        plugin.on 'items.remove', -> done()
+        plugin.on event: 'items.remove', handler: (args..., next) -> next(); done()
         plugin.removeItemAt 0, -> null
 
