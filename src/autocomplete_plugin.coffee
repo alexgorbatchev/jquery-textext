@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsPlugin, InputPlugin, Plugin, throttle } = module
+  { ItemsPlugin, InputPlugin, Plugin, deferred, series, throttle } = module
 
   class AutocompletePlugin extends ItemsPlugin
     @defaults =
@@ -39,6 +39,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element.css 'display', 'none'
 
+      @defaultItems()
+
     visible : -> @element.css('display') isnt 'none'
 
     selectedIndex : ->
@@ -57,80 +59,75 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         if index >= 0
           newItem.addClass('textext-items-selected')
 
-    show : (callback) ->
-      @invalidate (err, items) =>
+    show : -> deferred (d) =>
+      @invalidate().done =>
         @element.show 0, =>
-          callback err, items
+          d.resolve()
 
-    hide : (callback) ->
+    hide : -> deferred (d) =>
       @element.hide 0, =>
         @element.css 'display', 'none'
         @select -1
-        callback()
+        d.resolve()
 
-    invalidate : (callback) ->
-      @items.search @parent.value(), (err, items) =>
-        @displayItems items, callback
+    invalidate : -> deferred (d) =>
+      @items.search(@parent.value()).done (items) =>
+        @displayItems(items).done ->
+          d.resolve()
 
-    complete : (callback) ->
+    complete : -> deferred (d) =>
       selected = @$ '.textext-items-selected'
-      item = selected.data 'item'
+      item = @itemData selected
 
-      @items.toString item, (err, value) =>
+      @items.toString(item).done (value) =>
         @parent.value value
-        callback()
+        d.resolve()
 
-    onUpKey : (keyCode, next) ->
+    onUpKey : (keyCode) -> deferred (d) =>
       if @visible()
         index = @selectedIndex() - 1
         @select index
         @parent.focus() if index is -1
 
-      next()
+      d.resolve()
 
-    onDownKey : (keyCode, next) ->
+    onDownKey : (keyCode) -> deferred (d) =>
       if @visible()
         @select @selectedIndex() + 1
-        next()
+        d.resolve()
       else
-        @show =>
+        @show().done =>
           @select 0
-          next()
+          d.resolve()
 
-    onEscKey : (keyCode, next) ->
+    onEscKey : (keyCode) -> deferred (d) =>
       if @visible()
-        @hide =>
+        @hide().done =>
           @parent.focus()
-          next()
+          d.resolve()
       else
-        next()
+        d.resolve()
 
-    onRightKey : (keyCode, next) ->
+    onRightKey : (keyCode) -> deferred (d) =>
       if @visible and not @parent.empty() and @parent.caretAtEnd() and @selectedIndex() is -1
         @select 0
-        @complete => @hide next
+        series(@complete(), @hide()).done -> d.resolve()
       else
-        next()
+        d.resolve()
 
-    onHotKey : (keyCode, next) ->
+    onHotKey : (keyCode) -> deferred (d) =>
       if @visible and @selectedIndex() isnt -1
-        @complete => @hide next
+        series(@complete(), @hide()).done -> d.resolve()
       else
-        next()
+        d.resolve()
 
-    onInputChange : (next1) ->
-      next = ->
-        console.log 'NEXT'
-        next1()
-
+    onInputChange : -> deferred (d) =>
       value = @parent.value()
 
-      return next() if value.length and value.length < @options 'minLength'
+      return d.resolve() if value.length and value.length < @options 'minLength'
 
-      if @visible()
-        @invalidate next
-      else
-        @show next
+      promise = if @visible() then @invalidate() else @show()
+      promise.done -> d.resolve()
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin

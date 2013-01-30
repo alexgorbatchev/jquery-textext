@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, ItemsManager, series, template, nextTick } = module
+  { Plugin, ItemsManager, deferred, parallel, template } = module
 
   class ItemsPlugin extends Plugin
     @defaults =
@@ -22,50 +22,64 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
 
-      @setItems @options 'items'
-
     addItemElement : (element) -> @element.append element
+
+    defaultItems: ->
+      items = @options 'items'
+
+      if items? and items.length
+        @setItems items
+
+    itemData: (element) ->
+      data = element.data 'json'
+
+      unless data?
+        data = JSON.parse(element.find('script[type="text/json"]').html())
+        element.data 'json', data
+
+      data
 
     itemPosition : (element) ->
       element = $ element
       element = element.parents '.textext-items-item' unless element.is '.textext-items-item'
       @$('.textext-items-item').index element
 
-    itemToObject : (item, callback = ->) ->
-      @items.toString item, (err, value) =>
-        callback err,
-          json  : JSON.stringify item
-          label : value
+    itemToObject : (item) ->
+      @items.toString(item).pipe (value) ->
+        json  : JSON.stringify item
+        label : value
 
-    displayItems : (items, callback = ->) ->
+    displayItems : (items) -> deferred (d) =>
       @element.find('.textext-items-item').remove()
 
-      jobs = for item in items
-        do (item) => (next) => @itemToObject item, next
+      jobs = []
+      jobs.push @itemToObject item for item in items
 
-      series jobs, (err, items) =>
-        template @options('html.items'), { items }, (err, html) =>
+      parallel(jobs).done (items...) =>
+        template(@options('html.items'), { items }).done (html) =>
           @addItemElement $ html
-          @emit event: 'items.display', done: callback
+          @emit(event: 'items.display').done ->
+            d.resolve()
 
-    setItems : (items, callback = ->) ->
-      @items.set items, (err, items) =>
-        @emit event: 'items.set', args: [ items ], done: (err) =>
-          @displayItems items, callback
+    setItems : (items) -> deferred (d) =>
+      @items.set(items).done =>
+        @emit(event: 'items.set', args: [ items ]).done =>
+          @displayItems(items).done ->
+            d.resolve()
 
-    addItem : (item, callback = ->) ->
-      @items.add item, (err, item) =>
-        @itemToObject item, (err, obj) =>
-          template @options('html.items'), items: [ obj ], (err, html) =>
+    addItem : (item) -> deferred (d) =>
+      @items.add(item).done =>
+        @itemToObject(item).done (obj) =>
+          template(@options('html.items'), items: [ obj ]).done (html) =>
             @addItemElement $ html
-            @emit event: 'items.add', done: callback
+            @emit(event: 'items.add').done ->
+              d.resolve()
 
-    removeItemAt : (index, callback = ->) ->
-      @items.removeAt index, (err, item) =>
+    removeItemAt : (index) -> deferred (d) =>
+      @items.removeAt(index).done (item) =>
         element = @$(".textext-items-item:eq(#{index})")
         element.remove()
-
-        @emit event: 'items.remove', args: [ element ], done: (err) =>
-          callback err, element
+        @emit(event: 'items.remove', args: [ element ]).done ->
+          d.resolve(item)
 
   module.ItemsPlugin = ItemsPlugin

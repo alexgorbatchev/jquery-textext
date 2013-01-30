@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin } = module
+  { Plugin, deferred } = module
 
   class InputPlugin extends Plugin
     @defaults =
@@ -28,14 +28,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     caretPosition : -> @input().get(0).selectionStart
     caretAtEnd    : -> @caretPosition() is @value().length
 
-    onKeyDown : (keyCode, next) ->
+    onKeyDown : (keyCode) -> deferred (d) =>
       value = @value()
 
-      return next() if value is @lastValue
+      return d.resolve() if value is @lastValue
 
       @lastValue = value
-      @emit event: 'input.change'
-      next()
+      @emit(event: 'input.change').done ->
+        d.resolve()
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'input', InputPlugin

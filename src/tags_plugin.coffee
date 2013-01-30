@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsPlugin, Plugin, nextTick } = module
+  { ItemsPlugin, Plugin, deferred, series, nextTick } = module
 
   class TagsPlugin extends ItemsPlugin
     @defaults =
@@ -13,7 +13,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         element : '<div class="textext-tags"/>'
 
         items : '''
-          <%= items.length %>
           <% for(var i = 0; i < items.length; i++) { %>
             <div class="textext-items-item">
               <script type="text/json"><%= items[i].json %></script>
@@ -33,21 +32,22 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         'keys.down.left'      : @onLeftKey
         'keys.down.right'     : @onRightKey
         'keys.down.backspace' : @onBackspaceKey
-        # 'items.set'           : @updateInputPosition
+        'items.set'           : @updateInputPosition
         'items.display'       : @invalidateInputBox
         'items.add'           : @invalidateInputBox
         'items.remove'        : @invalidateInputBox
-        'items.set'           : @invalidateInputBox
 
       @on event: 'keys.down.' + @options('hotKey'), handler: @onHotKey
 
+      @defaultItems()
+
     inputPosition : -> @$('> div').index @input.element
 
-    updateInputPosition : (items) -> @moveInputTo Number.MAX_VALUE
+    updateInputPosition : -> @moveInputTo Number.MAX_VALUE
 
     addItemElement : (element) -> @input.element.before element
 
-    invalidateInputBox : (args..., next) ->
+    invalidateInputBox : -> deferred (d) => nextTick =>
       elements     = @$ '> .textext-items-item, > .textext-input'
       input        = elements.filter '.textext-input'
       parent       = @parent.element
@@ -74,9 +74,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         avgWidth()
 
       input.width width
-      next()
 
-    moveInputTo : (index, callback = ->) ->
+      d.resolve()
+
+    moveInputTo : (index) -> deferred (d) =>
       items = @$ '> .textext-items-item'
 
       if items.length
@@ -85,45 +86,48 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         else
           @input.element.insertAfter items.last()
 
-        @invalidateInputBox callback
+        @invalidateInputBox().done -> d.resolve()
       else
-        nextTick callback
+        d.resolve()
 
-    onLeftKey : (keyCode, next) ->
+    onLeftKey : (keyCode) -> deferred (d) =>
       if @input.empty()
-        @moveInputTo @inputPosition() - 1, =>
+        @moveInputTo(@inputPosition() - 1).done =>
           @input.focus()
-          next()
+          d.resolve()
       else
-        next()
+        d.resolve()
 
-    onRightKey : (keyCode, next) ->
+    onRightKey : (keyCode) -> deferred (d) =>
       if @input.empty()
-        @moveInputTo @inputPosition() + 1, =>
+        @moveInputTo(@inputPosition() + 1).done =>
           @input.focus()
-          next()
+          d.resolve()
       else
-        next()
+        d.resolve()
 
-    onBackspaceKey : (keyCode, next) ->
+    onBackspaceKey : (keyCode) -> deferred (d) =>
       if @input.empty()
-        @items.removeAt index = @inputPosition() - 1, (err, item) =>
-          @removeItemAt index, next
+        index = @inputPosition() - 1
+        series(@items.removeAt(index), @removeItemAt(index)).done ->
+          d.resolve()
       else
-        next()
+        d.resolve()
 
-    onHotKey : (keyCode, next) ->
+    onHotKey : (keyCode) -> deferred (d) =>
       unless @input.empty()
-        @items.fromString @input.value(), (err, item) =>
-          @items.add item, (err, item) =>
+        @items.fromString(@input.value()).done (item) =>
+          @items.add(item).done =>
             @input.value ''
-            @addItem item, next
+            @addItem(item).done ->
+              d.resolve()
       else
-        next()
+        d.resolve()
 
     $onRemoveTagClick : (e) =>
       e.preventDefault()
-      @items.removeAt index = @itemPosition(e.target), (err, item) => @removeItemAt index unless err?
+      index = @itemPosition(e.target)
+      series(@items.removeAt(index), @removeItemAt(index))
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'tags', TagsPlugin

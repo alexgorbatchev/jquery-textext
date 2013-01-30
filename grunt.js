@@ -13,12 +13,6 @@ module.exports = function(grunt)
             clean         : { command : 'rm -fr ./build/**; mkdir ./build; mkdir ./build/vendor' },
             spec          : { command : 'jasmine-node --coffee spec/' },
             specserver    : { command : 'static -c none -p 8000 ./spec & open "http://localhost:8000"' },
-
-            diff_resistance    : { command : 'diff -u ./vendor/resistance/lib/resistance.js ./build/vendor/resistance.js > vendor/_patches/resistance.js.patch' },
-            diff_watchjs       : { command : 'diff -u ./vendor/watchjs/src/watch.js ./build/vendor/watch.js > vendor/_patches/watch.js.patch' },
-
-            patch_resistance    : { command : 'patch -p1 -t --output=build/vendor/resistance.js vendor/resistance/lib/resistance.js vendor/_patches/resistance.js.patch' },
-            patch_watchjs       : { command : 'patch -p1 -t --output=build/vendor/watch.js vendor/watchjs/src/watch.js vendor/_patches/watch.js.patch' },
         },
 
         less : {
@@ -73,9 +67,7 @@ module.exports = function(grunt)
         }
     });
 
-    grunt.registerTask('vendor:diff', 'shell:diff_eventemitter2 shell:diff_resistance shell:diff_watchjs')
-    grunt.registerTask('vendor:patch', 'shell:patch_watchjs shell:patch_resistance');
-    grunt.registerTask('build', 'shell:clean less copy vendor:patch coffee');
+    grunt.registerTask('build', 'shell:clean less copy coffee');
     grunt.registerTask('spec', 'build shell:specserver');
     grunt.registerTask('default', 'build');
 }

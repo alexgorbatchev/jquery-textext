@@ -1,11 +1,22 @@
-{ opts, template } = $.fn.textext
+{ opts, deferred, series, template } = $.fn.textext
 
 describe 'utils', ->
+  describe '.series', ->
+    it 'executes deferreds in order waiting for each to finish', (done) ->
+      result = ''
+
+      fn = (num) -> deferred (d) ->
+        result += num
+        setTimeout (-> d.resolve()), 50
+
+      series(fn(1), fn(2), fn(3)).done ->
+        expect(result).to.equal '123'
+        done()
+
   describe '.template', ->
     it 'renders a template', (done) ->
       name = 'Alex'
-      template 'Hello <%= name %>', { name : 'Alex' }, (err, result) ->
-        expect(err).to.be.undefined
+      template('Hello <%= name %>', { name : 'Alex' }).done (result) ->
         expect(result).to.equal 'Hello Alex'
         done()
 

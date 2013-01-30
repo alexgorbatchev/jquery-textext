@@ -1,4 +1,4 @@
-{ TagsPlugin, ItemsPlugin, Plugin } = $.fn.textext
+{ TagsPlugin, ItemsPlugin, Plugin, series } = $.fn.textext
 
 describe 'TagsPlugin', ->
   expectInputToBeLast = -> expect(plugin.$('.textext-items-item, .textext-input').last()).to.be '.textext-input'
@@ -33,58 +33,71 @@ describe 'TagsPlugin', ->
       expectInputToBeAt 3
 
   describe '.moveInputTo', ->
-    beforeEach (done) -> plugin.setItems [ 'item1', 'item2', 'item3', 'item4' ], done
+    beforeEach (done) ->
+      plugin.setItems([ 'item1', 'item2', 'item3', 'item4' ]).done ->
+        done()
 
     it 'moves input to the beginning of the item list', (done) ->
-      plugin.moveInputTo 0, ->
+      plugin.moveInputTo(0).done ->
         expectInputToBeAt 0
         done()
 
     it 'moves input to the end of the item list', (done) ->
-      plugin.moveInputTo 4, ->
+      plugin.moveInputTo(4).done ->
         expectInputToBeAt 4
         done()
 
     it 'moves input to the middle of the item list', (done) ->
-      plugin.moveInputTo 2, ->
+      plugin.moveInputTo(2).done ->
         expectInputToBeAt 2
         done()
 
   describe '.setItems', ->
     describe 'first time', ->
       it 'moves input to the end of the list', (done) ->
-        plugin.setItems [ 'item1', 'item2', 'item3', 'item4' ], ->
+        plugin.setItems([ 'item1', 'item2', 'item3', 'item4' ]).done ->
           expectInputToBeLast()
           done()
 
   describe '.addItem', ->
     it 'moves input to the end of the list with no existing items', (done) ->
-      plugin.addItem 'item1', ->
+      plugin.addItem('item1').done ->
         expectInputToBeLast()
         done()
 
     it 'moves input to the end of the list with one existing item', (done)->
-      plugin.setItems [ 'item1' ], ->
-        plugin.addItem 'item2', ->
+      plugin.setItems([ 'item1' ]).done ->
+        plugin.addItem('item2').done ->
           expectInputToBeLast()
           done()
 
     describe 'with two existing items', ->
       beforeEach (done) ->
-        plugin.setItems [ 'item1', 'item3' ], -> plugin.moveInputTo 1, -> plugin.addItem 'item2', done
+        series(
+          plugin.setItems([ 'item1', 'item3' ])
+          plugin.moveInputTo(1)
+          plugin.addItem('item2')
+        ).done ->
+          console.log plugin.element.html()
+          done()
 
       it 'keeps input after inserted item', -> expectInputToBeAt 2
       it 'has items in order', -> expectItems 'item1 item2 item3'
 
   describe '.onRightKey', ->
     beforeEach (done) ->
-      plugin.setItems [ 'item1', 'item2', 'item3' ], -> plugin.moveInputTo 1, done
+      series(
+        plugin.setItems([ 'item1', 'item2', 'item3' ])
+        plugin.moveInputTo(1)
+      ).done ->
+        done()
 
     describe 'when there is no text in the input field', ->
-      beforeEach -> spy plugin, 'moveInputTo'
+      beforeEach ->
+        spy plugin, 'moveInputTo'
 
       it 'moves the input field', (done) ->
-        plugin.onRightKey 0, ->
+        plugin.onRightKey().done ->
           expect(plugin.moveInputTo).to.be.called done
 
     describe 'when there is text in the input field', ->
@@ -93,18 +106,19 @@ describe 'TagsPlugin', ->
         input.value 'text'
 
       it 'does not move the input field', (done) ->
-        plugin.onRightKey 0, ->
+        plugin.onRightKey().done ->
           expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onLeftKey', ->
     beforeEach (done) ->
-      plugin.setItems [ 'item1', 'item2', 'item3' ], done
+      plugin.setItems([ 'item1', 'item2', 'item3' ]).done ->
+        done()
 
     describe 'when there is no text in the input field', ->
       beforeEach -> spy plugin, 'moveInputTo'
 
       it 'moves the input field', (done) ->
-        plugin.onLeftKey 0, ->
+        plugin.onLeftKey().done ->
           expect(plugin.moveInputTo).to.be.called done
 
     describe 'when there is text in the input field', ->
@@ -113,7 +127,7 @@ describe 'TagsPlugin', ->
         input.value 'text'
 
       it 'does not move the input field', (done) ->
-        plugin.onLeftKey 0, ->
+        plugin.onLeftKey().done ->
           expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onHotKey', ->
@@ -123,11 +137,11 @@ describe 'TagsPlugin', ->
         input.value 'item'
 
       it 'adds new item', (done) ->
-        plugin.onHotKey 0, ->
+        plugin.onHotKey().done ->
           expect(plugin.items.add).to.be.called done
 
       it 'clears the input', (done) ->
-        plugin.onHotKey 0, ->
+        plugin.onHotKey().done ->
           expect(plugin.input.empty()).to.be.true
           done()
 
@@ -136,14 +150,14 @@ describe 'TagsPlugin', ->
         spy plugin.items, 'fromString'
 
       it 'does not add new item', (done) ->
-        plugin.onHotKey 0, ->
+        plugin.onHotKey().done ->
           expect(plugin.items.fromString).to.not.be.called done
 
   describe '.onRemoveTagClick', ->
     beforeEach ->
       spy plugin.items, 'removeAt'
 
-      plugin.setItems [ 'item1', 'item2', 'item3', 'item4' ], ->
+      plugin.setItems([ 'item1', 'item2', 'item3', 'item4' ]).done ->
         e = jQuery.Event 'click'
         e.target = plugin.$('.textext-tags-tag:eq(2) a').get(0)
         plugin.$onRemoveTagClick e

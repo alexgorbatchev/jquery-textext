@@ -1,12 +1,6 @@
 [submodule "doc"]
 	path = doc
 	url = git@github.com:alexgorbatchev/jquery-textext-doc.git
-[submodule "vendor/watchjs"]
-	path = vendor/watchjs
-	url = git://github.com/melanke/Watch.JS.git
-[submodule "vendor/resistance"]
-	path = vendor/resistance
-	url = git://github.com/jgallen23/resistance.git
 [submodule "vendor/mocha"]
 	path = vendor/mocha
 	url = https://github.com/visionmedia/mocha.git

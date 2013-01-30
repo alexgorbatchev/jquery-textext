@@ -1,38 +1,26 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  prop = (object, name, desc) -> Object.defineProperty object, name, desc
+  deferred = (fn) ->
+    d = $.Deferred()
+    d.fail (err) ->
+      unless err?.handled is true
+        throw new Error 'Failed promise for ' + fn
+    # nextTick -> fn d
+    fn d
+    d.promise()
 
-  series = (jobs, callback) ->
-    return callback() if jobs.length is 0
+  parallel = (deferreds) ->
+    $.when.apply null, deferreds
 
-    completed = 0
-    data = []
+  series = (args...) -> deferred (d) ->
+    deferreds = if args.length is 1 then args[0] else args
+    index     = 0
 
     iterate = ->
-      jobs[completed] (err, results) ->
-        data[completed] = results
-
-        if ++completed is jobs.length or err
-          callback err, data
-        else
-          iterate()
+      fn = deferreds[index++]
+      return d.resolve() unless fn?
+      fn.then iterate, (err) -> d.fail(err)
 
     iterate()
-
-  parallel = (jobs, callback) ->
-    length = jobs.length
-
-    return callback() if length is 0
-
-    completed = 0
-    data = []
-
-    for index in [0..length]
-      do (index) ->
-        jobs[index] (err, results) ->
-          data[index] = results
-
-          if ++completed is length or err?
-            callback err, data
 
   template = do ->
     cache = {}
@@ -57,13 +45,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       return fn(data)
 
-    (str, data, callback) -> nextTick ->
+    (str, data, callback) -> deferred (d) ->
       try
-        result = tmpl str, data
+        d.resolve tmpl str, data
       catch e
-        err = e
-
-      callback err, result
+        d.fail e
 
   opts = (hash, key) ->
     return unless hash?
@@ -96,4 +82,4 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       clearTimeout id
       id = setTimeout (-> fn.apply context or null, args), delay
 
-  $.extend module, { opts, prop, throttle, nextTick, template, series, parallel }
+  $.extend module, { opts, throttle, nextTick, template, deferred, parallel, series }

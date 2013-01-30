@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, resistance, nextTick } = module
+  { Plugin, withDeferred, deferred, parallel, nextTick } = module
 
   class ItemsManager extends Plugin
     @defaults =
@@ -17,65 +17,53 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super opts, ItemsManager.defaults
       @items = []
 
-    set : (items, callback) ->
-      nextTick =>
-        @items = items or []
-        callback null, items
+    set : (items) -> deferred (d) =>
+      @items = items or []
+      d.resolve()
 
-    add : (item, callback) ->
-      nextTick =>
-        @items.push item
-        callback null, item
+    add : (item) -> deferred (d) =>
+      @items.push item
+      d.resolve()
 
-    removeAt : (index, callback) ->
-      nextTick =>
-        item = @items[index]
-        @items.splice index, 1
-        callback null, item
+    removeAt : (index) -> deferred (d) =>
+      item = @items[index]
+      @items.splice index, 1
+      d.resolve(item)
 
-    toString : (item, callback) ->
-      nextTick =>
-        field  = @options 'toStringField'
-        result = item
-        result = result[field] if field and result
+    toString : (item) -> deferred (d) =>
+      field  = @options 'toStringField'
+      result = item
+      result = result[field] if field and result
+      d.resolve result
 
-        callback null, result
+    toValue : (item) -> deferred (d) =>
+      field  = @options 'toValueField'
+      result = item
+      result = result[field] if field and result
+      d.resolve result
 
-    toValue : (item, callback) ->
-      nextTick =>
-        field  = @options 'toValueField'
-        result = item
-        result = result[field] if field and result
+    fromString : (string) -> deferred (d) =>
+      field  = @options 'toStringField'
 
-        callback null, result
+      result = if field and result
+        result = {}
+        result[field] = string
+      else
+        string
 
-    fromString : (string, callback) ->
-      nextTick =>
-        field  = @options 'toStringField'
+      d.resolve result
 
-        result = if field and result
-          result = {}
-          result[field] = string
-        else
-          string
+    search : (query) -> deferred (d) =>
+      results = []
+      jobs    = []
 
-        callback null, result
+      jobs.push @toString item for item in @items
 
-    search : (query, callback) ->
-      nextTick =>
-        results = []
-        jobs = []
+      parallel(jobs).done (strings...) ->
+        for string in strings
+          results.push string if string.indexOf(query) is 0 or query is ''
 
-        for item in @items
-          do (item) =>
-            jobs.push (done) =>
-              @toString item, (err, string) =>
-                if string.indexOf(query) is 0
-                  results.push item
-
-                done err, string
-
-        resistance.series jobs, (err) -> callback err, results
+        d.resolve results
 
     isValid : ->
 
