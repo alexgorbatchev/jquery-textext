@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { ItemsPlugin, InputPlugin, Plugin, deferred, series, throttle } = module
+  { ItemsPlugin, InputPlugin, Plugin, deferred, series, throttle, template } = module
 
   class AutocompletePlugin extends ItemsPlugin
     @defaults =
@@ -7,12 +7,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       minLength : 1
       throttle  : 500
       hotKey    : 'enter'
+      noResults : 'No matching items...'
 
       html :
         element : '<div class="textext-autocomplete"/>'
 
         item : '''
           <div class="textext-items-item">
+            <span class="textext-items-label"><%= label %></span>
+          </div>
+        '''
+
+        noResults : '''
+          <div class="textext-autocomplete-no-results">
             <span class="textext-items-label"><%= label %></span>
           </div>
         '''
@@ -50,14 +57,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       items.index selected
 
     select : (index) ->
-      items = @$('.textext-items-item')
+      items   = @$('.textext-items-item')
       newItem = items.eq index
 
       if newItem.length
-        items.removeClass('textext-items-selected')
-
-        if index >= 0
-          newItem.addClass('textext-items-selected')
+        items.removeClass 'textext-items-selected'
+        newItem.addClass 'textext-items-selected' if index >= 0
 
     show : -> deferred (d) =>
       @invalidate().done =>
@@ -72,8 +77,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     invalidate : -> deferred (d) =>
       @items.search(@parent.value()).done (items) =>
-        @displayItems(items).done ->
-          d.resolve()
+        @displayItems(items).done =>
+          if items.length is 0
+            label = @options 'noResults'
+            template(@options('html.noResults'), { label }).done (html) =>
+              @addItemElement $ html
+              d.resolve()
+          else
+            d.resolve()
 
     complete : -> deferred (d) =>
       selected = @$ '.textext-items-selected'

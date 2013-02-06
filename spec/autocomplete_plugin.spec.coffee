@@ -1,8 +1,6 @@
 { AutocompletePlugin, InputPlugin, ItemsManager, Plugin, series } = $.fn.textext
 
 describe 'AutocompletePlugin', ->
-  html = -> console.log plugin.element.html()
-
   onDownKey = -> plugin.onDownKey 0
   onUpKey = -> plugin.onUpKey 0
 
@@ -45,9 +43,21 @@ describe 'AutocompletePlugin', ->
       expect(plugin.visible()).to.be.false
 
   describe '.show', ->
-    it 'shows the dropdown', (done) ->
+    beforeEach (done) ->
+      plugin.setItems([ 'hello', 'world' ]).done -> done()
+
+    it 'shows the dropdown when there are items to display', (done) ->
+      input.value 'h'
       plugin.show().done ->
         expect(plugin.visible()).to.be.true
+        expectItems 'hello'
+        done()
+
+    it 'shows no results when there are no items to display', (done) ->
+      input.value '?'
+      plugin.show().done ->
+        expect(plugin.visible()).to.be.true
+        expect(plugin.element.find '.textext-autocomplete-no-results').to.be.exist
         done()
 
   describe '.hide', ->
