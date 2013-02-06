@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { EventQueue, opts } = module
+  { EventQueue, deferred, nextTick, opts } = module
 
   class Plugin
     @defaults =
@@ -24,7 +24,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @plugins = @createPlugins @options 'plugins'
 
     $ : (selector) -> @element.find selector
+    visible: -> @element.is ':visible'
     getPlugin : (name) -> @plugins[name]
+
+    waitForVisible: -> deferred (d) => nextTick =>
+      iterate = => if @visible() then d.resolve() else setTimeout iterate, 250
+      iterate()
 
     on : (opts) ->
       opts.context ?= @

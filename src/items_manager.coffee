@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, withDeferred, deferred, parallel, nextTick } = module
+  { Plugin, withDeferred, deferred, parallel } = module
 
   class ItemsManager extends Plugin
     @defaults =

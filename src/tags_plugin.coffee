@@ -7,7 +7,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       items         : []
       hotKey        : 'enter'
       inputMinWidth : 50
-      splitPaste    : /\s*,\s*/g
+      # splitPaste    : /\s*,\s*/g
 
       html :
         element : '<div class="textext-tags"/>'
@@ -24,7 +24,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     constructor : (opts = {}) ->
       super opts, TagsPlugin.defaults
-      @input = @getPlugin 'input'
+
+      @input      = @getPlugin 'input'
+      @backspaces = 0
 
       @element.on 'click', 'a', @$onRemoveTagClick
 
@@ -33,13 +35,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         'keys.down.right'     : @onRightKey
         'keys.down.backspace' : @onBackspaceKey
         'items.set'           : @updateInputPosition
-        'items.display'       : @invalidateInputBox
         'items.add'           : @invalidateInputBox
         'items.remove'        : @invalidateInputBox
 
       @on event: 'keys.down.' + @options('hotKey'), handler: @onHotKey
 
-      @defaultItems()
+      series(@defaultItems(), @waitForVisible()).done => @invalidateInputBox()
 
     inputPosition : -> @$('> div').index @input.element
 
@@ -47,7 +48,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     addItemElement : (element) -> @input.element.before element
 
-    invalidateInputBox : -> deferred (d) => nextTick =>
+    invalidateInputBox : -> deferred (d) =>
+      return d.resolve() unless @visible()
+
       elements     = @$ '> .textext-items-item, > .textext-input'
       input        = elements.filter '.textext-input'
       parent       = @parent.element
@@ -86,9 +89,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         else
           @input.element.insertAfter items.last()
 
-        @invalidateInputBox().done -> d.resolve()
-      else
-        d.resolve()
+      @invalidateInputBox().done -> d.resolve()
 
     onLeftKey : (keyCode) -> deferred (d) =>
       if @input.empty()
@@ -108,11 +109,16 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onBackspaceKey : (keyCode) -> deferred (d) =>
       if @input.empty()
-        index = @inputPosition() - 1
-        series(@items.removeAt(index), @removeItemAt(index)).done ->
-          d.resolve()
+        @backspaces++
+
+        if @backspaces is 2
+          @backspaces = 0
+          index = @inputPosition() - 1
+          return series(@items.removeAt(index), @removeItemAt(index)).done -> d.resolve()
       else
-        d.resolve()
+        @backspaces = 0
+
+      d.resolve()
 
     onHotKey : (keyCode) -> deferred (d) =>
       unless @input.empty()

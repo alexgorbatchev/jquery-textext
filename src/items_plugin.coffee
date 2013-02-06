@@ -24,11 +24,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     addItemElement : (element) -> @element.append element
 
-    defaultItems: ->
+    defaultItems: -> deferred (d) =>
       items = @options 'items'
 
       if items? and items.length
-        @setItems items
+        @setItems(items).done -> d.resolve()
+      else
+        d.resolve()
 
     itemData: (element) ->
       data = element.data 'json'
