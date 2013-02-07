@@ -78,7 +78,6 @@ describe 'TagsPlugin', ->
           plugin.moveInputTo(1)
           plugin.addItem('item2')
         ).done ->
-          console.log plugin.element.html()
           done()
 
       it 'keeps input after inserted item', -> expectInputToBeAt 2

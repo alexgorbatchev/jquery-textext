@@ -42,6 +42,24 @@ describe 'AutocompletePlugin', ->
       plugin.element.hide()
       expect(plugin.visible()).to.be.false
 
+  describe '.invalidate', ->
+    beforeEach (done) ->
+      plugin.setItems([ 'hello', 'world' ]).done -> done()
+
+    it 'shows `no results` when there are no items to display', (done) ->
+      input.value '?'
+      plugin.invalidate().done ->
+        expect(plugin.element.find '.textext-autocomplete-no-results').to.be.exist
+        done()
+
+    it 'hides `no results` message when there are items to display', (done) ->
+      input.value '?'
+      plugin.invalidate().done ->
+        input.value 'h'
+        plugin.invalidate().done ->
+          expect(plugin.element.find '.textext-autocomplete-no-results').to.not.exist
+          done()
+
   describe '.show', ->
     beforeEach (done) ->
       plugin.setItems([ 'hello', 'world' ]).done -> done()
@@ -51,13 +69,6 @@ describe 'AutocompletePlugin', ->
       plugin.show().done ->
         expect(plugin.visible()).to.be.true
         expectItems 'hello'
-        done()
-
-    it 'shows no results when there are no items to display', (done) ->
-      input.value '?'
-      plugin.show().done ->
-        expect(plugin.visible()).to.be.true
-        expect(plugin.element.find '.textext-autocomplete-no-results').to.be.exist
         done()
 
   describe '.hide', ->

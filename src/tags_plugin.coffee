@@ -46,7 +46,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     updateInputPosition : -> @moveInputTo Number.MAX_VALUE
 
-    addItemElement : (element) -> @input.element.before element
+    addItemElements : (elements) -> @input.element.before elements
 
     invalidateInputBox : -> deferred (d) =>
       return d.resolve() unless @visible()

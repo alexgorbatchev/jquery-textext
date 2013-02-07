@@ -22,7 +22,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
 
-    addItemElement : (element) -> @element.append element
+    addItemElements : (elements) -> @element.append elements
+    clearItems: -> @$('.textext-items-item').remove()
 
     defaultItems: -> deferred (d) =>
       items = @options 'items'
@@ -59,7 +60,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       parallel(jobs).done (items...) =>
         template(@options('html.items'), { items }).done (html) =>
-          @addItemElement $ html
+          @clearItems()
+          @addItemElements $ html
           @emit(event: 'items.display').done ->
             d.resolve()
 
@@ -73,7 +75,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items.add(item).done =>
         @itemToObject(item).done (obj) =>
           template(@options('html.items'), items: [ obj ]).done (html) =>
-            @addItemElement $ html
+            @addItemElements $ html
             @emit(event: 'items.add').done ->
               d.resolve()
 

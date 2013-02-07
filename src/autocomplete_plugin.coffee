@@ -50,6 +50,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     visible : -> @element.css('display') isnt 'none'
 
+    clearItems: ->
+      super()
+      @$('> .textext-autocomplete-no-results').remove()
+
     selectedIndex : ->
       items    = @$ '.textext-items-item'
       selected = items.filter '.textext-items-selected'
@@ -77,14 +81,16 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     invalidate : -> deferred (d) =>
       @items.search(@parent.value()).done (items) =>
-        @displayItems(items).done =>
-          if items.length is 0
-            label = @options 'noResults'
-            template(@options('html.noResults'), { label }).done (html) =>
-              @addItemElement $ html
+        @clearItems()
+
+        if items.length
+          @displayItems(items).done -> d.resolve()
+        else
+          label = @options 'noResults'
+          template(@options('html.noResults'), { label }).done (html) =>
+            @addItemElements html
+            @emit(event: 'autocomplete.noresults').done ->
               d.resolve()
-          else
-            d.resolve()
 
     complete : -> deferred (d) =>
       selected = @$ '.textext-items-selected'
