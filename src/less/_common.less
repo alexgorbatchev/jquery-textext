@@ -2,6 +2,29 @@
 @selected : #6D84B4;
 @font     : 11px "lucida grande",tahoma,verdana,arial,sans-serif;
 
+.reset() {
+  margin         : 0;
+  padding        : 0;
+  height         : auto;
+  box-shadow     : none;
+  border         : none;
+  outline        : none;
+  resize         : none;
+  background     : none;
+  text-transform : none;
+  border-radius  : 0;
+  opacity        : 1;
+  color          : #000;
+
+  -webkit-transition : none;
+  -moz-transition    : none;
+  -ms-transition     : none;
+  -o-transition      : none;
+  transition         : none;
+
+  .input_font;
+}
+
 .input_font() {
   font        : @font;
   line-height : 13px;
