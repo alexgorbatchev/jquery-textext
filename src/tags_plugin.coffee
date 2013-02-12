@@ -35,50 +35,16 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         'keys.down.right'     : @onRightKey
         'keys.down.backspace' : @onBackspaceKey
         'items.set'           : @updateInputPosition
-        'items.add'           : @invalidateInputBox
-        'items.remove'        : @invalidateInputBox
 
       @on event: 'keys.down.' + @options('hotKey'), handler: @onHotKey
 
-      series(@defaultItems(), @waitForVisible()).done => @invalidateInputBox()
+      @defaultItems()
 
     inputPosition : -> @$('> div').index @input.element
 
     updateInputPosition : -> @moveInputTo Number.MAX_VALUE
 
     addItemElements : (elements) -> @input.element.before elements
-
-    invalidateInputBox : -> deferred (d) =>
-      return d.resolve() unless @visible()
-
-      elements     = @$ '> .textext-items-item, > .textext-input'
-      input        = elements.filter '.textext-input'
-      parent       = @parent.element
-      paddingLeft  = parseFloat parent.css 'paddingLeft'
-      paddingRight = parseFloat parent.css 'paddingRight'
-      maxWidth     = parent.innerWidth() - paddingLeft - paddingRight
-
-      avgWidth = =>
-        width = 0
-        list  = @$('> .textext-items-item')
-        list.each -> width += $(@).outerWidth(true)
-        width / list.length
-
-      width = if elements.length is 1
-        maxWidth
-      else if elements.first().is input
-        avgWidth()
-      else if elements.last().is input
-        prev     = input.prev('.textext-items-item')
-        minWidth = @options 'inputMinWidth'
-        width    = maxWidth - prev.offset().left - prev.outerWidth(true)
-        if width < minWidth then maxWidth else width
-      else
-        avgWidth()
-
-      input.width width
-
-      d.resolve()
 
     moveInputTo : (index) -> deferred (d) =>
       items = @$ '> .textext-items-item'
@@ -89,7 +55,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         else
           @input.element.insertAfter items.last()
 
-      @invalidateInputBox().done -> d.resolve()
+      d.resolve()
 
     onLeftKey : (keyCode) -> deferred (d) =>
       if @input.empty()

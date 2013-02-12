@@ -6,14 +6,29 @@
   .input_font;
   .border_box;
 
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+
+  -webkit-flex-wrap : wrap;
+  -moz-flex-wrap    : wrap;
+  -ms-flex-wrap     : wrap;
+  -o-flex-wrap      : wrap;
+  flex-wrap         : wrap;
+
   width         : 100%;
   padding       : 3px;
   margin-bottom : -2px;
-  display       : inline-block;
 
   > .textext-input {
-    width    : 1px;
-    float    : left;
+    -webkit-flex : 1 0 40px;
+    -moz-flex    : 1 0 40px;
+    -ms-flex     : 1 0 40px;
+    -o-flex      : 1 0 40px;
+    flex         : 1 0 40px;
+
     margin   : 1px 2px 1px 0px;
     padding  : 0;
     height   : 17px;
