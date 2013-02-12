@@ -12,8 +12,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       super opts, TextExt.defaults
 
-      @sourceElement.hide()
-      @sourceElement.after @element
+      @sourceElement.append @element
 
     addToParent : -> null
 
