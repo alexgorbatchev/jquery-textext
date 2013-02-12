@@ -3,11 +3,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class AutocompletePlugin extends ItemsPlugin
     @defaults =
-      items     : []
-      minLength : 1
-      throttle  : 500
-      hotKey    : 'enter'
-      noResults : 'No matching items...'
+      items            : []
+      minLength        : 1
+      keyThrottleDelay : 500
+      hotKey           : 'enter'
+      noResults        : 'No matching items...'
 
       html :
         element : '<div class="textext-autocomplete"/>'
@@ -33,7 +33,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @parent.on
         context : @
         events  :
-          'input.change'    : throttle @onInputChange, @, @options 'throttle'
+          'input.change'    : throttle @onInputChange, @, @options 'keyThrottleDelay'
           'keys.down.up'    : @onUpKey
           'keys.down.down'  : @onDownKey
           'keys.down.right' : @onRightKey
