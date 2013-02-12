@@ -14,6 +14,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         40  : name : 'down', trap : true
         46  : name : 'delete'
         108 : name : 'numpadEnter'
+        188 : name : 'comma'
 
       html :
         element : '<div class="textext-keys"/>'
