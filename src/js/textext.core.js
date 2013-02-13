@@ -694,6 +694,7 @@
 			.keyup(function(e) { return self.onKeyUp(e) })
 			.data('textext', self)
 			;
+		self.originalWidth = input.outerWidth();
 
 		// keep references to html elements using jQuery.data() to avoid circular references
 		$(self).data({
@@ -712,8 +713,6 @@
 		$.extend(true, itemManager, self.opts(OPT_EXT + '.item.manager'));
 		$.extend(true, self, self.opts(OPT_EXT + '.*'), self.opts(OPT_EXT + '.core'));
 		
-		self.originalWidth = input.outerWidth();
-
 		self.invalidateBounds();
 
 		itemManager.init(self);
