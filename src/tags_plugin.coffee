@@ -5,7 +5,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @defaults =
       plugins       : 'input'
       items         : []
-      hotKey        : 'enter'
       inputMinWidth : 50
       # splitPaste    : /\s*,\s*/g
 
@@ -30,17 +29,20 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @element.on 'click', 'a', @$onRemoveTagClick
 
-      @on events:
-        'keys.down.left'      : @onLeftKey
-        'keys.down.right'     : @onRightKey
-        'keys.down.backspace' : @onBackspaceKey
-        'items.set'           : @updateInputPosition
+      @input.on
+        context : @
+        events  :
+          'input.complete'      : @complete
+          'keys.down.left'      : @onLeftKey
+          'keys.down.right'     : @onRightKey
+          'keys.down.backspace' : @onBackspaceKey
 
-      @on event: 'keys.down.' + @options('hotKey'), handler: @onHotKey
+      @on events:
+        'items.set' : @updateInputPosition
 
       @defaultItems()
 
-    inputPosition : -> @$('> div').index @input.element
+    inputIndex : -> @$('> div').index @input.element
 
     updateInputPosition : -> @moveInputTo Number.MAX_VALUE
 
@@ -59,7 +61,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onLeftKey : (keyCode) -> deferred (d) =>
       if @input.empty()
-        @moveInputTo(@inputPosition() - 1).done =>
+        @moveInputTo(@inputIndex() - 1).done =>
           @input.focus()
           d.resolve()
       else
@@ -67,7 +69,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     onRightKey : (keyCode) -> deferred (d) =>
       if @input.empty()
-        @moveInputTo(@inputPosition() + 1).done =>
+        @moveInputTo(@inputIndex() + 1).done =>
           @input.focus()
           d.resolve()
       else
@@ -79,14 +81,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
         if @backspaces is 2
           @backspaces = 0
-          index = @inputPosition() - 1
+          index = @inputIndex() - 1
           return series(@items.removeAt(index), @removeItemAt(index)).done -> d.resolve()
       else
         @backspaces = 0
 
       d.resolve()
 
-    onHotKey : (keyCode) -> deferred (d) =>
+    complete : -> deferred (d) =>
       unless @input.empty()
         @items.fromString(@input.value()).done (item) =>
           @items.add(item).done =>
@@ -98,7 +100,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     $onRemoveTagClick : (e) =>
       e.preventDefault()
-      index = @itemPosition(e.target)
+      index = @itemIndex(e.target)
       series(@items.removeAt(index), @removeItemAt(index))
 
   # add plugin to the registery so that it is usable by TextExt

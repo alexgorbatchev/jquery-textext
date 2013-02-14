@@ -6,7 +6,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       items            : []
       minLength        : 1
       keyThrottleDelay : 500
-      hotKey           : 'enter'
       noResults        : 'No matching items...'
 
       html :
@@ -34,6 +33,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         context : @
         events  :
           'input.change'    : throttle @onInputChange, @, @options 'keyThrottleDelay'
+          'input.complete'  : @complete
           'keys.down.up'    : @onUpKey
           'keys.down.down'  : @onDownKey
           'keys.down.right' : @onRightKey
@@ -44,6 +44,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         event   : 'keys.down.' + @options('hotKey')
         handler : @onHotKey
 
+      @element.on 'click', '.textext-items-item', @$onItemClick
       @element.css 'display', 'none'
 
       @defaultItems()
@@ -53,20 +54,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     clearItems: ->
       super()
       @$('> .textext-autocomplete-no-results').remove()
-
-    selectedIndex : ->
-      items    = @$ '.textext-items-item'
-      selected = items.filter '.textext-items-selected'
-
-      items.index selected
-
-    select : (index) ->
-      items   = @$('.textext-items-item')
-      newItem = items.eq index
-
-      if newItem.length
-        items.removeClass 'textext-items-selected'
-        newItem.addClass 'textext-items-selected' if index >= 0
 
     show : -> deferred (d) =>
       @invalidate().done =>
@@ -93,12 +80,17 @@ do (window, $ = jQuery, module = $.fn.textext) ->
               d.resolve()
 
     complete : -> deferred (d) =>
-      selected = @$ '.textext-items-selected'
+      return d.resolve() if not @visible() or @selectedIndex() is -1
+
+      selected = @selectedItem()
       item = @itemData selected
+
+      return d.reject(name : 'AutocompletePlugin', message : 'Selected item has no data') unless item?
 
       @items.toString(item).done (value) =>
         @parent.value value
-        d.resolve()
+        @hide().done ->
+          d.resolve()
 
     onUpKey : (keyCode) -> deferred (d) =>
       if @visible()
@@ -132,12 +124,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         d.resolve()
 
-    onHotKey : (keyCode) -> deferred (d) =>
-      if @visible and @selectedIndex() isnt -1
-        series(@complete(), @hide()).done -> d.resolve()
-      else
-        d.resolve()
-
     onInputChange : -> deferred (d) =>
       value = @parent.value()
 
@@ -145,6 +131,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       promise = if @visible() then @invalidate() else @show()
       promise.done -> d.resolve()
+
+    $onItemClick : (e) => deferred (d) =>
+      index = @itemIndex e.target
+      @select index
+      @parent.complete().done ->
+        d.resolve()
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin

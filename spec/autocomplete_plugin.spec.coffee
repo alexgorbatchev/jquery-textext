@@ -78,35 +78,6 @@ describe 'AutocompletePlugin', ->
     it 'hides the dropdown', -> expect(plugin.visible()).to.be.false
     it 'deselects selected item', -> expect(plugin.selectedIndex()).to.equal -1
 
-  describe '.select', ->
-    beforeEach (done) ->
-      plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done ->
-        plugin.element.show()
-        done()
-
-    it 'selects first element by index', ->
-      plugin.select 0
-      expectSelected 'item1'
-
-    it 'selects specified element by index', ->
-      plugin.select 2
-      expectSelected 'foo'
-
-  describe '.selectedIndex', ->
-    beforeEach (done) -> plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done -> done()
-
-    describe 'when dropdown is not visible', ->
-      it 'returns -1', -> expect(plugin.selectedIndex()).to.equal -1
-
-    describe 'when dropdown is visible', ->
-      it 'returns 0 when first item is selected', ->
-        plugin.$('.textext-items-item:eq(0)').addClass 'textext-items-selected'
-        expect(plugin.selectedIndex()).to.equal 0
-
-      it 'returns 3 when fourth item is selected', ->
-        plugin.$('.textext-items-item:eq(3)').addClass 'textext-items-selected'
-        expect(plugin.selectedIndex()).to.equal 3
-
   describe '.complete', ->
     beforeEach (done) ->
       plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done ->
@@ -118,6 +89,11 @@ describe 'AutocompletePlugin', ->
 
       plugin.complete().done ->
         expect(input.value()).to.equal 'item2'
+        done()
+
+    it 'fails if no item is selected', (done) ->
+      plugin.complete().fail ->
+        expect(input.value()).to.equal ''
         done()
 
   describe '.onDownKey', ->
@@ -226,3 +202,14 @@ describe 'AutocompletePlugin', ->
         expectItems 'world'
         expect(plugin.visible()).to.be.true
         done()
+
+  describe '.$onItemClick', ->
+    beforeEach (done) ->
+      plugin.setItems([ 'hello', 'world' ]).done -> done()
+
+    it 'selects clicked item and completes the autocomplete', (done) ->
+      item = plugin.$(".textext-items-item:eq(1)")
+      plugin.$onItemClick({ target: item }).done ->
+        expect(input.value()).to.equal 'world'
+        done()
+

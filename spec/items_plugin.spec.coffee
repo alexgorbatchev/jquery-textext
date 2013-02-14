@@ -8,6 +8,8 @@ describe 'ItemsPlugin', ->
     plugin.$('.textext-items-item .textext-items-label').each -> actual.push $(@).text().replace(/^\s+|\s+$/g, '')
     expect(actual.join ' ').to.equal items
 
+  expectSelected = (item) -> expect(plugin.$(".textext-items-item:contains(#{item})")).to.match '.textext-items-selected'
+
   plugin = null
 
   beforeEach ->
@@ -21,6 +23,39 @@ describe 'ItemsPlugin', ->
 
   describe '.items', ->
     it 'returns instance of `ItemsManager` plugin', -> expect(plugin.items).to.be.instanceof ItemsManager
+
+  describe '.select', ->
+    beforeEach (done) ->
+      plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done ->
+        plugin.element.show()
+        done()
+
+    it 'selects first element by index', ->
+      plugin.select 0
+      expectSelected 'item1'
+
+    it 'selects specified element by index', ->
+      plugin.select 2
+      expectSelected 'foo'
+
+  describe '.selectedItem', ->
+    it '...', ->
+      throw 'implement me'
+
+  describe '.selectedIndex', ->
+    beforeEach (done) -> plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done -> done()
+
+    describe 'when dropdown is not visible', ->
+      it 'returns -1', -> expect(plugin.selectedIndex()).to.equal -1
+
+    describe 'when dropdown is visible', ->
+      it 'returns 0 when first item is selected', ->
+        plugin.$('.textext-items-item:eq(0)').addClass 'textext-items-selected'
+        expect(plugin.selectedIndex()).to.equal 0
+
+      it 'returns 3 when fourth item is selected', ->
+        plugin.$('.textext-items-item:eq(3)').addClass 'textext-items-selected'
+        expect(plugin.selectedIndex()).to.equal 3
 
   describe '.defaultItems', ->
     beforeEach (done) ->
@@ -38,6 +73,9 @@ describe 'ItemsPlugin', ->
 
     it 'returns original item object', ->
       expect(plugin.itemData plugin.$ '.textext-items-item:first').to.equal 'item1'
+
+    it 'returns undefined if no data is present', ->
+      expect(plugin.itemData $ '<div/>').to.be.undefined
 
   describe '.displayItems', ->
     describe 'first time', ->
@@ -70,11 +108,11 @@ describe 'ItemsPlugin', ->
       plugin.on event: 'items.set', handler: -> done()
       plugin.setItems([ 'item1' ])
 
-  describe '.itemPosition', ->
+  describe '.itemIndex', ->
     it 'returns item position for element', (done) ->
       plugin.setItems([ 'item1', 'item2', 'item3', 'item4' ]).done ->
         item = plugin.$ '.textext-items-item:eq(2)'
-        expect(plugin.itemPosition item).to.equal 2
+        expect(plugin.itemIndex item).to.equal 2
         done()
 
   describe '.addItem', ->

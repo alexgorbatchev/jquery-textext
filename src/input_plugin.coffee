@@ -3,7 +3,8 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class InputPlugin extends Plugin
     @defaults =
-      plugins : ''
+      plugins     : ''
+      completeKey : 'enter'
 
       html :
         element : '''
@@ -13,12 +14,17 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         '''
 
     constructor : (opts = {}) ->
+      console.log opts
       super opts, InputPlugin.defaults
 
       @plugins['keys'] = @createPlugins 'keys'
       @lastValue = @value()
 
       @on event: 'keys.down', handler: @onKeyDown
+
+      @on
+        event   : 'keys.down.' + @options('completeKey')
+        handler : @onHotKey
 
     input         : -> @$ 'input'
     value         : -> @input().val.apply @input(), arguments
@@ -27,6 +33,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     hasFocus      : -> @input().is ':focus'
     caretPosition : -> @input().get(0).selectionStart
     caretAtEnd    : -> @caretPosition() is @value().length
+
+    complete : -> deferred (d) =>
+      @emit(event: 'input.complete').done ->
+        d.resolve()
+
+    onHotKey : (keyCode) ->
+      @complete()
 
     onKeyDown : (keyCode) -> deferred (d) =>
       value = @value()

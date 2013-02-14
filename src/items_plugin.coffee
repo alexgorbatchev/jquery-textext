@@ -25,6 +25,22 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     addItemElements : (elements) -> @element.append elements
     clearItems: -> @$('.textext-items-item').remove()
 
+    selectedIndex : ->
+      items    = @$ '.textext-items-item'
+      selected = items.filter '.textext-items-selected'
+
+      items.index selected
+
+    selectedItem : -> @$ '.textext-items-selected'
+
+    select : (index) ->
+      items   = @$('.textext-items-item')
+      newItem = items.eq index
+
+      if newItem.length
+        items.removeClass 'textext-items-selected'
+        newItem.addClass 'textext-items-selected' if index >= 0
+
     defaultItems: -> deferred (d) =>
       items = @options 'items'
 
@@ -37,12 +53,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       data = element.data 'json'
 
       unless data?
-        data = JSON.parse(element.find('script[type="text/json"]').html())
-        element.data 'json', data
+        html = element.find('script[type="text/json"]').html()
+
+        if html?
+          data = JSON.parse html
+          element.data 'json', data
 
       data
 
-    itemPosition : (element) ->
+    itemIndex : (element) ->
       element = $ element
       element = element.parents '.textext-items-item' unless element.is '.textext-items-item'
       @$('.textext-items-item').index element

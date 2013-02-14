@@ -70,7 +70,7 @@ describe 'EventQueue', ->
       result = ''
 
       queue.on event: 'event', handler: -> result += '1'
-      queue.on event: 'event', handler: -> deferred (d) -> result += '2'; d.reject message: 'error', handled: true
+      queue.on event: 'event', handler: -> deferred (d) -> result += '2'; d.reject message: 'error'
       queue.on event: 'event', handler: -> result += '3'
 
       queue.emit(event : 'event').fail (err) ->

@@ -1,10 +1,7 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
   deferred = (fn) ->
     d = $.Deferred()
-    d.fail (err) ->
-      unless err?.handled is true
-        throw new Error 'Failed promise for ' + fn
-    # nextTick -> fn d
+    d.fail (err) -> console?.error err or 'Promise rejected by ' + fn.toString()
     fn d
     d.promise()
 
