@@ -83,18 +83,23 @@ describe 'AutocompletePlugin', ->
       plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done ->
         done()
 
-    it 'uses selected item to set the value', (done) ->
-      expect(input.value()).to.equal ''
-      plugin.$('.textext-items-item:eq(1)').addClass 'textext-items-selected'
+    describe 'when dropdown is visible', ->
+      beforeEach (done) ->
+        plugin.show().done ->
+          done()
 
-      plugin.complete().done ->
-        expect(input.value()).to.equal 'item2'
-        done()
-
-    it 'fails if no item is selected', (done) ->
-      plugin.complete().fail ->
+      it 'uses selected item to set the value', (done) ->
         expect(input.value()).to.equal ''
-        done()
+        plugin.$('.textext-items-item:eq(1)').addClass 'textext-items-selected'
+
+        plugin.complete().done ->
+          expect(input.value()).to.equal 'item2'
+          done()
+
+      it 'does nothing if no item is selected', (done) ->
+        plugin.complete().done ->
+          expect(input.value()).to.equal ''
+          done()
 
   describe '.onDownKey', ->
     beforeEach (done) ->
@@ -205,7 +210,9 @@ describe 'AutocompletePlugin', ->
 
   describe '.$onItemClick', ->
     beforeEach (done) ->
-      plugin.setItems([ 'hello', 'world' ]).done -> done()
+      plugin.setItems([ 'hello', 'world' ]).done ->
+        plugin.show().done ->
+          done()
 
     it 'selects clicked item and completes the autocomplete', (done) ->
       item = plugin.$(".textext-items-item:eq(1)")

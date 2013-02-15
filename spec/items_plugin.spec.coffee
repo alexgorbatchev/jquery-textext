@@ -39,8 +39,14 @@ describe 'ItemsPlugin', ->
       expectSelected 'foo'
 
   describe '.selectedItem', ->
-    it '...', ->
-      throw 'implement me'
+    beforeEach (done) -> plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done -> done()
+
+    it 'returns `null` when no item selected', ->
+      expect(plugin.selectedItem()).to.be.null
+
+    it 'returns selected jQuery HTML element', ->
+      plugin.$('.textext-items-item:eq(0)').addClass 'textext-items-selected'
+      expect(plugin.selectedItem().find('.textext-items-label').text()).to.equal 'item1'
 
   describe '.selectedIndex', ->
     beforeEach (done) -> plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done -> done()
@@ -49,6 +55,9 @@ describe 'ItemsPlugin', ->
       it 'returns -1', -> expect(plugin.selectedIndex()).to.equal -1
 
     describe 'when dropdown is visible', ->
+      it 'returns -1 when no item is selected', ->
+        expect(plugin.selectedIndex()).to.equal -1
+
       it 'returns 0 when first item is selected', ->
         plugin.$('.textext-items-item:eq(0)').addClass 'textext-items-selected'
         expect(plugin.selectedIndex()).to.equal 0

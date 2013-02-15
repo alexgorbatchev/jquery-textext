@@ -26,6 +26,29 @@ describe 'TagsPlugin', ->
     it 'is TagsPlugin', -> expect(plugin).to.be.instanceof TagsPlugin
     it 'adds itself to parent plugin', -> expect(plugin.element.parent()).to.be parent.element
 
+  describe '.complete', ->
+    describe 'when there is text', ->
+      beforeEach ->
+        spy plugin.items, 'add'
+        input.value 'item'
+
+      it 'adds new item', (done) ->
+        plugin.complete().done ->
+          expect(plugin.items.add).to.be.called done
+
+      it 'clears the input', (done) ->
+        plugin.complete().done ->
+          expect(plugin.input.empty()).to.be.true
+          done()
+
+    describe 'when there is no text', ->
+      beforeEach ->
+        spy plugin.items, 'fromString'
+
+      it 'does not add new item', (done) ->
+        plugin.complete().done ->
+          expect(plugin.items.fromString).to.not.be.called done
+
   describe '.updateInputPosition', ->
     it 'moves input to be after all items', ->
       plugin.element.append $ '<div class="textext-items-item"/><div class="textext-items-item"/><div class="textext-items-item"/>'
@@ -128,29 +151,6 @@ describe 'TagsPlugin', ->
       it 'does not move the input field', (done) ->
         plugin.onLeftKey().done ->
           expect(plugin.moveInputTo).to.not.be.called done
-
-  describe '.onHotKey', ->
-    describe 'when there is text', ->
-      beforeEach ->
-        spy plugin.items, 'add'
-        input.value 'item'
-
-      it 'adds new item', (done) ->
-        plugin.onHotKey().done ->
-          expect(plugin.items.add).to.be.called done
-
-      it 'clears the input', (done) ->
-        plugin.onHotKey().done ->
-          expect(plugin.input.empty()).to.be.true
-          done()
-
-    describe 'when there is no text', ->
-      beforeEach ->
-        spy plugin.items, 'fromString'
-
-      it 'does not add new item', (done) ->
-        plugin.onHotKey().done ->
-          expect(plugin.items.fromString).to.not.be.called done
 
   describe '.onRemoveTagClick', ->
     beforeEach ->

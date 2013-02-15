@@ -23,7 +23,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @items = instance for name, instance of managers
 
     addItemElements : (elements) -> @element.append elements
-    clearItems: -> @$('.textext-items-item').remove()
+    clearItems : -> @$('.textext-items-item').remove()
 
     selectedIndex : ->
       items    = @$ '.textext-items-item'
@@ -31,7 +31,9 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       items.index selected
 
-    selectedItem : -> @$ '.textext-items-selected'
+    selectedItem : ->
+      item = @$ '.textext-items-selected'
+      if item.length then item else null
 
     select : (index) ->
       items   = @$('.textext-items-item')

@@ -32,10 +32,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @input.on
         context : @
         events  :
-          'input.complete'      : @complete
-          'keys.down.left'      : @onLeftKey
-          'keys.down.right'     : @onRightKey
-          'keys.down.backspace' : @onBackspaceKey
+          'input.complete'          : @complete
+          'input.keydown.left'      : @onLeftKey
+          'input.keydown.right'     : @onRightKey
+          'input.keydown.backspace' : @onBackspaceKey
 
       @on events:
         'items.set' : @updateInputPosition

@@ -32,17 +32,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @parent.on
         context : @
         events  :
-          'input.change'    : throttle @onInputChange, @, @options 'keyThrottleDelay'
-          'input.complete'  : @complete
-          'keys.down.up'    : @onUpKey
-          'keys.down.down'  : @onDownKey
-          'keys.down.right' : @onRightKey
-          'keys.down.esc'   : @onEscKey
-
-      @parent.on
-        context : @
-        event   : 'keys.down.' + @options('hotKey')
-        handler : @onHotKey
+          'input.change'        : throttle @onInputChange, @, @options 'keyThrottleDelay'
+          'input.complete'      : @complete
+          'input.keydown.up'    : @onUpKey
+          'input.keydown.down'  : @onDownKey
+          'input.keydown.right' : @onRightKey
+          'input.keydown.esc'   : @onEscKey
 
       @element.on 'click', '.textext-items-item', @$onItemClick
       @element.css 'display', 'none'
@@ -84,7 +79,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       selected = @selectedItem()
       item = @itemData selected
-
       return d.reject(name : 'AutocompletePlugin', message : 'Selected item has no data') unless item?
 
       @items.toString(item).done (value) =>
