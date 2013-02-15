@@ -41,11 +41,26 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     value         : -> @input().val.apply @input(), arguments
     empty         : -> @value().length is 0
     focus         : -> @input().focus()
-    hasFocus      : -> @input().is ':focus'
     caretPosition : -> @input().get(0).selectionStart
     caretAtEnd    : -> @caretPosition() is @value().length
 
-    key : (keyCode) -> @options("keys.#{keyCode}")
+    keyInfo : ({ keyCode, charCode }) ->
+      { name, trap } = @options("keys.#{keyCode}") or {}
+
+      {
+        name
+        trap
+        code : keyCode
+        char : String.fromCharCode charCode if charCode?
+      }
+
+    isCompleteKey : ({ code, char, name }) ->
+      completeKey = @options 'completeKey'
+      isKeyCode   = completeKey.test code if code?
+      isKeyName   = completeKey.test name if name?
+      isKeyChar   = completeKey.test char if char?
+
+      !! ( isKeyCode or isKeyName or isKeyChar )
 
     complete : -> deferred (d) =>
       @emit(event: 'input.complete').done ->
@@ -61,40 +76,36 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         d.resolve()
 
     $onKeyDown : (e) =>
-      completeKey = @options 'completeKey'
-      keyCode     = e.keyCode
-      key         = @key keyCode
+      keyInfo = @keyInfo e
 
-      @emit event: 'input.keydown', args: [ keyCode ]
-      @emit event: "input.keydown.#{key.name}", args: [ keyCode ] if key?
+      @emit event: 'input.keydown', args: [ keyInfo.code ]
+      @emit event: "input.keydown.#{keyInfo.name}", args: [ keyInfo.code ] if keyInfo.name?
 
-      isKeyCode = completeKey.test(keyCode)
-      isKeyName = key? and completeKey.test(key.name)
-      isKeyChar = completeKey.test String.fromCharCode keyCode
-
-      if isKeyCode or isKeyName or isKeyChar
+      if @isCompleteKey keyInfo
         @complete()
         return false
 
-      key?.trap isnt true
+      keyInfo.trap isnt true
 
     $onKeyUp : (e) =>
-      keyCode = e.keyCode
-      key     = @key keyCode
+      keyInfo = @keyInfo e
 
-      @emit event: 'input.keyup', args: [ keyCode ]
-      @emit event: "input.keyup.#{key.name}", args: [ keyCode ] if key?
+      @emit event: 'input.keyup', args: [ keyInfo.code ]
+      @emit event: "input.keyup.#{keyInfo.name}", args: [ keyInfo.code ] if keyInfo.name?
 
-      key?.trap isnt true
+      keyInfo.trap isnt true
 
     $onKeyPress : (e) =>
-      keyCode = e.keyCode
-      key     = @key keyCode
+      keyInfo = @keyInfo e
 
-      @emit event: 'input.keypress', args: [ keyCode ]
-      @emit event: "input.keypress.#{key.name}", args: [ keyCode ] if key?
+      @emit event: 'input.keypress', args: [ keyInfo.code ]
+      @emit event: "input.keypress.#{keyInfo.name}", args: [ keyInfo.code ] if keyInfo.name?
 
-      key?.trap isnt true
+      if @isCompleteKey keyInfo
+        @complete()
+        return false
+
+      keyInfo.trap isnt true
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'input', InputPlugin
