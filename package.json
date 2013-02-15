@@ -1,7 +1,9 @@
 {
-    "name"          : "app_name",
-    "version"       : "0.0.0",
-    "dependencies"  : {
+    "name": "jquery-textext",
+    "version": "2.0.0",
+    "description": "TextExt is a plugin for jQuery which is designed to provide functionality such as tag input and autocomplete.",
+    "homepage": "http://textextjs.com",
+    "dependencies": {
         "less"                : "*",
         "coffee-script"       : "*",
         "jasmine-node"        : "*",
@@ -12,6 +14,26 @@
         "grunt-contrib-less"  : "*",
         "grunt-coffee"        : "*",
         "grunt-shell"         : "*"
-    }
-}
+    },
+    "jam": {
+        "dependencies": {
+            "jquery": ">=1.7.0"
+        }
+    },
+    "maintainers": [
+        {
+            "name": "Alex Gorbatchev",
+            "email": "alex.gorbatchev@gmail.com"
+        }
+    ],
+    "bugs": {
+        "web": "https://github.com/alexgorbatchev/jquery-textext/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://www.opensource.org/licenses/mit-license.php"
+        }
+    ]
+}}
 
