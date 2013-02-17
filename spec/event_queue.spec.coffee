@@ -1,4 +1,4 @@
-{ EventQueue, deferred } = $.fn.textext
+{ EventQueue, deferred, series, nextTick } = $.fn.textext
 
 describe 'EventQueue', ->
   queue = null
@@ -53,18 +53,16 @@ describe 'EventQueue', ->
 
       queue.on event: 'event', handler: -> deferred (d) -> result += '1'; setTimeout (-> d.resolve()), 50
       queue.on event: 'event', handler: -> deferred (d) -> result += '2'; setTimeout (-> d.resolve()), 50
-      queue.on event: 'event', handler: -> deferred (d) -> result += '3'; setTimeout (-> d.resolve()), 50
+      queue.on event: 'event', handler: -> deferred (d) -> result += '4'; setTimeout (-> d.resolve()), 50
 
-      queue.on event: 'event1', handler: -> result += '4'
+      queue.on event: 'event1', handler: -> result += '3'
 
       queue.emit(event : 'event').done ->
         result += '5'
+        expect(result).to.equal '12345'
+        done()
 
-      setTimeout ->
-        queue.emit(event : 'event1').done ->
-          expect(result).to.equal '12345'
-          done()
-      , 75
+      setTimeout (-> queue.emit(event : 'event1')), 75
 
     it 'stops the queue if there is an error', (done) ->
       result = ''
@@ -83,15 +81,20 @@ describe 'EventQueue', ->
 
       queue.on
         event   : 'event1'
-        handler : ->
-          deferred (d) ->
+        handler : -> deferred (d) ->
+          nextTick ->
             result += '1'
+
             queue.emit(event: 'event2').done ->
-              d.resolve()
+              nextTick ->
+                d.resolve()
 
       queue.on
         event   : 'event2'
-        handler : -> result += '2'
+        handler : -> deferred (d) ->
+          nextTick ->
+            result += '2'
+            d.resolve()
 
       queue.emit(event : 'event1').done ->
         expect(result).to.equal '12'
@@ -110,3 +113,14 @@ describe 'EventQueue', ->
 
       expect(result).to.equal '123'
 
+    it 'can emit same event multiple times', ->
+      result = ''
+
+      queue.on event: 'event', handler: -> result += '*'
+
+      series(
+        queue.emit(event: 'event')
+        queue.emit(event: 'event')
+        queue.emit(event: 'event')
+      ).done ->
+        expect(result).to.equal '***'

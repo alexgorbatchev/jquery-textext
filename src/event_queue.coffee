@@ -1,10 +1,11 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { deferred } = module
+  { nextTick, deferred } = module
 
   class EventQueue
     constructor : ->
       @handlers = {}
-      @queue    = []
+      @promises = {}
+      @queues   = {}
       @timeout  = 5000
       @promise  = null
 
@@ -17,22 +18,37 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         list = @handlers[event] ?= []
         list.push { context, handler }
 
-    emit : (opts) ->
-      @queue.push opts
+    emit : ({ event, args }) ->
+      queue   = @queues[event] ?= []
+      promise = @promises[event]
 
-      if @promise?
-        @promise
-      else
-        @promise = deferred (d) => @next d
-        @promise.always => @promise = null
+      queue.push args
 
-    next : (d) =>
-      return d.resolve() if @queue.length is 0
+      return promise if promise?
 
-      { event, args } = @queue.shift() or {}
+      d = $.Deferred()
+      @promises[event] = d.promise()
 
+      @next d, event
+
+      d.always =>
+        delete @queues[event] = null
+        delete @promises[event] = null
+
+    next : (d, event) =>
+      queue = @queues[event]
+
+      return d.resolve() if queue.length is 0
+
+      args = queue.shift()
+
+      @iterateHandlers(event, args).then(
+        => @next d, event
+        (args...) => d.reject args...
+      )
+
+    iterateHandlers : (event, args = []) -> deferred (d) =>
       handlers  = @handlers[event] or []
-      args      ?= []
       index     = 0
       timeoutId = 0
 
@@ -45,18 +61,16 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         d.reject err
 
       iterate = =>
-        { handler, context } = handlers[index++] or {}
+        return d.resolve() if index >= handlers.length
+        { handler, context } = handlers[index++]
 
-        if handler?
-          promise = handler.apply(context or handler, args)
+        promise = handler.apply(context or handler, args)
 
-          if promise?.then?
-            timeoutId = setTimeout (-> throw new Error "Deferred not resolved for `#{event}`"), @timeout
-            promise.then doneHandler, failHandler
-          else
-            doneHandler()
+        if promise?.then?
+          timeoutId = setTimeout (-> throw new Error "Deferred not resolved for `#{event}`"), @timeout
+          promise.then doneHandler, failHandler
         else
-          @next d
+          doneHandler()
 
       iterate()
 

@@ -121,7 +121,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     onInputChange : -> deferred (d) =>
       value = @parent.value()
 
-      return d.resolve() if value.length and value.length < @options 'minLength'
+      return d.resolve() if value.length < @options('minLength')
 
       promise = if @visible() then @invalidate() else @show()
       promise.done -> d.resolve()

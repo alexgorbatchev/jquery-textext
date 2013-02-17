@@ -5,6 +5,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     @defaults =
       plugins     : ''
       completeKey : /enter|,/
+
       keys :
         8   : name : 'backspace'
         9   : name : 'tab'
@@ -30,7 +31,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @lastValue = @value()
 
-      @on event: 'input.keysdown', handler: @onKeyDown
+      @on event: 'input.keydown', handler: @onKeyDown
 
       @element
         .on('keydown', 'input', @$onKeyDown)
@@ -66,12 +67,13 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       @emit(event: 'input.complete').done ->
         d.resolve()
 
-    onKeyDown : (e) -> deferred (d) =>
+    onKeyDown : (keyCode) -> deferred (d) => nextTick =>
       value = @value()
 
       return d.resolve() if value is @lastValue
 
       @lastValue = value
+      console.log keyCode, value
       @emit(event: 'input.change').done ->
         d.resolve()
 

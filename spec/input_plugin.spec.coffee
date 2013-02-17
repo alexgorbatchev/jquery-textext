@@ -121,7 +121,6 @@ describe 'InputPlugin', ->
     it 'returns position of the user carret in the input box', ->
       plugin.value 'text'
       plugin.input().get(0).selectionStart = 2
-      console.log plugin.caretPosition(), plugin.value().length
       expect(plugin.caretPosition()).to.equal 2
 
   describe '.caretAtEnd', ->
@@ -133,7 +132,6 @@ describe 'InputPlugin', ->
 
     it 'returns `false` if user caret is not at the last character in the input box', ->
       plugin.input().get(0).selectionStart = 2
-      console.log plugin.caretPosition(), plugin.value().length
       expect(plugin.caretAtEnd()).to.be.false
 
   describe '.value', ->
