@@ -46,7 +46,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     visible : -> @element.css('display') isnt 'none'
 
-    clearItems: ->
+    clearElements: ->
       super()
       @$('> .textext-autocomplete-no-results').remove()
 
@@ -63,7 +63,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     invalidate : -> deferred (d) =>
       @items.search(@parent.value()).done (items) =>
-        @clearItems()
+        @clearElements()
 
         if items.length
           @displayItems(items).done -> d.resolve()

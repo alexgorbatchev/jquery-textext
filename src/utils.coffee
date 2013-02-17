@@ -1,4 +1,37 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
+  # taken from http://stackoverflow.com/a/6713782
+  equals = (a, b) ->
+    return true if a is b
+
+    # if both a and b are null or undefined and exactly the same
+    return false if (a not instanceof Object) or (b not instanceof Object)
+
+    # if they are not strictly equal, they both need to be Objects
+    return false if a.constructor isnt b.constructor
+
+    # they must have the exact same prototype chain, the closest we can do is test there constructor.
+    for p of a
+      continue unless a.hasOwnProperty p
+
+      # other properties were tested using a.constructor === b.constructor
+      return false unless b.hasOwnProperty p
+
+      # allows to compare a[ p ] and b[ p ] when set to undefined
+      continue if a[p] is b[p]
+
+      # if they have the same strict value or identity then they are equal
+      return false if typeof(a[p]) isnt "object"
+
+      # Numbers, Strings, Functions, Booleans must be strictly equal
+      return false unless equals a[p], b[p]
+
+    # Objects and Arrays must be tested recursively
+    for p of b
+      return false if b.hasOwnProperty(p) and not a.hasOwnProperty(p)
+
+    # allows a[ p ] to be set to undefined
+    true
+
   deferred = (fn) ->
     d = $.Deferred()
     d.fail (err) -> console?.error err or 'Promise rejected by ' + fn.toString()
@@ -79,4 +112,4 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       clearTimeout id
       id = setTimeout (-> fn.apply context or null, args), delay
 
-  $.extend module, { opts, throttle, nextTick, template, deferred, parallel, series }
+  $.extend module, { opts, throttle, nextTick, template, deferred, parallel, series, equals }

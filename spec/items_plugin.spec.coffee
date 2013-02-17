@@ -38,6 +38,18 @@ describe 'ItemsPlugin', ->
       plugin.select 2
       expectSelected 'foo'
 
+  describe '.hasItem', ->
+    it 'returns `false` when specified item is not present', (done) ->
+      plugin.items.fromString('item').done (item) =>
+        expect(plugin.hasItem item).to.be.false
+        done()
+
+    it 'returns `true` when specified item is already present', (done) ->
+      plugin.setItems([ 'item' ]).done ->
+        plugin.items.fromString('item').done (item) =>
+          expect(plugin.hasItem item).to.be.true
+          done()
+
   describe '.selectedItem', ->
     beforeEach (done) -> plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done -> done()
 

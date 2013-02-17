@@ -3,9 +3,10 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
   class TagsPlugin extends ItemsPlugin
     @defaults =
-      plugins       : 'input'
-      items         : []
-      inputMinWidth : 50
+      plugins         : 'input'
+      items           : []
+      inputMinWidth   : 50
+      allowDuplicates : true
       # splitPaste    : /\s*,\s*/g
 
       html :
@@ -41,6 +42,20 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         'items.set' : @updateInputPosition
 
       @defaultItems()
+
+    complete : -> deferred (d) =>
+      unless @input.empty()
+        allowDuplicates = @options 'allowDuplicates'
+
+        @items.fromString(@input.value()).done (item) =>
+          return d.resolve() if not allowDuplicates and @hasItem item
+
+          @items.add(item).done =>
+            @input.value ''
+            @addItem(item).done ->
+              d.resolve()
+      else
+        d.resolve()
 
     inputIndex : -> @$('> div').index @input.element
 
@@ -87,16 +102,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         @backspaces = 0
 
       d.resolve()
-
-    complete : -> deferred (d) =>
-      unless @input.empty()
-        @items.fromString(@input.value()).done (item) =>
-          @items.add(item).done =>
-            @input.value ''
-            @addItem(item).done ->
-              d.resolve()
-      else
-        d.resolve()
 
     $onRemoveTagClick : (e) =>
       e.preventDefault()

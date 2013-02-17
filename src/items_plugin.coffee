@@ -1,5 +1,5 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, ItemsManager, deferred, parallel, template } = module
+  { Plugin, ItemsManager, deferred, parallel, template, equals } = module
 
   class ItemsPlugin extends Plugin
     @defaults =
@@ -22,28 +22,37 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
 
+    getElements     : -> @$ '.textext-items-item'
+    clearElements   : -> @getElements().remove()
     addItemElements : (elements) -> @element.append elements
-    clearItems : -> @$('.textext-items-item').remove()
+
+    hasItem : (item) ->
+      elements = @getElements()
+
+      for element in elements
+        data = @itemData $ element
+        return true if equals item, data
+
+      return false
 
     selectedIndex : ->
-      items    = @$ '.textext-items-item'
-      selected = items.filter '.textext-items-selected'
-
-      items.index selected
+      elements = @getElements()
+      selected = elements.filter '.textext-items-selected'
+      elements.index selected
 
     selectedItem : ->
-      item = @$ '.textext-items-selected'
-      if item.length then item else null
+      element = @$ '.textext-items-selected'
+      if element.length then element else null
 
     select : (index) ->
-      items   = @$('.textext-items-item')
-      newItem = items.eq index
+      elements = @getElements()
+      elementToSelect = elements.eq index
 
-      if newItem.length
-        items.removeClass 'textext-items-selected'
-        newItem.addClass 'textext-items-selected' if index >= 0
+      if elementToSelect.length
+        elements.removeClass 'textext-items-selected'
+        elementToSelect.addClass 'textext-items-selected' if index >= 0
 
-    defaultItems: -> deferred (d) =>
+    defaultItems : -> deferred (d) =>
       items = @options 'items'
 
       if items? and items.length
@@ -51,7 +60,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       else
         d.resolve()
 
-    itemData: (element) ->
+    itemData : (element) ->
       data = element.data 'json'
 
       unless data?
@@ -74,14 +83,12 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         label : value
 
     displayItems : (items) -> deferred (d) =>
-      @element.find('.textext-items-item').remove()
-
       jobs = []
       jobs.push @itemToObject item for item in items
 
       parallel(jobs).done (items...) =>
         template(@options('html.items'), { items }).done (html) =>
-          @clearItems()
+          @clearElements()
           @addItemElements $ html
           @emit(event: 'items.display').done ->
             d.resolve()

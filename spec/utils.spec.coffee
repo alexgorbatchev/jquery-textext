@@ -1,6 +1,25 @@
-{ opts, deferred, series, template } = $.fn.textext
+{ opts, deferred, series, template, equals } = $.fn.textext
 
 describe 'utils', ->
+  describe '.equals', ->
+    a = b = null
+
+    beforeEach ->
+      a =
+        foo : 1
+        bar : 'hey'
+        obj : nested : 'value'
+        list : [ 1, 2, { foo: 'bar' } ]
+
+      b = JSON.parse JSON.stringify a
+
+    it 'returns `true` when two complex objects have the same properties', ->
+      expect(equals a, b).to.be.true
+
+    it 'returns `false` when two complex objects have differences', ->
+      b.list[2].diff = true
+      expect(equals a, b).to.be.false
+
   describe '.series', ->
     it 'executes deferreds in order waiting for each to finish', (done) ->
       result = ''

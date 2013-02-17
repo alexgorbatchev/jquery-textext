@@ -16,8 +16,6 @@ describe 'TagsPlugin', ->
     plugin = new TagsPlugin parent : parent
     input  = plugin.getPlugin 'input'
 
-    # plugin.on 'items.set', -> done()
-
   it 'is registered', -> expect(Plugin.getRegistered 'tags').to.equal TagsPlugin
   it 'has default options', -> expect(TagsPlugin.defaults).to.be.ok
 
@@ -40,6 +38,14 @@ describe 'TagsPlugin', ->
         plugin.complete().done ->
           expect(plugin.input.empty()).to.be.true
           done()
+
+      it 'does not allow duplicates', (done) ->
+        plugin.userOptions.allowDuplicates = false
+
+        plugin.setItems([ 'item' ]).done ->
+          plugin.complete().done ->
+            expectItems 'item'
+            done()
 
     describe 'when there is no text', ->
       beforeEach ->
