@@ -68,14 +68,14 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         d.resolve()
 
     onKeyDown : (keyCode) -> deferred (d) => nextTick =>
-      value = @value()
+      newValue = @value()
 
-      return d.resolve() if value is @lastValue
+      return d.resolve() if newValue is @lastValue
 
-      @lastValue = value
-      console.log keyCode, value
-      @emit(event: 'input.change').done ->
+      @emit(event: 'input.change', args : [ @lastValue, newValue ]).done ->
         d.resolve()
+
+      @lastValue = newValue
 
     $onKeyDown : (e) =>
       keyInfo = @keyInfo e

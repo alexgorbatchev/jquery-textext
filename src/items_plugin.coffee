@@ -22,7 +22,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
       @items = instance for name, instance of managers
 
-    getElements     : -> @$ '.textext-items-item'
+    getElements     : -> @$ '> .textext-items-item'
     clearElements   : -> @getElements().remove()
     addItemElements : (elements) -> @element.append elements
 
