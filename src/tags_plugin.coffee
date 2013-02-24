@@ -1,12 +1,15 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
   { ItemsPlugin, Plugin, deferred, series, nextTick } = module
 
+  NAME = 'TagsPlugin'
+
   class TagsPlugin extends ItemsPlugin
     @defaults =
       plugins         : 'input'
       items           : []
       inputMinWidth   : 50
-      allowDuplicates : true
+      allowDuplicates : false
+      check           : /^.+$/
       # splitPaste    : /\s*,\s*/g
 
       html :
@@ -43,19 +46,19 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       @defaultItems()
 
-    complete : -> deferred (d) =>
-      unless @input.empty()
-        allowDuplicates = @options 'allowDuplicates'
+    complete : -> deferred (resolve, reject) =>
+      allowDuplicates = @options 'allowDuplicates'
+      check           = @options 'check'
+      value           = @input.value()
 
-        @items.fromString(@input.value()).done (item) =>
-          return d.resolve() if not allowDuplicates and @hasItem item
+      return reject(name : NAME, message : 'Value did not pass check') unless check.test value
 
-          @items.add(item).done =>
-            @input.value ''
-            @addItem(item).done ->
-              d.resolve()
-      else
-        d.resolve()
+      @items.fromString(value).fail(reject).done (item) =>
+        return reject() if not allowDuplicates and @hasItem item
+
+        @items.add(item).fail(reject).done =>
+          @input.value ''
+          @addItem(item).then resolve, reject
 
     inputIndex : -> @$('> div').index @input.element
 
@@ -63,7 +66,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     addItemElements : (elements) -> @input.element.before elements
 
-    moveInputTo : (index) -> deferred (d) =>
+    moveInputTo : (index) -> deferred (resolve, reject) =>
       items = @$ '> .textext-items-item'
 
       if items.length
@@ -72,36 +75,36 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         else
           @input.element.insertAfter items.last()
 
-      d.resolve()
+      resolve()
 
-    onLeftKey : (keyCode) -> deferred (d) =>
+    onLeftKey : (keyCode) -> deferred (resolve, reject) =>
       if @input.empty()
-        @moveInputTo(@inputIndex() - 1).done =>
+        @moveInputTo(@inputIndex() - 1).fail(reject).done =>
           @input.focus()
-          d.resolve()
+          resolve()
       else
-        d.resolve()
+        reject()
 
-    onRightKey : (keyCode) -> deferred (d) =>
+    onRightKey : (keyCode) -> deferred (resolve, reject) =>
       if @input.empty()
-        @moveInputTo(@inputIndex() + 1).done =>
+        @moveInputTo(@inputIndex() + 1).fail(reject).done =>
           @input.focus()
-          d.resolve()
+          resolve()
       else
-        d.resolve()
+        reject()
 
-    onBackspaceKey : (keyCode) -> deferred (d) =>
+    onBackspaceKey : (keyCode) -> deferred (resolve, reject) =>
       if @input.empty()
         @backspaces++
 
         if @backspaces is 2
           @backspaces = 0
           index = @inputIndex() - 1
-          return series(@items.removeAt(index), @removeItemAt(index)).done -> d.resolve()
+          return series(@items.removeAt(index), @removeItemAt(index)).then resolve, reject
       else
         @backspaces = 0
 
-      d.resolve()
+      resolve()
 
     $onRemoveTagClick : (e) =>
       e.preventDefault()

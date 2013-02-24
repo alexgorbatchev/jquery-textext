@@ -1,72 +1,69 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, withDeferred, deferred, parallel } = module
+  { Plugin, withDeferred, deferred, series } = module
 
   class ItemsManager extends Plugin
+    @pluginName = 'itemsManager'
+
     @defaults =
-      registery     : {}
       toStringField : null
       toValueField  : null
+      sortResults   : true
 
       html :
         element : '<div class="textext-items-manager"/>'
-
-    @register : (name, constructor) -> @defaults.registery[name] = constructor
-    @getRegistered : (name) -> @defaults.registery[name]
 
     constructor : (opts = {}) ->
       super opts, ItemsManager.defaults
       @items = []
 
-    set : (items) -> deferred (d) =>
+    set : (items) -> deferred (resolve, reject) =>
       @items = items or []
-      d.resolve()
+      resolve()
 
-    add : (item) -> deferred (d) =>
+    add : (item) -> deferred (resolve, reject) =>
       @items.push item
-      d.resolve()
+      resolve()
 
-    removeAt : (index) -> deferred (d) =>
+    removeAt : (index) -> deferred (resolve, reject) =>
       item = @items[index]
       @items.splice index, 1
-      d.resolve(item)
+      resolve item
 
-    toString : (item) -> deferred (d) =>
+    toString : (item) -> deferred (resolve, reject) =>
+      return resolve null, null unless item?
+
       field  = @options 'toStringField'
       result = item
       result = result[field] if field and result
-      d.resolve result
+      resolve result, item
 
-    toValue : (item) -> deferred (d) =>
+    toValue : (item) -> deferred (resolve, reject) =>
       field  = @options 'toValueField'
       result = item
       result = result[field] if field and result
-      d.resolve result
+      resolve result, item
 
-    fromString : (string) -> deferred (d) =>
-      field  = @options 'toStringField'
+    fromString : (string) -> deferred (resolve, reject) =>
+      field = @options 'toStringField'
 
-      result = if field and result
+      if field and string
         result = {}
         result[field] = string
       else
-        string
+        result = string
 
-      d.resolve result
+      resolve result, string
 
-    search : (query) -> deferred (d) =>
+    search : (query) -> deferred (resolve, reject) =>
       results = []
       jobs    = []
 
-      jobs.push @toString item for item in @items
+      jobs.push @toString(item) for item in @items
 
-      parallel(jobs).done (strings...) ->
-        for string in strings
-          results.push string if string.indexOf(query) is 0 or query is ''
+      series(jobs).fail(reject).done (items...) ->
+        for [ string, item ] in items
+          results.push item if string.indexOf(query) is 0 or query is ''
 
-        d.resolve results
-
-    isValid : ->
-
-  ItemsManager.register 'default', ItemsManager
+        resolve results
 
   module.ItemsManager = ItemsManager

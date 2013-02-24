@@ -1,6 +1,8 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
   { ItemsPlugin, InputPlugin, Plugin, deferred, series, throttle, template } = module
 
+  NAME = 'AutocompletePlugin'
+
   class AutocompletePlugin extends ItemsPlugin
     @defaults =
       items            : []
@@ -27,7 +29,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super opts, AutocompletePlugin.defaults
 
       if @parent? and not (@parent instanceof InputPlugin)
-        throw name : 'AutocompletePlugin', message : 'Expects InputPlugin parent'
+        throw name : NAME, message : 'Expects InputPlugin parent'
 
       @parent.on
         context : @
@@ -50,87 +52,85 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       super()
       @$('> .textext-autocomplete-no-results').remove()
 
-    show : -> deferred (d) =>
-      @invalidate().done =>
+    show : -> deferred (resolve, reject) =>
+      @invalidate().fail(reject).done =>
         @element.show 0, =>
-          d.resolve()
+          resolve()
 
-    hide : -> deferred (d) =>
+    hide : -> deferred (resolve, reject) =>
       @element.hide 0, =>
         @element.css 'display', 'none'
         @select -1
-        d.resolve()
+        resolve()
 
-    invalidate : -> deferred (d) =>
-      @items.search(@parent.value()).done (items) =>
+    invalidate : -> deferred (resolve, reject) =>
+      @items.search(@parent.value()).fail(reject).done (items) =>
         @clearElements()
 
         if items.length
-          @displayItems(items).done -> d.resolve()
+          @displayItems(items).then resolve, reject
         else
           label = @options 'noResults'
-          template(@options('html.noResults'), { label }).done (html) =>
+          template(@options('html.noResults'), { label }).fail(reject).done (html) =>
             @addItemElements html
-            @emit(event: 'autocomplete.noresults').done ->
-              d.resolve()
+            @emit(event: 'autocomplete.noresults').then resolve, reject
 
-    complete : -> deferred (d) =>
-      return d.resolve() if not @visible() or @selectedIndex() is -1
+    complete : -> deferred (resolve, reject) =>
+      return reject(name : NAME, message : 'Dropdown not visible') if not @visible()
+      return reject(name : NAME, message : 'No item selected') if @selectedIndex() is -1
 
       selected = @selectedItem()
       item = @itemData selected
-      return d.reject(name : 'AutocompletePlugin', message : 'Selected item has no data') unless item?
 
-      @items.toString(item).done (value) =>
-        @parent.value value
-        @hide().done ->
-          d.resolve()
+      return reject(name : NAME, message : 'Selected item has no data') unless item?
 
-    onUpKey : (keyCode) -> deferred (d) =>
+      @items.toString(item).fail(reject).done (string) =>
+        @parent.value string
+        @hide().then resolve, reject
+
+    onUpKey : (keyCode) -> deferred (resolve, reject) =>
       if @visible()
         index = @selectedIndex() - 1
         @select index
         @parent.focus() if index is -1
 
-      d.resolve()
+      resolve()
 
-    onDownKey : (keyCode) -> deferred (d) =>
+    onDownKey : (keyCode) -> deferred (resolve, reject) =>
       if @visible()
         @select @selectedIndex() + 1
-        d.resolve()
+        resolve()
       else
-        @show().done =>
+        @show().fail(reject).done =>
           @select 0
-          d.resolve()
+          resolve()
 
-    onEscKey : (keyCode) -> deferred (d) =>
+    onEscKey : (keyCode) -> deferred (resolve, reject) =>
       if @visible()
-        @hide().done =>
+        @hide().fail(reject).done =>
           @parent.focus()
-          d.resolve()
+          resolve()
       else
-        d.resolve()
+        resolve()
 
-    onRightKey : (keyCode) -> deferred (d) =>
+    onRightKey : (keyCode) -> deferred (resolve, reject) =>
       if @visible and not @parent.empty() and @parent.caretAtEnd() and @selectedIndex() is -1
         @select 0
-        series(@complete(), @hide()).done -> d.resolve()
+        series(@complete(), @hide()).then resolve, reject
       else
-        d.resolve()
+        resolve()
 
-    onInputChange : (lastValue, newValue) -> deferred (d) =>
+    onInputChange : (lastValue, newValue) -> deferred (resolve, reject) =>
       value = @parent.value()
 
-      return d.resolve() if value.length and value.length < @options('minLength')
+      return reject() if value.length and value.length < @options('minLength')
 
-      promise = if @visible() then @invalidate() else @show()
-      promise.done -> d.resolve()
+      (if @visible() then @invalidate() else @show()).then resolve, reject
 
-    $onItemClick : (e) => deferred (d) =>
+    $onItemClick : (e) => deferred (resolve, reject) =>
       index = @itemIndex e.target
       @select index
-      @parent.complete().done ->
-        d.resolve()
+      @parent.complete().then resolve, reject
 
   # add plugin to the registery so that it is usable by TextExt
   Plugin.register 'autocomplete', AutocompletePlugin

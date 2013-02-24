@@ -20,7 +20,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
       continue if a[p] is b[p]
 
       # if they have the same strict value or identity then they are equal
-      return false if typeof(a[p]) isnt "object"
+      return false if typeof(a[p]) isnt 'object'
 
       # Numbers, Strings, Functions, Booleans must be strictly equal
       return false unless equals a[p], b[p]
@@ -33,22 +33,35 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     true
 
   deferred = (fn) ->
+    resolve = (args...) -> d.resolve(args...)
+    reject  = (args...) ->
+      # console?.error 'Promise rejected by ' + fn.toString()
+      d.reject(args...)
+
     d = $.Deferred()
-    d.fail (err) -> console?.error err or 'Promise rejected by ' + fn.toString()
-    fn d
+    # d.fail (err) -> console?.error err or 'Promise rejected by ' + fn.toString()
+    fn resolve, reject, d
     d.promise()
 
   parallel = (deferreds) ->
     $.when.apply null, deferreds
 
-  series = (args...) -> deferred (d) ->
+  series = (args...) -> deferred (resolve, reject) ->
     deferreds = if args.length is 1 then args[0] else args
     index     = 0
+    results   = []
 
     iterate = ->
       fn = deferreds[index++]
-      return d.resolve() unless fn?
-      fn.then iterate, (err) -> d.fail(err)
+      return resolve results... unless fn?
+
+      fn.then(
+        (args...) ->
+          results.push args
+          iterate()
+
+        reject
+      )
 
     iterate()
 
@@ -75,11 +88,11 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       return fn(data)
 
-    (str, data, callback) -> deferred (d) ->
+    (str, data, callback) -> deferred (resolve, reject) ->
       try
-        d.resolve tmpl str, data
+        resolve tmpl str, data
       catch e
-        d.fail e
+        reject e
 
   opts = (hash, key) ->
     return unless hash?

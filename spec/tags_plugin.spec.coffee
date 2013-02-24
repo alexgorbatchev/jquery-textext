@@ -43,17 +43,15 @@ describe 'TagsPlugin', ->
         plugin.userOptions.allowDuplicates = false
 
         plugin.setItems([ 'item' ]).done ->
-          plugin.complete().done ->
+          plugin.complete().fail ->
             expectItems 'item'
             done()
 
     describe 'when there is no text', ->
-      beforeEach ->
-        spy plugin.items, 'fromString'
-
       it 'does not add new item', (done) ->
-        plugin.complete().done ->
-          expect(plugin.items.fromString).to.not.be.called done
+        plugin.complete().fail ->
+          expectItems ''
+          done()
 
   describe '.updateInputPosition', ->
     it 'moves input to be after all items', ->
@@ -134,7 +132,7 @@ describe 'TagsPlugin', ->
         input.value 'text'
 
       it 'does not move the input field', (done) ->
-        plugin.onRightKey().done ->
+        plugin.onRightKey().fail ->
           expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onLeftKey', ->
@@ -155,7 +153,7 @@ describe 'TagsPlugin', ->
         input.value 'text'
 
       it 'does not move the input field', (done) ->
-        plugin.onLeftKey().done ->
+        plugin.onLeftKey().fail ->
           expect(plugin.moveInputTo).to.not.be.called done
 
   describe '.onRemoveTagClick', ->

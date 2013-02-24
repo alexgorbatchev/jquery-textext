@@ -27,10 +27,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     visible: -> @element.is ':visible'
     getPlugin : (name) -> @plugins[name]
 
-    waitForVisible: -> deferred (d) => nextTick =>
-      iterate = => if @visible() then d.resolve() else setTimeout iterate, 250
-      iterate()
-
     on : (opts) ->
       opts.context ?= @
       @queue.on opts
@@ -41,7 +37,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     options : (key) ->
       value = opts(@userOptions, key)
-      value = opts(@defaultOptions, key) if value is undefined
+      value = opts(@defaultOptions, key) if typeof value is 'undefined'
       value
 
     insureElement : ->
@@ -55,21 +51,31 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
     addToParent : -> @parent?.element.append @element
 
-    createPlugins : (list = '', registery) ->
+    createPlugins : (list, registery) ->
       registery ?= @options 'registery'
       plugins   = {}
 
-      unless list.length is 0
-        list = list.split /\s*,?\s+/g
+      create = (plugin) =>
+        switch typeof plugin
+          when 'string'
+            return if plugin.length is 0
+            name   = plugin
+            plugin = registery[plugin]
 
-        for name in list
-          constructor = registery[name]
-          instance    = new constructor
-            parent      : @
-            queue       : @queue
-            userOptions : @options name
+          when 'function'
+            name = plugin.pluginName
+            throw name : 'Plugin', message : 'Expects plugin constructor to have `pluginName` property' unless name?
 
-          plugins[name] = instance
+        plugins[name] = new plugin
+          parent      : @
+          queue       : @queue
+          userOptions : @options name
+
+      list = list.split /\s*,?\s+/g if typeof list is 'string'
+
+      switch typeof list
+        when 'object', 'array' then create plugin for plugin in list
+        when 'function' then return create list
 
       plugins
 

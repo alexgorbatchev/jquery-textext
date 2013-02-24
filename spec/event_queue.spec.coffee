@@ -51,9 +51,9 @@ describe 'EventQueue', ->
     it 'executes handlers in a queue', (done) ->
       result = ''
 
-      queue.on event: 'event', handler: -> deferred (d) -> result += '1'; setTimeout (-> d.resolve()), 50
-      queue.on event: 'event', handler: -> deferred (d) -> result += '2'; setTimeout (-> d.resolve()), 50
-      queue.on event: 'event', handler: -> deferred (d) -> result += '4'; setTimeout (-> d.resolve()), 50
+      queue.on event: 'event', handler: -> deferred (resolve, reject) -> result += '1'; setTimeout (-> resolve()), 50
+      queue.on event: 'event', handler: -> deferred (resolve, reject) -> result += '2'; setTimeout (-> resolve()), 50
+      queue.on event: 'event', handler: -> deferred (resolve, reject) -> result += '4'; setTimeout (-> resolve()), 50
 
       queue.on event: 'event1', handler: -> result += '3'
 
@@ -68,7 +68,7 @@ describe 'EventQueue', ->
       result = ''
 
       queue.on event: 'event', handler: -> result += '1'
-      queue.on event: 'event', handler: -> deferred (d) -> result += '2'; d.reject message: 'error'
+      queue.on event: 'event', handler: -> deferred (resolve, reject) -> result += '2'; reject message: 'error'
       queue.on event: 'event', handler: -> result += '3'
 
       queue.emit(event : 'event').fail (err) ->
@@ -81,20 +81,20 @@ describe 'EventQueue', ->
 
       queue.on
         event   : 'event1'
-        handler : -> deferred (d) ->
+        handler : -> deferred (resolve, reject) ->
           nextTick ->
             result += '1'
 
             queue.emit(event: 'event2').done ->
               nextTick ->
-                d.resolve()
+                resolve()
 
       queue.on
         event   : 'event2'
-        handler : -> deferred (d) ->
+        handler : -> deferred (resolve, reject) ->
           nextTick ->
             result += '2'
-            d.resolve()
+            resolve()
 
       queue.emit(event : 'event1').done ->
         expect(result).to.equal '12'

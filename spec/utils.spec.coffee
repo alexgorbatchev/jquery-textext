@@ -24,13 +24,20 @@ describe 'utils', ->
     it 'executes deferreds in order waiting for each to finish', (done) ->
       result = ''
 
-      fn = (num) -> deferred (d) ->
+      fn = (num) -> deferred (resolve, reject) ->
         result += num
-        setTimeout (-> d.resolve()), 50
+        setTimeout (-> resolve()), 50
 
       series(fn(1), fn(2), fn(3)).done ->
         expect(result).to.equal '123'
         done()
+
+    it 'resolves with arguments', ->
+      fn = (num) -> deferred (resolve, reject) ->
+        resolve num
+
+      series(fn(1), fn(2), fn(3)).done (results...) ->
+        expect(results).to.eql [ [ 1 ], [ 2 ], [ 3 ] ]
 
   describe '.template', ->
     it 'renders a template', (done) ->

@@ -63,18 +63,15 @@ do (window, $ = jQuery, module = $.fn.textext) ->
 
       !! ( isKeyCode or isKeyName or isKeyChar )
 
-    complete : -> deferred (d) =>
-      @emit(event: 'input.complete').done ->
-        d.resolve()
+    complete : -> deferred (resolve, reject) =>
+      @emit(event: 'input.complete').then resolve, reject
 
-    onKeyDown : (keyCode) -> deferred (d) => nextTick =>
+    onKeyDown : (keyCode) -> deferred (resolve, reject) => nextTick =>
       newValue = @value()
 
-      return d.resolve() if newValue is @lastValue
+      return resolve() if newValue is @lastValue
 
-      @emit(event: 'input.change', args : [ @lastValue, newValue ]).done ->
-        d.resolve()
-
+      @emit(event: 'input.change', args : [ @lastValue, newValue ]).then resolve, reject
       @lastValue = newValue
 
     $onKeyDown : (e) =>

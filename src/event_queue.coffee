@@ -47,30 +47,30 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         (args...) => d.reject args...
       )
 
-    iterateHandlers : (event, args = []) -> deferred (d) =>
+    iterateHandlers : (event, args = []) -> deferred (resolve, reject) =>
       handlers  = @handlers[event] or []
       index     = 0
       timeoutId = 0
 
-      doneHandler = ->
+      nextHandler = ->
         clearTimeout timeoutId
         iterate()
 
-      failHandler = (err) =>
+      rejected = (err) =>
         clearTimeout timeoutId
-        d.reject err
+        reject err
 
       iterate = =>
-        return d.resolve() if index >= handlers.length
+        return resolve() if index >= handlers.length
         { handler, context } = handlers[index++]
 
         promise = handler.apply(context or handler, args)
 
         if promise?.then?
           timeoutId = setTimeout (-> throw new Error "Deferred not resolved for `#{event}`"), @timeout
-          promise.then doneHandler, failHandler
+          promise.then nextHandler, rejected
         else
-          doneHandler()
+          nextHandler()
 
       iterate()
 

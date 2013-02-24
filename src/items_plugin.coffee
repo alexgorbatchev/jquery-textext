@@ -1,10 +1,10 @@
 do (window, $ = jQuery, module = $.fn.textext) ->
-  { Plugin, ItemsManager, deferred, parallel, template, equals } = module
+  { Plugin, ItemsManager, deferred, series, parallel, template, equals } = module
 
   class ItemsPlugin extends Plugin
     @defaults =
-      manager : 'default'
-      items : []
+      manager : ItemsManager
+      items   : []
 
       html :
         items : '''
@@ -19,8 +19,7 @@ do (window, $ = jQuery, module = $.fn.textext) ->
     constructor : (opts = {}, pluginDefaults = {}) ->
       super opts, $.extend(true, {}, ItemsPlugin.defaults, pluginDefaults)
 
-      managers = @createPlugins @options('manager'), ItemsManager.defaults.registery
-      @items = instance for name, instance of managers
+      @items = @createPlugins @options('manager')
 
     getElements     : -> @$ '> .textext-items-item'
     clearElements   : -> @getElements().remove()
@@ -52,14 +51,6 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         elements.removeClass 'textext-items-selected'
         elementToSelect.addClass 'textext-items-selected' if index >= 0
 
-    defaultItems : -> deferred (d) =>
-      items = @options 'items'
-
-      if items? and items.length
-        @setItems(items).done -> d.resolve()
-      else
-        d.resolve()
-
     itemData : (element) ->
       data = element.data 'json'
 
@@ -82,36 +73,42 @@ do (window, $ = jQuery, module = $.fn.textext) ->
         json  : JSON.stringify item
         label : value
 
-    displayItems : (items) -> deferred (d) =>
+    defaultItems : -> deferred (resolve, reject) =>
+      items = @options 'items'
+
+      if items? and items.length
+        @setItems(items).then resolve, reject
+      else
+        reject()
+
+    displayItems : (items) -> deferred (resolve, reject) =>
       jobs = []
       jobs.push @itemToObject item for item in items
 
-      parallel(jobs).done (items...) =>
-        template(@options('html.items'), { items }).done (html) =>
+      parallel(jobs).fail(reject).done (items...) =>
+        template(@options('html.items'), { items }).fail(reject).done (html) =>
           @clearElements()
           @addItemElements $ html
-          @emit(event: 'items.display').done ->
-            d.resolve()
+          @emit(event: 'items.display').then resolve, reject
 
-    setItems : (items) -> deferred (d) =>
-      @items.set(items).done =>
-        @emit(event: 'items.set', args: [ items ]).done =>
-          @displayItems(items).done ->
-            d.resolve()
+    setItems : (items) -> deferred (resolve, reject) =>
+      series(
+        @items.set(items)
+        @emit(event: 'items.set', args: [ items ])
+        @displayItems(items)
+      ).then resolve, reject
 
-    addItem : (item) -> deferred (d) =>
-      @items.add(item).done =>
-        @itemToObject(item).done (obj) =>
-          template(@options('html.items'), items: [ obj ]).done (html) =>
+    addItem : (item) -> deferred (resolve, reject) =>
+      @items.add(item).fail(reject).done =>
+        @itemToObject(item).fail(reject).done (obj) =>
+          template(@options('html.items'), items: [ obj ]).fail(reject).done (html) =>
             @addItemElements $ html
-            @emit(event: 'items.add').done ->
-              d.resolve()
+            @emit(event: 'items.add').then resolve, reject
 
-    removeItemAt : (index) -> deferred (d) =>
-      @items.removeAt(index).done (item) =>
+    removeItemAt : (index) -> deferred (resolve, reject) =>
+      @items.removeAt(index).fail(reject).done (item) =>
         element = @$(".textext-items-item:eq(#{index})")
         element.remove()
-        @emit(event: 'items.remove', args: [ element ]).done ->
-          d.resolve(item)
+        @emit(event: 'items.remove', args: [ element ]).then resolve, reject
 
   module.ItemsPlugin = ItemsPlugin

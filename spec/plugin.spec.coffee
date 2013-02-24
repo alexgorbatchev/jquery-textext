@@ -2,7 +2,11 @@
 
 describe 'Plugin', ->
   class Plugin1 extends Plugin
+    @pluginName = 'plugin1'
+
   class Plugin2 extends Plugin
+    @pluginName = 'plugin2'
+
   class Plugin3 extends Plugin
 
   availablePlugins =
@@ -38,20 +42,47 @@ describe 'Plugin', ->
     it 'uses *defined* empty value', -> expect(plugin.options 'blank').to.equal ''
 
   describe '.createPlugins', ->
-    plugin1 = plugin2 = null
+    describe 'given a space separated string', ->
+      plugin1 = plugin2 = null
 
-    beforeEach ->
-      plugin = new Plugin
-        userOptions :
+      beforeEach ->
+        plugin.userOptions =
           registery : availablePlugins
+          plugin2 : host : 'localhost'
 
-          plugin2 :
-            host : 'localhost'
+        { plugin1, plugin2 } = plugin.createPlugins 'plugin2 plugin1'
 
-      { plugin1, plugin2 } = plugin.createPlugins 'plugin2 plugin1'
+      it 'creates plugins from plugin registery', ->
+        expect(plugin1).to.be.instanceof Plugin1
+        expect(plugin2).to.be.instanceof Plugin2
 
-    it 'creates plugins', ->
-      expect(plugin2).to.be.instanceof Plugin2
-      expect(plugin1).to.be.instanceof Plugin1
+      it 'passes options to plugin instances', ->
+        expect(plugin2.options('host')).to.equal 'localhost'
 
-    it 'passes options to plugin instances', -> expect(plugin2.options('host')).to.equal 'localhost'
+    describe 'given an array of constructors', ->
+      plugin1 = plugin2 = null
+
+      beforeEach ->
+        plugin.userOptions =
+          plugin2 : host : 'localhost'
+
+        { plugin1, plugin2 } = plugin.createPlugins [ Plugin1, Plugin2 ]
+
+      it 'creates plugins', ->
+        expect(plugin1).to.be.instanceof Plugin1
+        expect(plugin2).to.be.instanceof Plugin2
+
+      it 'expects constructor to have static `name` property', ->
+        expect(-> plugin.createPlugins [ Plugin3 ]).to.throw
+
+      it 'passes options to plugin instances', ->
+        expect(plugin2.options('host')).to.equal 'localhost'
+
+    describe 'given one constructors', ->
+      plugin1 = null
+
+      beforeEach ->
+        plugin1 = plugin.createPlugins Plugin1
+
+      it 'creates plugin', ->
+        expect(plugin1).to.be.instanceof Plugin1

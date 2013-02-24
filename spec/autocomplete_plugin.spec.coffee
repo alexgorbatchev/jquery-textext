@@ -83,6 +83,10 @@ describe 'AutocompletePlugin', ->
       plugin.setItems([ 'item1', 'item2', 'foo', 'bar' ]).done ->
         done()
 
+    describe 'when dropdown is not visible', ->
+      it 'does nothing', (done) ->
+        plugin.complete().fail -> done()
+
     describe 'when dropdown is visible', ->
       beforeEach (done) ->
         plugin.show().done ->
@@ -97,7 +101,7 @@ describe 'AutocompletePlugin', ->
           done()
 
       it 'does nothing if no item is selected', (done) ->
-        plugin.complete().done ->
+        plugin.complete().fail ->
           expect(input.value()).to.equal ''
           done()
 
@@ -196,7 +200,7 @@ describe 'AutocompletePlugin', ->
     it 'respects `minLength` option when there is value in the input box', (done) ->
       input.value 'w'
       plugin.userOptions.minLength = 2
-      plugin.onInputChange().done ->
+      plugin.onInputChange().fail ->
         expect(plugin.visible()).to.be.false
         done()
 

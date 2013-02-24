@@ -5,7 +5,6 @@ describe 'ItemsManager', ->
 
   beforeEach -> plugin = new ItemsManager
 
-  it 'is registered', -> expect(ItemsManager.getRegistered 'default').to.equal ItemsManager
   it 'has default options', -> expect(ItemsManager.defaults).to.be.ok
 
   describe 'instance', ->
