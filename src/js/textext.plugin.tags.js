@@ -625,9 +625,13 @@
 			i, item
 			;
 
-		for(i = 0; i < list.length, item = $(list[i]); i++)
+		for(i = 0; i < list.length; i++) {
+			item = $(list[i]);
 			if(self.itemManager().compareItems(item.data(CSS_TAG), tag))
 				return item;
+		}
+		
+		return null;
 	};
 
 	/**
@@ -657,6 +661,10 @@
 		else
 		{
 			element = self.getTagElement(tag);
+			if (element === null) {
+				//Tag does not exist
+				return;
+			}
 		}
 
 		element.remove();
