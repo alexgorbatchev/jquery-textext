@@ -1,3 +1,8 @@
+# Version 2.0 in development
+
+Please note that there's version 2.0 in active development. Checkout the #2.0.0-wip 
+branch for more fun action! CoffeeScript and full Jasmine coverage - fun stuff!
+
 ## About
 
 TextExt is a plugin for jQuery which is designed to provide functionality such
@@ -51,6 +56,11 @@ The steps to using TextExt are as follows:
 3. Enjoy!
 
 ## History
+
+### 1.3.1
+
+#### Bug Fixes
+* Fixed jQuery 1.8.x compatability ([issue #74](https://github.com/alexgorbatchev/jquery-textext/issues/74)).
 
 ### 1.3.0
 

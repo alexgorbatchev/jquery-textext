@@ -2,7 +2,7 @@
  * jQuery TextExt Plugin
  * http://textextjs.com
  *
- * @version 1.3.0
+ * @version 1.3.1
  * @copyright Copyright (C) 2011 Alex Gorbatchev. All rights reserved.
  * @license MIT License
  */
@@ -184,7 +184,6 @@
 	p.init = function(core)
 	{
 		this.baseInit(core, DEFAULT_OPTS);
-
 		var self  = this,
 			input = self.input(),
 			container
@@ -626,9 +625,13 @@
 			i, item
 			;
 
-		for(i = 0; i < list.length, item = $(list[i]); i++)
+		for(i = 0; i < list.length; i++) {
+			item = $(list[i]);
 			if(self.itemManager().compareItems(item.data(CSS_TAG), tag))
 				return item;
+		}
+		
+		return null;
 	};
 
 	/**
@@ -658,6 +661,10 @@
 		else
 		{
 			element = self.getTagElement(tag);
+			if (element === null) {
+				//Tag does not exist
+				return;
+			}
 		}
 
 		element.remove();
