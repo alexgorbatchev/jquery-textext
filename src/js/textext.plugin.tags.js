@@ -385,8 +385,8 @@
             lastTag = self.tagElements().last(),
             pos     = lastTag.position()
             ;
-        pos.right=lastTag.parent().innerWidth()-pos.left-lastTag.outerWidth();
         if(lastTag.length > 0) {
+            pos.right=lastTag.parent().innerWidth()-pos.left-lastTag.outerWidth();
             pos.right += lastTag.innerWidth();
             pos.left += lastTag.innerWidth();
         } else {
