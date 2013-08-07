@@ -31,21 +31,22 @@ Please refer to the [manual] for the full API documentation and examples.
 * ... and much more!
 
 ## Example
+```html
+<textarea id="textarea" rows="1"></textarea>
 
-    <textarea id="textarea" rows="1"></textarea>
-
-    <script type="text/javascript">
-        $('#textarea').textext({
-            plugins : 'tags prompt focus autocomplete ajax arrow',
-            tagsItems : [ 'Basic', 'JavaScript', 'PHP', 'Scala' ],
-            prompt : 'Add one...',
-            ajax : {
-                url : '/manual/examples/data.json',
-                dataType : 'json',
-                cacheResults : true
-            }
-        });
-    </script>
+<script type="text/javascript">
+    $('#textarea').textext({
+        plugins : 'tags prompt focus autocomplete ajax arrow',
+        tagsItems : [ 'Basic', 'JavaScript', 'PHP', 'Scala' ],
+        prompt : 'Add one...',
+        ajax : {
+            url : '/manual/examples/data.json',
+            dataType : 'json',
+            cacheResults : true
+        }
+    });
+</script>
+```
 
 ## How To Use
 
