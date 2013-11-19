@@ -157,6 +157,54 @@
 		 */
 		EVENT_TAG_CLICK = 'tagClick',
 
+		/**
+		 * Tags plugin triggers the `tagPreRender` event just before the tag is going to be rendered. This allows to 
+		 * potentially change the value of the tag which it recieves from another plugin say - Suggestions plugin. 
+		 * For example, when you want a value to be displayed in autocomplete suggestions dropdown but rendered differently  
+		 * as a tag after the user clicks on it.
+		 *
+		 * To change the value of the tag, simply update the `value` field of second argument to a new value. Example:
+		 *
+		 *     $('textarea').textext({...}).bind('tagPreRender', function(e, data)
+		 *     {
+		 *         var newvalue = data.value.toLowerCase();
+		 *		   data.value = newvalue;
+		 *     })
+		 *
+		 * The second argument `data` has the following format: `{ tag : {Object}, value : {String} }`. `tag`
+		 * property is in the format that the current `ItemManager` can understand. Default is `String`.
+		 *
+		 * @name tagPreRender
+		 * @version 1.3.0
+		 * @author abhishek shrivastava
+		 * @date 2013/11/19
+		 * @id TextExtTags.events.tagPreRender
+		 */
+		EVENT_TAG_PRE_RENDER = 'tagPreRender',
+
+		/**
+		 * Tags plugin triggers the `tagRemove` event just before the tag is going to be removed. This allows to 
+		 * attach other hooks which can potentially update some elements which are logically tied with the presence
+		 * of a particular tag.
+		 *
+		 *     $('textarea').textext({...}).bind('tagPreRender', function(e, tag, element)
+		 *     {
+		 *         if(tag.value == 'INDIA' || tag.value == 'CHINA')
+		 *				graph.removeStatsOfCountry(tag.value)
+		 *     })
+		 *
+		 * `tag` parameter is in the format that the current `ItemManager` can understand. Default is `String`.
+		 * `element` parameter is the jQuery object representing the DOM element for the corresponding tag.
+		 *
+		 * @name tagRemove
+		 * @version 1.3.0
+		 * @author abhishek shrivastava
+		 * @date 2013/11/19
+		 * @id TextExtTags.events.tagRemove
+		 */
+		EVENT_TAG_REMOVE = 'tagRemove',
+
+
 		DEFAULT_OPTS = {
 			tags : {
 				enabled : true,
@@ -667,6 +715,8 @@
 			}
 		}
 
+		this.trigger(EVENT_TAG_REMOVE, tag, element);
+
 		element.remove();
 		self.updateFormCache();
 		core.getFormData();
@@ -690,9 +740,12 @@
 		var self = this,
 			node = $(self.opts(OPT_HTML_TAG))
 			;
+		var opts = {tag: tag, value: self.itemManager().itemToString(tag)};
 
-		node.find('.text-label').text(self.itemManager().itemToString(tag));
-		node.data(CSS_TAG, tag);
+		this.trigger(EVENT_TAG_PRE_RENDER, opts);
+
+		node.find('.text-label').text(opts.value);
+		node.data(CSS_TAG, opts.tag);
 		return node;
 	};
 })(jQuery);
