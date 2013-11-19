@@ -182,6 +182,28 @@
 		 */
 		EVENT_TAG_PRE_RENDER = 'tagPreRender',
 
+		/**
+		 * Tags plugin triggers the `tagRemove` event just before the tag is going to be removed. This allows to 
+		 * attach other hooks which can potentially update some elements which are logically tied with the presence
+		 * of a particular tag.
+		 *
+		 *     $('textarea').textext({...}).bind('tagPreRender', function(e, tag, element)
+		 *     {
+		 *         if(tag.value == 'INDIA' || tag.value == 'CHINA')
+		 *				graph.removeStatsOfCountry(tag.value)
+		 *     })
+		 *
+		 * `tag` parameter is in the format that the current `ItemManager` can understand. Default is `String`.
+		 * `element` parameter is the jQuery object representing the DOM element for the corresponding tag.
+		 *
+		 * @name tagRemove
+		 * @version 1.3.0
+		 * @author abhishek shrivastava
+		 * @date 2013/11/19
+		 * @id TextExtTags.events.tagRemove
+		 */
+		EVENT_TAG_REMOVE = 'tagRemove',
+
 
 		DEFAULT_OPTS = {
 			tags : {
@@ -692,6 +714,8 @@
 				return;
 			}
 		}
+
+		this.trigger(EVENT_TAG_REMOVE, tag, element);
 
 		element.remove();
 		self.updateFormCache();
