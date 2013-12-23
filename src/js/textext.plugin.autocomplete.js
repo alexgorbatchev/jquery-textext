@@ -763,7 +763,7 @@
 			suggestions = self._suggestions
 			;
 
-		if(!suggestions)
+		if(!suggestions && !self.core().hasPlugin('ajax'))
 			return self.trigger(EVENT_GET_SUGGESTIONS);
 
 		if($.isFunction(renderCallback))
