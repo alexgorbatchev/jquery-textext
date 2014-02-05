@@ -347,7 +347,7 @@
 	p.onMouseOver = function(e)
 	{
 		var self   = this,
-			target = $(e.target)
+			target = $(e.target).closest(CSS_DOT_SUGGESTION);
 			;
 
 		if(target.is(CSS_DOT_SUGGESTION))
@@ -387,7 +387,7 @@
 	p.onClick = function(e)
 	{
 		var self   = this,
-			target = $(e.target)
+			target = $(e.target).closest(CSS_DOT_LABEL)
 			;
 
 		if(target.is(CSS_DOT_SUGGESTION) || target.is(CSS_DOT_LABEL))
