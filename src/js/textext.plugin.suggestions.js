@@ -23,7 +23,7 @@
 
 	var p = TextExtSuggestions.prototype,
 		/**
-		 * Suggestions plugin only has one option and that is to set suggestion items. It could be 
+		 * Suggestions plugin only has one option and that is to set suggestion items. It could be
 		 * changed when passed to the `$().textext()` function. For example:
 		 *
 		 *     $('textarea').textext({
@@ -133,7 +133,7 @@
 	};
 
 	/**
-	 * Reacts to the `postInit` event and triggers `setSuggestions` event to set suggestions list 
+	 * Reacts to the `postInit` event and triggers `setSuggestions` event to set suggestions list
 	 * right after initialization.
 	 *
 	 * @signature TextExtSuggestions.onPostInit(e)

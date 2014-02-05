@@ -14,10 +14,10 @@
 	 * tags it's possible to add.
 	 *
 	 * The list of allowed items can be either specified through the
-	 * options, can come from the Suggestions plugin or be loaded by the Ajax 
-	 * plugin. All these plugins have one thing in common -- they 
+	 * options, can come from the Suggestions plugin or be loaded by the Ajax
+	 * plugin. All these plugins have one thing in common -- they
 	 * trigger `setSuggestions` event which the Filter plugin is expecting.
-	 * 
+	 *
 	 * @author agorbatchev
 	 * @date 2011/08/18
 	 * @id TextExtFilter
@@ -30,7 +30,7 @@
 	var p = TextExtFilter.prototype,
 
 		/**
-		 * Filter plugin options are grouped under `filter` when passed to the 
+		 * Filter plugin options are grouped under `filter` when passed to the
 		 * `$().textext()` function. For example:
 		 *
 		 *     $('textarea').textext({
@@ -44,7 +44,7 @@
 		 * @date 2011/08/18
 		 * @id TextExtFilter.options
 		 */
-		
+
 		/**
 		 * This is a toggle switch to enable or disable the Filter plugin. The value is checked
 		 * each time at the top level which allows you to toggle this setting on the fly.
@@ -90,7 +90,7 @@
 		 */
 
 		/**
-		 * Filter plugin reacts to the `setSuggestions` event triggered by other plugins like 
+		 * Filter plugin reacts to the `setSuggestions` event triggered by other plugins like
 		 * Suggestions and Ajax.
 		 *
 		 * However, event if this event is handled and items are passed with it and stored, if `items`
@@ -140,8 +140,8 @@
 
 	/**
 	 * Reacts to the [`getFormData`][1] event triggered by the core. Returns data with the
-	 * weight of 200 to be *greater than the Autocomplete plugins* data weights. 
-	 * The weights system is covered in greater detail in the [`getFormData`][1] event 
+	 * weight of 200 to be *greater than the Autocomplete plugins* data weights.
+	 * The weights system is covered in greater detail in the [`getFormData`][1] event
 	 * documentation.
 	 *
 	 * This method does nothing if Tags tag is also present.
@@ -226,7 +226,7 @@
 
 	/**
 	 * Reacts to the `setSuggestions` events and stores supplied suggestions for future use.
-	 * 
+	 *
 	 * @signature TextExtFilter.onSetSuggestions(e, data)
 	 *
 	 * @param e {Object} jQuery event.
