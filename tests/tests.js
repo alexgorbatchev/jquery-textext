@@ -11,6 +11,7 @@ common.runModule(function(browser)
 		.and(require('./test_filter.js'))
 		.and(require('./test_focus.js'))
 		.and(require('./test_prompt.js'))
+		.and(require('./test_arrow.js'))
 	;
 });
 

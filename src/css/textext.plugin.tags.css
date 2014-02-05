@@ -47,3 +47,18 @@
 .text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:active {
   background-position: 0 -22px;
 }
+.text-core .text-wrap.text-rtl .text-tags {
+    padding: 3px 3px 3px 35px;
+}
+.text-core .text-wrap.text-rtl .text-tags .text-tag {
+    float: right;
+}
+.text-core .text-wrap.text-rtl .text-tags .text-tag .text-button {
+    float:right;
+    padding: 0px 3px 0px 17px;
+    margin: 0 0 2px 2px;
+}
+.text-core .text-wrap.text-rtl .text-tags .text-tag .text-button a.text-remove {
+    right: auto;
+    left: 3px;
+}

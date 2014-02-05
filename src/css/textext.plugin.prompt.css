@@ -14,3 +14,6 @@
 .text-core .text-wrap .text-prompt.text-hide-prompt {
   display: none;
 }
+.text-core .text-wrap.text-rtl .text-prompt {
+    margin: 1px 2px 0 0;
+}

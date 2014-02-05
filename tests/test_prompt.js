@@ -25,7 +25,6 @@ function run(browser)
 		.and(testPrompt('prompt-with-autocomplete-and-arrow', function(browser)
 		{
 			browser
-				.and(common.testArrowFunctionality())
 				.and(common.testAutocompleteFunctionality())
 				;
 		}))

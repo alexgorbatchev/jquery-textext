@@ -215,13 +215,15 @@
 		}
 
 		self._originalPadding = {
-			left : parseInt(input.css('paddingLeft') || 0),
-			top  : parseInt(input.css('paddingTop') || 0)
+            right : parseInt(input.css('paddingRight') || 0),
+            left : parseInt(input.css('paddingLeft') || 0),
+            top  : parseInt(input.css('paddingTop') || 0)
 		};
 
 		self._paddingBox = {
-			left : 0,
-			top  : 0
+			right : 0,
+            left : 0,
+            top  : 0
 		};
 
 		self.updateFormCache();
@@ -377,25 +379,32 @@
 	 * @date 2011/08/19
 	 * @id TextExtTags.onPreInvalidate
 	 */
-	p.onPreInvalidate = function(e)
-	{
-		var self    = this,
-			lastTag = self.tagElements().last(),
-			pos     = lastTag.position()
-			;
+    p.onPreInvalidate = function(e)
+    {
+        var self    = this,
+            lastTag = self.tagElements().last(),
+            pos     = lastTag.position()
+            ;
+        if(lastTag.length > 0) {
+            pos.right=lastTag.parent().innerWidth()-pos.left-lastTag.outerWidth();
+            pos.right += lastTag.innerWidth();
+            pos.left += lastTag.innerWidth();
+        } else {
+            pos = self._originalPadding;
+        };
 
-		if(lastTag.length > 0)
-			pos.left += lastTag.innerWidth();
-		else
-			pos = self._originalPadding;
+        self._paddingBox = pos;
 
-		self._paddingBox = pos;
-
-		self.input().css({
-			paddingLeft : pos.left,
-			paddingTop  : pos.top
-		});
-	};
+        var css={paddingTop  : pos.top};
+        
+        if (self.core().hasPlugin('rtl')) {
+            css.paddingRight = pos.right;
+        } else {
+            css.paddingLeft = pos.left;
+        };
+        
+        self.input().css(css);
+    };
 
 	/**
 	 * Reacts to the mouse `click` event.

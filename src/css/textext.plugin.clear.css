@@ -11,3 +11,7 @@
   cursor: pointer;
   z-index: 2;
 }
+.text-core .text-wrap.text-rtl .text-clear {
+    right: auto;
+    left: 14px;
+}
