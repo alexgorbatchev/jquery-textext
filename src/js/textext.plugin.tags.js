@@ -671,6 +671,11 @@
 		self.updateFormCache();
 		core.getFormData();
 		core.invalidateBounds();
+
+        //Update input value for fix IE10 problem with padding.
+        var val = " " + self.input().val();
+        self.input().val(val);
+        self.input().val(val.slice(1));
 	};
 
 	/**
