@@ -100,6 +100,39 @@
 		 */
 		OPT_HTML_TAGS = 'html.tags',
 
+        /**
+         * URL, where POST notification is sent when new tag will be added. When null, notification won't be sent
+         *
+         * @name notify.add
+         * @default null
+         * @author ZipoKing
+         * @date 2012/03/13
+         * @id TextExtTags.options.notify.add
+         */
+        OPT_NOTIFY_ADD = 'notify.add',
+
+        /**
+         * URL, where POST notification is sent when some tag will be removed. When null, notification won't be sent
+         *
+         * @name notify.del
+         * @default null
+         * @author ZipoKing
+         * @date 2012/03/13
+         * @id TextExtTags.options.notify.del
+         */
+        OPT_NOTIFY_DEL = 'notify.del',
+
+        /**
+         * Additional POST parameters which will be sent with POST notification request
+         *
+         * @name notify.params
+         * @default {}
+         * @author ZipoKing
+         * @date 2012/03/13
+         * @id TextExtTags.options.notify.params
+         */
+        OPT_NOTIFY_PARAMS = 'notify.params',
+
 		/**
 		 * Tags plugin dispatches or reacts to the following events.
 		 *
@@ -166,7 +199,13 @@
 			html : {
 				tags : '<div class="text-tags"/>',
 				tag  : '<div class="text-tag"><div class="text-button"><span class="text-label"/><a class="text-remove"/></div></div>'
-			}
+			},
+
+            notify : {
+                add: null,
+                del: null,
+                params: {}
+            }
 		}
 		;
 
@@ -259,7 +298,7 @@
 	p.onPostInit = function(e)
 	{
 		var self = this;
-		self.addTags(self.opts(OPT_ITEMS));
+		self.addTags(self.opts(OPT_ITEMS), true);
 	};
 
 	/**
@@ -582,7 +621,7 @@
 	 * @date 2011/08/19
 	 * @id TextExtTags.addTags
 	 */
-	p.addTags = function(tags)
+	p.addTags = function(tags, disableNotification)
 	{
 		if(!tags || tags.length == 0)
 			return;
@@ -599,6 +638,11 @@
 
 			if(tag && self.isTagAllowed(tag))
 				container.append(self.renderTag(tag));
+                if(disableNotification == null && self.opts(OPT_NOTIFY_ADD) != null){
+                    var params = self.opts(OPT_NOTIFY_PARAMS);
+                    params.tag = tag;
+                    $.post(self.opts(OPT_NOTIFY_ADD), params);
+                }
 		}
 
 		self.updateFormCache();
@@ -666,6 +710,12 @@
 				return;
 			}
 		}
+
+        if(self.opts(OPT_NOTIFY_DEL) != null){
+            var params = self.opts(OPT_NOTIFY_PARAMS);
+            params.tag = tag;
+            $.post(self.opts(OPT_NOTIFY_DEL), params);
+        }
 
 		element.remove();
 		self.updateFormCache();
