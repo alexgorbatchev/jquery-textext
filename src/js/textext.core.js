@@ -697,9 +697,9 @@
 
 		// keep references to html elements using jQuery.data() to avoid circular references
 		$(self).data({
-			'hiddenInput'   : hiddenInput,
+			'hiddenInput' : hiddenInput,
 			'wrapElement' : input.parents('.text-wrap').first(),
-			'input'         : input
+			'input'       : input
 		});
 
 		// set the name of the hidden input to the text input's name
