@@ -668,6 +668,10 @@
 		}
 
 		element.remove();
+
+	    // reference: http://stackoverflow.com/a/18953022
+		self.trigger('tagRemoved', element, tag);
+
 		self.updateFormCache();
 		core.getFormData();
 		core.invalidateBounds();
