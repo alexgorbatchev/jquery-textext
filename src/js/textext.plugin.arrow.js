@@ -97,6 +97,7 @@
 	p.onArrowClick = function(e)
 	{
 		this.trigger('toggleDropdown');
+		this.trigger('getSuggestions', { query: this.val() });
 		this.core().focusInput();
 	};
 	
