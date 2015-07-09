@@ -1,0 +1,41 @@
+.text-core .text-wrap .text-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 3;
+    min-width:160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    -webkit-box-shadow:0 6px 12px rgba(0,0,0,.175);
+    box-shadow:0 6px 12px rgba(0,0,0,.175);
+    max-height: 100px;
+    display: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.text-core .text-wrap .text-dropdown.text-position-below {
+    margin-top: 1px;
+}
+.text-core .text-wrap .text-dropdown.text-position-above {
+    margin-bottom: 1px;
+}
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion {
+    padding: 3px 20px;
+    cursor: pointer;
+}
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion em {
+    font-style: normal;
+    text-decoration: underline;
+}
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion.text-selected {
+    display:block;color: #333;padding: 3px 20px; font-weight: 400; line-height: 1.42857143; background: #fff;white-space: nowrap;
+}
+.text-core .text-wrap .text-dropdown .text-list .text-suggestion.text-selected:hover {
+    color:#262626;
+    background:#f5f5f5;
+}
