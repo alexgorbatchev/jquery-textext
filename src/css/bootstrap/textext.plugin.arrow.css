@@ -1,0 +1,21 @@
+.text-core .text-wrap .text-arrow {
+    font-family: 'Glyphicons Halflings';
+    font-size: 12px;
+    color: #002166;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: absolute;
+    top: 12px;
+    right: 5px;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 2;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+.text-core .text-wrap .text-arrow:before {content:"\e072";color: #286090;}
