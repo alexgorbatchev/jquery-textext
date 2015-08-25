@@ -1142,7 +1142,10 @@
 	p.onSetFormData = function(e, data)
 	{
 		var self = this;
-		self.hiddenInput().val(self.serializeData(data));
+		if (self.hiddenInput().val() !== self.serializeData(data))
+		{
+			self.hiddenInput().val(self.serializeData(data)).change();
+		}
 	};
 
 	/**
