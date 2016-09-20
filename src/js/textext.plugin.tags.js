@@ -597,7 +597,7 @@
 		{
 			tag = tags[i];
 
-			if(tag && self.isTagAllowed(tag))
+			if(tag)
 				container.append(self.renderTag(tag));
 		}
 
