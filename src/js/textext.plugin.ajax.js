@@ -70,6 +70,32 @@
 		 * @id TextExtAjax.options.data.callback
 		 */
 		OPT_DATA_CALLBACK = 'ajax.data.callback',
+
+		/**
+		 * By default, the response of an ajax request is expected to be in a certain format.
+		 *
+		 * If the ajax request you are making is returned in a different format that is expected then you can
+         * set this parameter.  For example:
+		 *
+		 *     'dataParse' : function(response)
+		 *     {
+         *         var data = new Array();
+         *
+         *         $.each(response.data.objects, function(key, item)
+         *         {
+         *             data.push(item.title);
+         *         });
+         *
+         *         return data;
+		 *     }
+		 *
+		 * @name ajax.data.parse
+		 * @default null
+		 * @author ryanzec
+		 * @date 2012/06/03
+		 * @id TextExtAjax.options.data.parse
+		 */
+        OPT_DATA_PARSE = 'ajax.data.parse',
 		
 		/**
 		 * By default, the server end point is constantly being reloaded whenever user changes the value
@@ -175,7 +201,8 @@
 				loadingMessage : 'Loading...',
 				loadingDelay   : 0.5,
 				cacheResults   : false,
-				dataCallback   : null
+				dataCallback   : null,
+                dataParse      : null
 			}
 		}
 		;
@@ -202,6 +229,7 @@
 		});
 
 		self._suggestions = null;
+        self._gettingSuggestions = false;
 	};
 
 	/**
@@ -233,6 +261,7 @@
 		);
 
 		$.ajax(opts);
+        self._gettingSuggestions = true;
 	};
 
 	/**
@@ -252,10 +281,12 @@
 	 */
 	p.onComplete = function(data, query)
 	{
-		var self   = this,
-			result = data
+		var self        = this,
+			parseData   = self.opts(OPT_DATA_PARSE) || function(response) { return response },
+            result      = parseData(data)
 			;
-		
+
+        self._gettingSuggestions = false;
 		self.dontShowLoading();
 
 		// If results are expected to be cached, then we store the original
@@ -300,20 +331,31 @@
 	{
 		var self = this;
 
-		self.dontShowLoading();
-		self.startTimer(
-			TIMER_LOADING,
-			self.opts(OPT_LOADING_DELAY),
-			function()
-			{
-				self.trigger(EVENT_SHOW_DROPDOWN, function(autocomplete)
-				{
-					autocomplete.clearItems();
-					var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
-					node.addClass('text-loading');
-				});
-			}
-		);
+        /**
+         * If we are still getting the data from an ajax call, let set _suggestions to an empty array so we get the loading message
+         *
+         * @author ryanzec
+         * @date 2012/06/03
+         */
+        if(self._gettingSuggestions)
+        {
+            self.trigger(EVENT_SET_SUGGESTION, { result : new Array()});
+        }
+
+        self.dontShowLoading();
+        self.startTimer(
+            TIMER_LOADING,
+            self.opts(OPT_LOADING_DELAY),
+            function()
+            {
+                self.trigger(EVENT_SHOW_DROPDOWN, function(autocomplete)
+                {
+                    autocomplete.clearItems();
+                    var node = autocomplete.addDropdownItem(self.opts(OPT_LOADING_MESSAGE));
+                    node.addClass('text-loading');
+                });
+            }
+        );
 	};
 
 	/**
@@ -340,15 +382,24 @@
 
 		if(suggestions && self.opts(OPT_CACHE_RESULTS) === true)
 			return self.onComplete(suggestions, query);
-		
-		self.startTimer(
-			'ajax',
-			self.opts(OPT_TYPE_DELAY),
-			function()
-			{
-				self.showLoading();
-				self.load(query);
-			}
-		);
+
+        /**
+         * We other need to set this timer if we are already not in the process and getting the suggestions
+         *
+         * @author ryanzec
+         * @date 2012/06/03
+         */
+        if(!self._gettingSuggestions)
+        {
+            self.startTimer(
+                'ajax',
+                self.opts(OPT_TYPE_DELAY),
+                function()
+                {
+                    self.load(query);
+                    self.showLoading();
+                }
+            );
+        }
 	};
 })(jQuery);
