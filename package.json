@@ -2,7 +2,7 @@
 	"name"          : "app_name",
 	"version"       : "0.0.0",
 	"dependencies"  : {
-		"stylus"    : "x.x.x",
+		"stylus"    : ">=0.54.7",
 		"soda"      : ">= 0.2.x",
 		"uglify-js" : "x.x.x"
 	}
